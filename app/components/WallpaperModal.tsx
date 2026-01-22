@@ -59,6 +59,8 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     }
   };
 
+
+
   const handleDownload = async () => {
     try {
       // Intentar descargar PNG primero
@@ -71,17 +73,143 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.jpg')}`;
       }
 
-      const blob = await fetch(imageUrl).then(res => res.blob());
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = wallpaper.name.replace('.gif', '.png');
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      // Detectar si es iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+      if (isIOS) {
+        // En iOS, usar window.open para mostrar el diálogo nativo
+        window.open(imageUrl, '_blank');
+      } else {
+        // En otros navegadores, usar descarga tradicional
+        const blob = await fetch(imageUrl).then(res => res.blob());
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = wallpaper.name.replace('.gif', '.png');
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
     } catch (error) {
       console.error('Error descargando imagen:', error);
+    }
+  };
+
+  // Perlin-like noise generator
+  const perlin = (x: number, y: number, time: number): number => {
+    return Math.sin(x * 12.9898 + y * 78.233 + time * 43758.5453) * 0.5 + 0.5;
+  };
+
+  const handleDownloadLive = async () => {
+    try {
+      // Obtener la imagen
+      let imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.png')}`;
+      const response = await fetch(imageUrl);
+      
+      if (!response.ok) {
+        imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.jpg')}`;
+      }
+
+      const imgBlob = await fetch(imageUrl).then(res => res.blob());
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = URL.createObjectURL(imgBlob);
+      
+      img.onload = async () => {
+        // Canvas setup - reducir resolución para mejor performance
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1920;
+        const ctx = canvas.getContext('2d')!;
+        
+        // Buffer canvas para la imagen original
+        const bufferCanvas = document.createElement('canvas');
+        bufferCanvas.width = 1080;
+        bufferCanvas.height = 1920;
+        const bufferCtx = bufferCanvas.getContext('2d')!;
+        bufferCtx.drawImage(img, 0, 0, 1080, 1920);
+        
+        // MediaRecorder
+        const stream = canvas.captureStream(30);
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4' });
+        const chunks: BlobPart[] = [];
+
+        mediaRecorder.ondataavailable = (e: BlobEvent) => {
+          chunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(chunks, { type: 'video/mp4' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = wallpaper.name.replace('.gif', '_live.mp4');
+          document.body.appendChild(a);
+          a.click();
+          URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        };
+
+        mediaRecorder.start();
+
+        // Animación
+        const duration = 3000;
+        const startTime = Date.now();
+        let lastFrameTime = startTime;
+
+        const animate = () => {
+          const now = Date.now();
+          const elapsed = now - startTime;
+          const time = elapsed / 1000;
+
+          // Dibujar imagen con displacement
+          ctx.drawImage(bufferCanvas, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          const originalImageData = bufferCtx.getImageData(0, 0, canvas.width, canvas.height);
+          const originalData = originalImageData.data;
+
+          // Aplicar displacement map optimizado - cada 2 píxeles
+          for (let i = 0; i < data.length; i += 8) {
+            const pixelIndex = i / 4;
+            const x = pixelIndex % canvas.width;
+            const y = Math.floor(pixelIndex / canvas.width);
+
+            // Generar ruido con mayor escala para reducir cálculos
+            const noiseX = perlin(x / 150, y / 150, time) * 15 - 7.5;
+            const noiseY = perlin(x / 150 + 100, y / 150 + 100, time) * 15 - 7.5;
+
+            // Coordenadas desplazadas
+            let displaceX = Math.floor(x + noiseX);
+            let displaceY = Math.floor(y + noiseY);
+
+            // Clamp a los límites
+            displaceX = Math.max(0, Math.min(canvas.width - 1, displaceX));
+            displaceY = Math.max(0, Math.min(canvas.height - 1, displaceY));
+
+            const displaceIndex = (displaceY * canvas.width + displaceX) * 4;
+            
+            data[i] = originalData[displaceIndex];
+            data[i + 1] = originalData[displaceIndex + 1];
+            data[i + 2] = originalData[displaceIndex + 2];
+            data[i + 3] = 255;
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          lastFrameTime = now;
+
+          if (elapsed < duration) {
+            requestAnimationFrame(animate);
+          } else {
+            mediaRecorder.stop();
+          }
+        };
+
+        animate();
+      };
+    } catch (error) {
+      console.error('Error descargando Live Wallpaper:', error);
     }
   };
 
@@ -94,7 +222,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     >
       {/* Botón Close circular */}
       <button
-        onClick={onClose}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
         className="absolute top-4 right-4 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
         aria-label="Cerrar"
       >
@@ -104,7 +237,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       {/* Botón Previous */}
       {currentIndex > 0 && (
         <button
-          onClick={goToPrevious}
+          onClick={(e) => {
+            e.stopPropagation();
+            goToPrevious();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
           aria-label="Anterior"
         >
@@ -115,7 +253,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       {/* Botón Next */}
       {currentIndex < wallpapers.length - 1 && (
         <button
-          onClick={goToNext}
+          onClick={(e) => {
+            e.stopPropagation();
+            goToNext();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
           aria-label="Siguiente"
         >
@@ -136,14 +279,33 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         />
       </div>
 
-      {/* Botón Descarga alargado en la parte inferior */}
-      <button
-        onClick={handleDownload}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-12 rounded-full flex items-center gap-2 transition-colors duration-200"
-      >
-        <Download className="w-5 h-5" />
-        Descargar
-      </button>
+      {/* Botones de Descarga en la parte inferior */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-3">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDownload();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
+        >
+          <Download className="w-5 h-5" />
+          Descargar
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDownloadLive();
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className="backdrop-blur-md bg-[#00d084]/20 hover:bg-[#00d084]/30 border border-[#00d084]/30 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
+        >
+          <Download className="w-5 h-5" />
+          Live
+        </button>
+      </div>
 
       {/* Indicador de página */}
       <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-sm">

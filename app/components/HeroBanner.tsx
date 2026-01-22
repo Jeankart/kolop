@@ -13,7 +13,7 @@ export default function HeroBanner() {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
-            src="https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_25fps.mp4"
+            src="https://videos.pexels.com/video-files/15283134/15283134-hd_1080_1920_30fps.mp4"
             type="video/mp4"
           />
         </video>

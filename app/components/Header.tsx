@@ -57,11 +57,11 @@ export default function Header() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-[#151515] dark:bg-[#151515] border-r border-[#686868]/30 z-30 transform transition-transform duration-300 pt-24 ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-[#151515] dark:bg-[#151515] border-r border-[#686868]/30 z-30 transform transition-transform duration-300 pt-16 overflow-y-auto ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="px-4 py-6 space-y-6">
+        <div className="px-4 py-6 space-y-6 pb-20">
           {/* Home */}
           <div>
             <Link

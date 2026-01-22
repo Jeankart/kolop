@@ -3,17 +3,17 @@
 import { useRouter } from 'next/navigation';
 
 const categories = [
-  { name: 'Live', emoji: '📱', href: '/live', isButton: true },
-  { name: 'Charging', emoji: '⚡' },
-  { name: 'AI', emoji: '🤖' },
-  { name: 'Aesthetic', emoji: '✨' },
-  { name: 'Cats', emoji: '🐱' },
-  { name: 'Cars', emoji: '🚗' },
-  { name: 'B&W', emoji: '🎞️' },
-  { name: 'Urban', emoji: '🏙️' },
-  { name: 'Films', emoji: '🎬' },
-  { name: 'Cute', emoji: '🌸' },
-  { name: 'Anime', emoji: '⛩️' },
+  { name: 'Live', emoji: '�', href: '/live' },
+  { name: 'Charging', emoji: '🔌', href: '/charging' },
+  { name: 'AI', emoji: '🤖', href: '/ai' },
+  { name: 'Aesthetic', emoji: '🎨', href: '/aesthetic' },
+  { name: 'Cats', emoji: '🐱', href: '/cats' },
+  { name: 'Cars', emoji: '🏎️', href: '/cars' },
+  { name: 'B&W', emoji: '⚫', href: '/bw' },
+  { name: 'Urban', emoji: '🏙️', href: '/urban' },
+  { name: 'Films', emoji: '🎬', href: '/films' },
+  { name: 'Cute', emoji: '🌸', href: '/cute' },
+  { name: 'Anime', emoji: '⛩️', href: '/anime' },
 ];
 
 const colors = [
@@ -45,7 +45,7 @@ export default function CategoriesCarousel() {
               return (
                 <button
                   key={index}
-                  onClick={() => category.isButton && router.push(category.href || '/')}
+                  onClick={() => router.push(category.href)}
                   className={baseClass}
                   title={category.name}
                 >
