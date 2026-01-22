@@ -15,13 +15,13 @@ const liveWallpapers = [
 ];
 
 export default function LiveGallery() {
-  const [selectedWallpaper, setSelectedWallpaper] = useState<{ id: number; name: string; folder: string } | null>(null);
+  const [selectedWallpaper, setSelectedWallpaper] = useState<{ id: number; name: string } | null>(null);
 
   const handleWallpaperClick = (wallpaper: { id: number; name: string; folder: string }) => {
-    setSelectedWallpaper(wallpaper);
+    setSelectedWallpaper({ id: wallpaper.id, name: wallpaper.name });
   };
 
-  const handleNavigate = (wallpaper: { id: number; name: string; folder: string }) => {
+  const handleNavigate = (wallpaper: { id: number; name: string }) => {
     setSelectedWallpaper(wallpaper);
   };
 
@@ -62,8 +62,8 @@ export default function LiveGallery() {
 
       <WallpaperModal 
         isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: 0, name: 'wall1.gif', folder: 'wallLive' }}
-        wallpapers={liveWallpapers}
+        wallpaper={selectedWallpaper || { id: 0, name: 'wall1.gif' }}
+        wallpapers={liveWallpapers.map(w => ({ id: w.id, name: w.name }))}
         onClose={() => setSelectedWallpaper(null)}
         onNavigate={handleNavigate}
       />
