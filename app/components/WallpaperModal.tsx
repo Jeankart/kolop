@@ -77,8 +77,14 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
       if (isIOS) {
-        // En iOS, usar window.open para mostrar el diálogo nativo
-        window.open(imageUrl, '_blank');
+        // En iOS, crear un link y clickearlo para que muestre el share sheet nativo
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = wallpaper.name.replace('.gif', '.png');
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
         // En otros navegadores, usar descarga tradicional
         const blob = await fetch(imageUrl).then(res => res.blob());
@@ -103,6 +109,9 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleDownloadLive = async () => {
     try {
+      // Detectar si es iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
       // Obtener la imagen
       let imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.png')}`;
       const response = await fetch(imageUrl);
@@ -117,7 +126,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       img.src = URL.createObjectURL(imgBlob);
       
       img.onload = async () => {
-        // Canvas setup - reducir resolución para mejor performance
+        // Canvas setup
         const canvas = document.createElement('canvas');
         canvas.width = 1080;
         canvas.height = 1920;
@@ -130,9 +139,24 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         const bufferCtx = bufferCanvas.getContext('2d')!;
         bufferCtx.drawImage(img, 0, 0, 1080, 1920);
         
+        // Para iOS, intentar con WebM, sino con MP4
+        const mimeTypes = [
+          'video/webm',
+          'video/mp4',
+          'video/webm;codecs=vp8,opus'
+        ];
+        
+        let selectedMimeType = 'video/webm';
+        for (const mime of mimeTypes) {
+          if (MediaRecorder.isTypeSupported(mime)) {
+            selectedMimeType = mime;
+            break;
+          }
+        }
+        
         // MediaRecorder
         const stream = canvas.captureStream(30);
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/mp4' });
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: selectedMimeType });
         const chunks: BlobPart[] = [];
 
         mediaRecorder.ondataavailable = (e: BlobEvent) => {
@@ -140,11 +164,13 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         };
 
         mediaRecorder.onstop = () => {
-          const blob = new Blob(chunks, { type: 'video/mp4' });
+          const fileExtension = selectedMimeType.includes('webm') ? 'webm' : 'mp4';
+          const blob = new Blob(chunks, { type: selectedMimeType });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = wallpaper.name.replace('.gif', '_live.mp4');
+          a.download = wallpaper.name.replace('.gif', `_live.${fileExtension}`);
+          a.target = '_blank';
           document.body.appendChild(a);
           a.click();
           URL.revokeObjectURL(url);
@@ -156,7 +182,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         // Animación
         const duration = 3000;
         const startTime = Date.now();
-        let lastFrameTime = startTime;
 
         const animate = () => {
           const now = Date.now();
@@ -192,6 +217,25 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
             
             data[i] = originalData[displaceIndex];
             data[i + 1] = originalData[displaceIndex + 1];
+            data[i + 2] = originalData[displaceIndex + 2];
+            data[i + 3] = 255;
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+
+          if (elapsed < duration) {
+            requestAnimationFrame(animate);
+          } else {
+            mediaRecorder.stop();
+          }
+        };
+
+        animate();
+      };
+    } catch (error) {
+      console.error('Error descargando Live Wallpaper:', error);
+    }
+  };
             data[i + 2] = originalData[displaceIndex + 2];
             data[i + 3] = 255;
           }
