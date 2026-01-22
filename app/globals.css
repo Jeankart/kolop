@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Dark Mode (Default) */
+  --background: #151515;
+  --foreground: #ededed;
+  --accent: #00d084;
+  --surface-primary: #1f1f1f;
+  --surface-secondary: #2a2a2a;
+  --surface-tertiary: #343434;
+  --card-bg: #1a1a1a;
+  --card-border: #2f2f2f;
+  --text-primary: #ededed;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #6b6b6b;
+  --button-hover: rgba(255, 255, 255, 0.1);
+  --button-active: rgba(255, 255, 255, 0.2);
+  --glass-bg: rgba(21, 21, 21, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --blur-md: 17px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.py-8 {
+  padding-block: calc(var(--spacing) * 4);
+}
+
+.py-16 {
+  padding-block: calc(var(--spacing) * 0);
+}
+
+
+
+.mb-8 {
+  margin-bottom: calc(var(--spacing) * 4);
+}
+
+.w-44 {
+    width: calc(var(--spacing) * 27);
+}
+
+.containSection {
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0rem;
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInNext {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInPrev {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.imgPreviewer {
+  animation: fadeInModal 0.3s ease-in-out;
+}
+
+.wallpaperImage {
+  animation: slideInNext 0.4s ease-in-out;
+}
+
+.wallpaperImage.prev {
+  animation: slideInPrev 0.4s ease-in-out;
+}
+
+@media (min-width: 768px) {
+  .containSection {
+    padding-left: 1.5rem;
+  }
 }
