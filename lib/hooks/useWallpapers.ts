@@ -5,7 +5,7 @@ import { db } from '../firebase';
 export interface Wallpaper {
   id: string;
   name: string;
-  category: string;
+  categories: string[]; // Cambiar de category a categories array
   image: string;
   featured: boolean;
   downloads: number;
@@ -51,7 +51,7 @@ export const useWallpapersByCategory = (category: string) => {
     try {
       const q = query(
         collection(db, 'wallpapers'),
-        where('category', '==', category)
+        where('categories', 'array-contains', category) // Cambiar a array-contains
       );
       
       const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -62,6 +62,14 @@ export const useWallpapersByCategory = (category: string) => {
             ...(doc.data() as Omit<Wallpaper, 'id'>),
           });
         });
+        
+        // Ordenar por ID numérico (extrayendo el número del ID)
+        data.sort((a, b) => {
+          const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
+          const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
+          return aNum - bNum;
+        });
+        
         setWallpapers(data);
         setLoading(false);
       });
@@ -85,7 +93,7 @@ export const useWallpapersFeatured = () => {
     try {
       const q = query(
         collection(db, 'wallpapers'),
-        where('featured', '==', true)
+        where('categories', 'array-contains', 'Featured') // Buscar por categoría
       );
       
       const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -96,6 +104,14 @@ export const useWallpapersFeatured = () => {
             ...(doc.data() as Omit<Wallpaper, 'id'>),
           });
         });
+        
+        // Ordenar por ID numérico
+        data.sort((a, b) => {
+          const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
+          const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
+          return aNum - bNum;
+        });
+        
         setWallpapers(data);
         setLoading(false);
       });

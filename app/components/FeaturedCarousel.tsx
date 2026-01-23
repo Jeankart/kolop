@@ -4,11 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
+import { getCategoryIcons } from '@/lib/utils/categoryIcons';
 
 interface Wallpaper {
   id: string;
   name: string;
-  category: string;
+  categories: string[]; // Cambiar de category a categories array
   image: string;
   featured: boolean;
   downloads: number;
@@ -63,18 +64,17 @@ export default function FeaturedCarousel() {
                 className="wallView flex-shrink-0 aspect-[9/19.5] w-44 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-200 dark:bg-zinc-800 relative group"
               >
                 <img
-                  src={`/wallFeatured/${wallpaper.image}`}
+                  src={`/wallUploads/${wallpaper.image}`}
                   alt={wallpaper.name}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = `/wallFeatured/${wallpaper.image.replace('.png', '.jpg')}`;
-                  }}
                 />
-                {/* Icono de categoría */}
-                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded text-xs text-white">
-                  {wallpaper.category === 'Live' && '🔴'}
-                  {wallpaper.category === 'Charging' && '🔌'}
-                  {wallpaper.category === 'Featured' && '⭐'}
+                {/* Iconos de categoría */}
+                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1">
+                  {getCategoryIcons(wallpaper.categories).map((icon, idx) => (
+                    <div key={idx} className="text-xs text-white">
+                      {icon}
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -104,7 +104,7 @@ export default function FeaturedCarousel() {
 
       <WallpaperModal 
         isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: '0', name: 'wall1', category: 'Featured', image: 'wall1.gif', featured: true, downloads: 0 }}
+        wallpaper={selectedWallpaper || { id: '0', name: 'wall1', categories: ['Featured'], image: 'wall1.gif', featured: true, downloads: 0 }}
         wallpapers={wallpapers}
         onClose={() => setSelectedWallpaper(null)}
         onNavigate={handleNavigate}

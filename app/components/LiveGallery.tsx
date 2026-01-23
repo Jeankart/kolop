@@ -5,11 +5,12 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersByCategory } from '@/lib/hooks/useWallpapers';
+import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
 
 interface Wallpaper {
   id: string;
   name: string;
-  category: string;
+  categories: string[]; // Cambiar de category a categories array
   image: string;
   featured: boolean;
   downloads: number;
@@ -58,13 +59,23 @@ export default function LiveGallery() {
             <div
               key={wallpaper.id}
               onClick={() => handleWallpaperClick(wallpaper)}
-              className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800"
+              className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
             >
               <img
-                src={`/wallLive/${wallpaper.image}`}
+                src={`/wallUploads/${wallpaper.image}`}
                 alt={wallpaper.name}
                 className="w-full h-full object-cover"
               />
+              {/* Iconos apilados si es Featured, Live o Charging */}
+              {shouldShowCategoryIcon(wallpaper.categories) && (
+                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1">
+                  {getCategoryIcons(wallpaper.categories).map((icon, idx) => (
+                    <div key={idx} className="text-xs text-white">
+                      {icon}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

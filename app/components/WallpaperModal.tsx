@@ -1,12 +1,12 @@
 'use client';
 
-import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface Wallpaper {
   id: string;
   name: string;
-  category: string;
+  categories: string[]; // Cambiar de category a categories array
   image: string;
   featured: boolean;
   downloads: number;
@@ -27,27 +27,64 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const currentIndex = wallpapers.findIndex(w => w.id === wallpaper.id);
+  
+  // Función para convertir nombre de archivo cover (.gif) a jpg
+  const getLgImagePath = (imagePath: string) => {
+    return imagePath.replace(/\.gif$/, '.jpg');
+  };
+  
+  // Función para obtener la ruta del video .mp4
+  const getMovPath = (imagePath: string) => {
+    return imagePath.replace(/\.gif$/, '.mp4');
+  };
+  
+  // Función para obtener la ruta completa de la imagen
+  const getImageUrl = (wp: Wallpaper) => {
+    // Siempre usar wallUploads como carpeta principal, con fallback a carpetas antiguas
+    const lgPath = getLgImagePath(wp.image);
+    return `/wallUploads/${lgPath}`;
+  };
+
+  // Función para obtener ruta del video
+  const getMovUrl = (wp: Wallpaper) => {
+    const movPath = getMovPath(wp.image);
+    return `/wallUploads/${movPath}`;
+  };
+
+  // Verificar si tiene categoría Live
+  const hasLiveCategory = wallpaper.categories?.includes('Live');
+  
+  // Estado para saber si mostrar video o imagen
+  const [showMov, setShowMov] = useState(() => wallpaper.categories?.includes('Live') ?? false);
+  
+  // Actualizar showMov cuando el wallpaper cambia
+  useEffect(() => {
+    setShowMov(wallpaper.categories?.includes('Live') ?? false);
+  }, [wallpaper.id]);
   
   // Precargar imágenes
   useEffect(() => {
     const preloadImage = (imagePath: string) => {
       const img = new Image();
-      img.src = `/wallFeatured/${imagePath}`;
+      img.src = imagePath;
       img.onerror = () => {
-        const imgFallback = new Image();
-        imgFallback.src = `/wallFeatured/${imagePath.replace('.png', '.jpg')}`;
+        // Fallback a cover si lg no existe
+        const fallbackImg = new Image();
+        const coverName = imagePath.replace('lg.jpg', '').replace(/\.$/, '') + '.gif';
+        fallbackImg.src = `${imagePath.substring(0, imagePath.lastIndexOf('/'))}/${coverName}`;
       };
     };
 
     // Precargar siguiente
     if (currentIndex < wallpapers.length - 1) {
-      preloadImage(wallpapers[currentIndex + 1].image);
+      preloadImage(getImageUrl(wallpapers[currentIndex + 1]));
     }
     // Precargar anterior
     if (currentIndex > 0) {
-      preloadImage(wallpapers[currentIndex - 1].image);
+      preloadImage(getImageUrl(wallpapers[currentIndex - 1]));
     }
   }, [currentIndex, wallpapers, isOpen]);
 
@@ -101,12 +138,20 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleDownload = async () => {
     try {
-      let imageUrl = `/wallFeatured/${wallpaper.image}`;
+      let imageUrl = getImageUrl(wallpaper);
       
-      const response = await fetch(imageUrl);
+      let response = await fetch(imageUrl);
       
       if (!response.ok) {
-        imageUrl = `/wallFeatured/${wallpaper.image.replace('.png', '.jpg')}`;
+        // Fallback al cover en wallUploads
+        imageUrl = `/wallUploads/${wallpaper.image}`;
+        response = await fetch(imageUrl);
+      }
+      
+      if (!response.ok) {
+        // Último fallback a carpetas antiguas
+        const folder = `wall${wallpaper.categories[0] || 'Featured'}`;
+        imageUrl = `/${folder}/${wallpaper.image}`;
       }
 
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -142,128 +187,37 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleDownloadLive = async () => {
     try {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-      let imageUrl = `/wallFeatured/${wallpaper.image}`;
-      let response = await fetch(imageUrl);
+      const movUrl = getMovUrl(wallpaper);
+      const response = await fetch(movUrl);
       
       if (!response.ok) {
-        imageUrl = `/wallFeatured/${wallpaper.image.replace('.png', '.jpg')}`;
-        response = await fetch(imageUrl);
+        console.error('Error descargando Live Wallpaper: archivo no encontrado');
+        return;
       }
 
-      const imgBlob = await response.blob();
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.src = URL.createObjectURL(imgBlob);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const blob = await response.blob();
 
-      img.onload = async () => {
-        // Canvas setup
-        const canvas = document.createElement('canvas');
-        canvas.width = 1080;
-        canvas.height = 1920;
-        const ctx = canvas.getContext('2d')!;
-        
-        // Buffer canvas para la imagen original
-        const bufferCanvas = document.createElement('canvas');
-        bufferCanvas.width = 1080;
-        bufferCanvas.height = 1920;
-        const bufferCtx = bufferCanvas.getContext('2d')!;
-        bufferCtx.drawImage(img, 0, 0, 1080, 1920);
-        
-        // Para iOS, intentar con WebM, sino con MP4
-        const mimeTypes = [
-          'video/webm',
-          'video/mp4',
-          'video/webm;codecs=vp8,opus'
-        ];
-        
-        let selectedMimeType = 'video/webm';
-        for (const mime of mimeTypes) {
-          if (MediaRecorder.isTypeSupported(mime)) {
-            selectedMimeType = mime;
-            break;
-          }
-        }
-        
-        // MediaRecorder
-        const stream = canvas.captureStream(30);
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: selectedMimeType });
-        const chunks: BlobPart[] = [];
-
-        mediaRecorder.ondataavailable = (e: BlobEvent) => {
-          chunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-          const fileExtension = selectedMimeType.includes('webm') ? 'webm' : 'mp4';
-          const blob = new Blob(chunks, { type: selectedMimeType });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `${wallpaper.name}_live.${fileExtension}`;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-        };
-
-        mediaRecorder.start();
-
-        // Animación
-        const duration = 3000;
-        const startTime = Date.now();
-
-        const animate = () => {
-          const now = Date.now();
-          const elapsed = now - startTime;
-          const time = elapsed / 1000;
-
-          // Dibujar imagen con displacement
-          ctx.drawImage(bufferCanvas, 0, 0);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
-          const originalImageData = bufferCtx.getImageData(0, 0, canvas.width, canvas.height);
-          const originalData = originalImageData.data;
-
-          // Aplicar displacement map optimizado - cada 2 píxeles
-          for (let i = 0; i < data.length; i += 8) {
-            const pixelIndex = i / 4;
-            const x = pixelIndex % canvas.width;
-            const y = Math.floor(pixelIndex / canvas.width);
-
-            // Generar ruido con mayor escala para reducir cálculos
-            const noiseX = perlin(x / 150, y / 150, time) * 15 - 7.5;
-            const noiseY = perlin(x / 150 + 100, y / 150 + 100, time) * 15 - 7.5;
-
-            // Coordenadas desplazadas
-            let displaceX = Math.floor(x + noiseX);
-            let displaceY = Math.floor(y + noiseY);
-
-            // Clamp a los límites
-            displaceX = Math.max(0, Math.min(canvas.width - 1, displaceX));
-            displaceY = Math.max(0, Math.min(canvas.height - 1, displaceY));
-
-            const displaceIndex = (displaceY * canvas.width + displaceX) * 4;
-            
-            data[i] = originalData[displaceIndex];
-            data[i + 1] = originalData[displaceIndex + 1];
-            data[i + 2] = originalData[displaceIndex + 2];
-            data[i + 3] = 255;
-          }
-
-          ctx.putImageData(imageData, 0, 0);
-
-          if (elapsed < duration) {
-            requestAnimationFrame(animate);
-          } else {
-            mediaRecorder.stop();
-          }
-        };
-
-        animate();
-      };
+      if (isIOS) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${wallpaper.name}.mp4`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${wallpaper.name}.mp4`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
     } catch (error) {
       console.error('Error descargando Live Wallpaper:', error);
     }
@@ -290,6 +244,22 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       >
         <X className="w-6 h-6 text-white" />
       </button>
+
+      {/* Botón Toggle Mov/Jpg - Solo si tiene categoría Live y existe el archivo */}
+      {hasLiveCategory && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowMov(!showMov);
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className="absolute top-20 right-4 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
+          aria-label="Toggle view"
+        >
+          {showMov ? <Eye className="w-6 h-6 text-white" /> : <EyeOff className="w-6 h-6 text-white" />}
+        </button>
+      )}
 
       {/* Botón Previous */}
       {currentIndex > 0 && (
@@ -340,15 +310,36 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
               key={wp.id}
               className="flex-shrink-0 w-full h-full flex items-center justify-center"
             >
-              <img
-                src={`/wallFeatured/${wp.image}`}
-                alt={wp.name}
-                className="w-auto h-full object-cover"
-                draggable={false}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = `/wallFeatured/${wp.image.replace('.png', '.jpg')}`;
-                }}
-              />
+              {showMov && wp.categories?.includes('Live') ? (
+                <video
+                  key={`video-${wp.id}`}
+                  src={getMovUrl(wp)}
+                  className="w-auto h-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  onError={(e) => {
+                    console.error('Error loading video:', getMovUrl(wp), e);
+                  }}
+                />
+              ) : (
+                <img
+                  src={getImageUrl(wp)}
+                  alt={wp.name}
+                  className="w-auto h-full object-cover"
+                  draggable={false}
+                  onError={(e) => {
+                    // Fallback al cover en wallUploads
+                    (e.target as HTMLImageElement).src = `/wallUploads/${wp.image}`;
+                    // Último fallback a carpetas antiguas
+                    (e.target as HTMLImageElement).onerror = () => {
+                      const folder = `wall${wp.categories[0] || 'Featured'}`;
+                      (e.target as HTMLImageElement).src = `/${folder}/${wp.image}`;
+                    };
+                  }}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -368,18 +359,21 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           <Download className="w-5 h-5" />
           Download
         </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDownloadLive();
-          }}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          className="backdrop-blur-md bg-[#00d084]/20 hover:bg-[#00d084]/30 border border-[#00d084]/30 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
-        >
-          <Download className="w-5 h-5" />
-          Live
-        </button>
+        {/* Botón Live - Solo si tiene categoría Live */}
+        {hasLiveCategory && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownloadLive();
+            }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+            className="backdrop-blur-md bg-[#00d084]/20 hover:bg-[#00d084]/30 border border-[#00d084]/30 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
+          >
+            <Download className="w-5 h-5" />
+            Live
+          </button>
+        )}
       </div>
 
       {/* Indicador de página */}
