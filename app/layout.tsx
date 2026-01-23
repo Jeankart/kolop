@@ -16,6 +16,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Wallpaper",
   description: "Descubre y descarga los mejores wallpapers para tu dispositivo",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Wallpaper",
+  },
 };
 
 export default function RootLayout({
