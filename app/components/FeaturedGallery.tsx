@@ -58,7 +58,8 @@ export default function FeaturedGallery() {
           {wallpapers.map((wallpaper) => (
             <div
               key={wallpaper.id}
-              onClick={() => handleWallpaperClick(wallpaper)} relative"
+              onClick={() => handleWallpaperClick(wallpaper)}
+              className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
             >
               <img
                 src={`/wallUploads/${wallpaper.image}`}
