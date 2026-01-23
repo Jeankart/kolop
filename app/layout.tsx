@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
@@ -13,11 +13,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "Wallpaper",
   description: "Descubre y descarga los mejores wallpapers para tu dispositivo",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/apple-touch-icon.png",
     apple: "/apple-touch-icon.png",
   },
   appleWebApp: {

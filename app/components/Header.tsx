@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Settings, Home } from 'lucide-react';
+import { Menu, X, Settings, Home, Info } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/app/providers';
+import InstallGuideModal from './InstallGuideModal';
 
 export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [installGuideOpen, setInstallGuideOpen] = useState(false);
   const pathname = usePathname();
   const { theme, setTheme, isDark } = useTheme();
 
@@ -50,10 +52,19 @@ export default function Header() {
             Wallpaper
           </h1>
 
-          {/* Placeholder para balance visual */}
-          <div className="w-10" />
+          {/* Botón Info a la derecha */}
+          <button
+            onClick={() => setInstallGuideOpen(true)}
+            className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg transition-colors"
+            aria-label="Información"
+          >
+            <Info className="w-5 h-5 text-white dark:text-white" />
+          </button>
         </div>
       </header>
+
+      {/* Modal de Instalación */}
+      <InstallGuideModal isOpen={installGuideOpen} onClose={() => setInstallGuideOpen(false)} />
 
       {/* Sidebar */}
       <aside

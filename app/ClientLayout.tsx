@@ -4,12 +4,39 @@ import { ThemeProvider } from './providers';
 import Header from './components/Header';
 import BottomNavigation from './components/BottomNavigation';
 import SplashScreen from './components/SplashScreen';
+import { useEffect } from 'react';
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    // Bloquear rotación
+    const lockOrientation = () => {
+      const html = document.documentElement;
+      
+      // Bloquear en portrait
+      if (screen.orientation?.lock) {
+        screen.orientation.lock('portrait-primary').catch(() => {
+          // Ignorar errores en navegadores que no lo soportan
+        });
+      }
+      
+      // Fallback: ocultar si se rota
+      const handleOrientationChange = () => {
+        html.style.overflow = 'hidden';
+      };
+      
+      window.addEventListener('orientationchange', handleOrientationChange);
+      return () => {
+        window.removeEventListener('orientationchange', handleOrientationChange);
+      };
+    };
+
+    lockOrientation();
+  }, []);
+
   return (
     <ThemeProvider>
       <SplashScreen />

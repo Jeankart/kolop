@@ -1,7 +1,7 @@
 'use client';
 
 import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface Wallpaper {
   id: number;
@@ -19,42 +19,80 @@ interface WallpaperModalProps {
 export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose, onNavigate }: WallpaperModalProps) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
-  const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  if (!isOpen) return null;
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   const currentIndex = wallpapers.findIndex(w => w.id === wallpaper.id);
   
+  // Precargar imágenes
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const preloadImage = (wallpaperName: string) => {
+      const img = new Image();
+      img.src = `/wallFeatured/${wallpaperName.replace('.gif', 'lg.png')}`;
+      img.onerror = () => {
+        const imgFallback = new Image();
+        imgFallback.src = `/wallFeatured/${wallpaperName.replace('.gif', 'lg.jpg')}`;
+      };
+    };
+
+    // Precargar siguiente
+    if (currentIndex < wallpapers.length - 1) {
+      preloadImage(wallpapers[currentIndex + 1].name);
+    }
+    // Precargar anterior
+    if (currentIndex > 0) {
+      preloadImage(wallpapers[currentIndex - 1].name);
+    }
+  }, [currentIndex, wallpapers, isOpen]);
+
+  if (!isOpen) return null;
+
   const goToPrevious = () => {
     if (currentIndex > 0) {
-      setAnimationDirection('prev');
+      setDragOffset(0);
       onNavigate(wallpapers[currentIndex - 1]);
     }
   };
 
   const goToNext = () => {
     if (currentIndex < wallpapers.length - 1) {
-      setAnimationDirection('next');
+      setDragOffset(0);
       onNavigate(wallpapers[currentIndex + 1]);
     }
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentTouch = e.targetTouches[0].clientX;
+    const diff = currentTouch - touchStart;
+    setDragOffset(diff);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     setTouchEnd(e.changedTouches[0].clientX);
+    setIsDragging(false);
     handleSwipe();
+    setDragOffset(0);
   };
 
   const handleSwipe = () => {
-    if (touchStart - touchEnd > 50) {
-      // Swipe left - ir al siguiente
+    const diff = touchStart - touchEnd;
+    
+    // Sensibilidad: 30px para swipe
+    if (diff > 30) {
+      // Swipe left - siguiente
       goToNext();
-    } else if (touchEnd - touchStart > 50) {
-      // Swipe right - ir al anterior
+    } else if (diff < -30) {
+      // Swipe right - anterior
       goToPrevious();
     }
   };
@@ -241,8 +279,9 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     <div 
       ref={containerRef}
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center imgPreviewer"
+      className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center imgPreviewer"
     >
       {/* Botón Close circular */}
       <button
@@ -253,7 +292,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         onTouchStart={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
         className="absolute top-4 right-4 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
-        aria-label="Cerrar"
+        aria-label="Close"
       >
         <X className="w-6 h-6 text-white" />
       </button>
@@ -267,8 +306,8 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
-          aria-label="Anterior"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10 hidden sm:flex"
+          aria-label="Previous"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
@@ -283,28 +322,46 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
-          aria-label="Siguiente"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10 hidden sm:flex"
+          aria-label="Next"
         >
           <ChevronRight className="w-6 h-6 text-white" />
         </button>
       )}
 
-      {/* Contenedor de imagen fullscreen */}
-      <div className="w-full h-full flex items-center justify-center">
-        <img
-          src={`/wallFeatured/${wallpaper.name.replace('.gif', 'lg.png')}`}
-          alt="Wallpaper"
-          className={`w-auto h-full object-cover rounded-2xl wallpaperImage ${animationDirection === 'prev' ? 'prev' : ''}`}
-          onError={(e) => {
-            // Fallback a JPG si PNG no existe
-            (e.target as HTMLImageElement).src = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.jpg')}`;
+      {/* Contenedor de imagen fullscreen con transición suave */}
+      <div 
+        ref={imageContainerRef}
+        className="w-full h-full flex items-center justify-center overflow-hidden relative"
+      >
+        <div
+          className="flex w-full h-full"
+          style={{
+            transform: `translateX(calc(-${currentIndex * 100}% + ${dragOffset}px))`,
+            transition: isDragging ? 'none' : 'transform 0.3s ease-out',
           }}
-        />
+        >
+          {wallpapers.map((wp) => (
+            <div
+              key={wp.id}
+              className="flex-shrink-0 w-full h-full flex items-center justify-center"
+            >
+              <img
+                src={`/wallFeatured/${wp.name.replace('.gif', 'lg.png')}`}
+                alt={wp.name}
+                className="w-auto h-full object-cover"
+                draggable={false}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `/wallFeatured/${wp.name.replace('.gif', 'lg.jpg')}`;
+                }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Botones de Descarga en la parte inferior */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-3">
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-3 px-4">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -315,7 +372,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
         >
           <Download className="w-5 h-5" />
-          Descargar
+          Download
         </button>
         <button
           onClick={(e) => {
@@ -332,7 +389,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       </div>
 
       {/* Indicador de página */}
-      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-sm">
+      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-xs sm:text-sm font-medium">
         {currentIndex + 1} / {wallpapers.length}
       </div>
     </div>
