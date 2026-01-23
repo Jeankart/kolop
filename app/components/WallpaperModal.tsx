@@ -4,8 +4,12 @@ import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface Wallpaper {
-  id: number;
+  id: string;
   name: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  downloads: number;
 }
 
 interface WallpaperModalProps {
@@ -28,24 +32,22 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   
   // Precargar imágenes
   useEffect(() => {
-    if (!isOpen) return;
-
-    const preloadImage = (wallpaperName: string) => {
+    const preloadImage = (imagePath: string) => {
       const img = new Image();
-      img.src = `/wallFeatured/${wallpaperName.replace('.gif', 'lg.png')}`;
+      img.src = `/wallFeatured/${imagePath}`;
       img.onerror = () => {
         const imgFallback = new Image();
-        imgFallback.src = `/wallFeatured/${wallpaperName.replace('.gif', 'lg.jpg')}`;
+        imgFallback.src = `/wallFeatured/${imagePath.replace('.png', '.jpg')}`;
       };
     };
 
     // Precargar siguiente
     if (currentIndex < wallpapers.length - 1) {
-      preloadImage(wallpapers[currentIndex + 1].name);
+      preloadImage(wallpapers[currentIndex + 1].image);
     }
     // Precargar anterior
     if (currentIndex > 0) {
-      preloadImage(wallpapers[currentIndex - 1].name);
+      preloadImage(wallpapers[currentIndex - 1].image);
     }
   }, [currentIndex, wallpapers, isOpen]);
 
@@ -97,39 +99,32 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     }
   };
 
-
-
   const handleDownload = async () => {
     try {
-      // Intentar descargar PNG primero
-      let imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.png')}`;
+      let imageUrl = `/wallFeatured/${wallpaper.image}`;
       
       const response = await fetch(imageUrl);
       
-      // Si no existe PNG, intentar con JPG
       if (!response.ok) {
-        imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.jpg')}`;
+        imageUrl = `/wallFeatured/${wallpaper.image.replace('.png', '.jpg')}`;
       }
 
-      // Detectar si es iOS
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
       if (isIOS) {
-        // En iOS, crear un link y clickearlo para que muestre el share sheet nativo
         const link = document.createElement('a');
         link.href = imageUrl;
-        link.download = wallpaper.name.replace('.gif', '.png');
+        link.download = wallpaper.name;
         link.target = '_blank';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       } else {
-        // En otros navegadores, usar descarga tradicional
         const blob = await fetch(imageUrl).then(res => res.blob());
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = wallpaper.name.replace('.gif', '.png');
+        a.download = wallpaper.name;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -147,22 +142,21 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleDownloadLive = async () => {
     try {
-      // Detectar si es iOS
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-      // Obtener la imagen
-      let imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.png')}`;
-      const response = await fetch(imageUrl);
+      let imageUrl = `/wallFeatured/${wallpaper.image}`;
+      let response = await fetch(imageUrl);
       
       if (!response.ok) {
-        imageUrl = `/wallFeatured/${wallpaper.name.replace('.gif', 'lg.jpg')}`;
+        imageUrl = `/wallFeatured/${wallpaper.image.replace('.png', '.jpg')}`;
+        response = await fetch(imageUrl);
       }
 
-      const imgBlob = await fetch(imageUrl).then(res => res.blob());
+      const imgBlob = await response.blob();
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.src = URL.createObjectURL(imgBlob);
-      
+
       img.onload = async () => {
         // Canvas setup
         const canvas = document.createElement('canvas');
@@ -207,7 +201,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = wallpaper.name.replace('.gif', `_live.${fileExtension}`);
+          a.download = `${wallpaper.name}_live.${fileExtension}`;
           a.target = '_blank';
           document.body.appendChild(a);
           a.click();
@@ -347,12 +341,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
               className="flex-shrink-0 w-full h-full flex items-center justify-center"
             >
               <img
-                src={`/wallFeatured/${wp.name.replace('.gif', 'lg.png')}`}
+                src={`/wallFeatured/${wp.image}`}
                 alt={wp.name}
                 className="w-auto h-full object-cover"
                 draggable={false}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = `/wallFeatured/${wp.name.replace('.gif', 'lg.jpg')}`;
+                  (e.target as HTMLImageElement).src = `/wallFeatured/${wp.image.replace('.png', '.jpg')}`;
                 }}
               />
             </div>

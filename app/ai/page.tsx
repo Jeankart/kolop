@@ -1,13 +1,19 @@
-import CategoryGallery from '@/app/components/CategoryGallery';
+'use client';
 
-const wallpapers = [
-  { id: 1, name: 'wall1.gif' },
-  { id: 2, name: 'wall2.gif' },
-  { id: 3, name: 'wall3.gif' },
-  { id: 4, name: 'wall4.gif' },
-  { id: 5, name: 'wall5.gif' },
-];
+import { useState, useEffect } from 'react';
+import CategoryGallery from '@/app/components/CategoryGallery';
+import { useWallpapersByCategory } from '@/lib/hooks/useWallpapers';
 
 export default function AIPage() {
+  const { wallpapers, loading } = useWallpapersByCategory('AI');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 pb-10 bg-[#151515] flex items-center justify-center">
+        <div className="text-white">Cargando...</div>
+      </div>
+    );
+  }
+
   return <CategoryGallery title="AI" folder="wallAI" wallpapers={wallpapers} />;
 }

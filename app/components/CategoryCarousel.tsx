@@ -4,22 +4,31 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 
+interface Wallpaper {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  downloads: number;
+}
+
 interface CategoryCarouselProps {
   title: string;
   emoji: string;
-  wallpapers: Array<{ id: number; name: string }>;
+  wallpapers: Wallpaper[];
   folder: string;
   moreLink: string;
 }
 
 export default function CategoryCarousel({ title, emoji, wallpapers, folder, moreLink }: CategoryCarouselProps) {
-  const [selectedWallpaper, setSelectedWallpaper] = useState<{ id: number; name: string } | null>(null);
+  const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
-  const handleWallpaperClick = (wallpaper: { id: number; name: string }) => {
+  const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
 
-  const handleNavigate = (wallpaper: { id: number; name: string }) => {
+  const handleNavigate = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
 
@@ -52,7 +61,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                   className="wallView flex-shrink-0 aspect-[9/19.5] w-44 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-200 dark:bg-zinc-800"
                 >
                   <img
-                    src={`/${folder}/${wallpapers[i]?.name || 'wall1.gif'}`}
+                    src={`/${folder}/${wallpapers[i]?.image || 'wall1.png'}`}
                     alt={`${title} wallpaper ${i + 1}`}
                     className="w-full h-full object-contain"
                   />
@@ -74,13 +83,16 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
         `}</style>
       </div>
 
-      <WallpaperModal 
-        isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: 0, name: 'wall1.gif' }}
-        wallpapers={wallpapers}
-        onClose={() => setSelectedWallpaper(null)}
-        onNavigate={handleNavigate}
-      />
+      {selectedWallpaper && (
+        <WallpaperModal 
+          isOpen={!!selectedWallpaper} 
+          wallpaper={selectedWallpaper}
+          wallpapers={wallpapers}
+          onClose={() => setSelectedWallpaper(null)}
+          onNavigate={handleNavigate}
+        />
+      )}
     </section>
   );
 }
+

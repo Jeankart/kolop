@@ -1,76 +1,9 @@
 import HeroBanner from './components/HeroBanner';
 import CategoriesCarousel from './components/CategoriesCarousel';
 import FeaturedCarousel from './components/FeaturedCarousel';
-import CategoryCarousel from './components/CategoryCarousel';
+import HomeCategoryCarousel from './components/HomeCategoryCarousel';
 
 export default function Home() {
-  const chargingWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-    { id: 4, name: 'wall4.gif' },
-    { id: 5, name: 'wall5.gif' },
-    { id: 6, name: 'wall6.gif' },
-  ];
-
-  const aiWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-    { id: 4, name: 'wall4.gif' },
-    { id: 5, name: 'wall5.gif' },
-  ];
-
-  const aestheticWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-    { id: 4, name: 'wall4.gif' },
-    { id: 5, name: 'wall5.gif' },
-  ];
-
-  const catsWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const carsWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const bwWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const urbanWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const filmsWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const cuteWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
-  const animeWallpapers = [
-    { id: 1, name: 'wall1.gif' },
-    { id: 2, name: 'wall2.gif' },
-    { id: 3, name: 'wall3.gif' },
-  ];
-
   return (
     <main className="min-h-screen bg-[#151515] dark:bg-[#151515]">
       {/* Hero Banner */}
@@ -83,94 +16,95 @@ export default function Home() {
       <FeaturedCarousel />
 
       {/* Charging Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Charging"
         title="Charging"
         emoji="🔌"
-        wallpapers={chargingWallpapers}
         folder="wallCharging"
         moreLink="/charging"
       />
 
       {/* AI Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="AI"
         title="AI"
         emoji="🤖"
-        wallpapers={aiWallpapers}
         folder="wallAI"
         moreLink="/ai"
       />
 
       {/* Aesthetic Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Aesthetic"
         title="Aesthetic"
         emoji="🎨"
-        wallpapers={aestheticWallpapers}
         folder="wallAesthetic"
         moreLink="/aesthetic"
       />
 
       {/* Cats Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Cats"
         title="Cats"
         emoji="🐱"
-        wallpapers={catsWallpapers}
         folder="wallCats"
         moreLink="/cats"
       />
 
       {/* Cars Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Cars"
         title="Cars"
         emoji="🏎️"
-        wallpapers={carsWallpapers}
         folder="wallCars"
         moreLink="/cars"
       />
 
       {/* B&W Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="B&W"
         title="B&W"
         emoji="⚫"
-        wallpapers={bwWallpapers}
         folder="wallB&W"
         moreLink="/bw"
       />
 
       {/* Urban Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Urban"
         title="Urban"
         emoji="🏙️"
-        wallpapers={urbanWallpapers}
         folder="wallUrban"
         moreLink="/urban"
       />
 
       {/* Films Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Films"
         title="Films"
         emoji="🎬"
-        wallpapers={filmsWallpapers}
         folder="wallFilms"
         moreLink="/films"
       />
 
       {/* Cute Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Cute"
         title="Cute"
         emoji="🌸"
-        wallpapers={cuteWallpapers}
         folder="wallCute"
         moreLink="/cute"
       />
 
       {/* Anime Carousel */}
-      <CategoryCarousel
+      <HomeCategoryCarousel
+        category="Anime"
         title="Anime"
         emoji="⛩️"
-        wallpapers={animeWallpapers}
         folder="wallAnime"
         moreLink="/anime"
       />
     </main>
   );
 }
+

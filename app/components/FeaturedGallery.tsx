@@ -1,30 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
+import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
 
-const featuredWallpapers = [
-  { id: 1, name: 'wall1.gif' },
-  { id: 2, name: 'wall2.gif' },
-  { id: 3, name: 'wall3.gif' },
-  { id: 4, name: 'wall4.gif' },
-  { id: 5, name: 'wall5.gif' },
-  { id: 6, name: 'wall6.gif' },
-  { id: 7, name: 'wall7.gif' },
-];
+interface Wallpaper {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  downloads: number;
+}
 
 export default function FeaturedGallery() {
-  const [selectedWallpaper, setSelectedWallpaper] = useState<{ id: number; name: string } | null>(null);
+  const { wallpapers, loading } = useWallpapersFeatured();
+  const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
-  const handleWallpaperClick = (wallpaper: { id: number; name: string }) => {
+  const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
 
-  const handleNavigate = (wallpaper: { id: number; name: string }) => {
+  const handleNavigate = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 pb-10 bg-[#151515] flex items-center justify-center">
+        <div className="text-white">Cargando...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 pb-10 bg-[#151515] dark:bg-[#151515]">
@@ -45,15 +54,15 @@ export default function FeaturedGallery() {
 
         {/* Grid de 4 columnas */}
         <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-          {featuredWallpapers.map((wallpaper) => (
+          {wallpapers.map((wallpaper) => (
             <div
               key={wallpaper.id}
               onClick={() => handleWallpaperClick(wallpaper)}
               className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800"
             >
               <img
-                src={`/wallFeatured/${wallpaper.name}`}
-                alt={`Wallpaper ${wallpaper.id}`}
+                src={`/wallFeatured/${wallpaper.image}`}
+                alt={wallpaper.name}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -61,13 +70,16 @@ export default function FeaturedGallery() {
         </div>
       </div>
 
-      <WallpaperModal 
-        isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: 0, name: 'wall1.gif' }}
-        wallpapers={featuredWallpapers}
-        onClose={() => setSelectedWallpaper(null)}
-        onNavigate={handleNavigate}
-      />
+      {selectedWallpaper && (
+        <WallpaperModal 
+          isOpen={!!selectedWallpaper} 
+          wallpaper={selectedWallpaper}
+          wallpapers={wallpapers}
+          onClose={() => setSelectedWallpaper(null)}
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 }
+

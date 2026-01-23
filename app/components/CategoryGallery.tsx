@@ -5,20 +5,29 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 
+interface Wallpaper {
+  id: string;
+  name: string;
+  category: string;
+  image: string;
+  featured: boolean;
+  downloads: number;
+}
+
 interface CategoryGalleryProps {
   title: string;
   folder: string;
-  wallpapers: Array<{ id: number; name: string }>;
+  wallpapers: Wallpaper[];
 }
 
 export default function CategoryGallery({ title, folder, wallpapers }: CategoryGalleryProps) {
-  const [selectedWallpaper, setSelectedWallpaper] = useState<{ id: number; name: string } | null>(null);
+  const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
-  const handleWallpaperClick = (wallpaper: { id: number; name: string }) => {
+  const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
 
-  const handleNavigate = (wallpaper: { id: number; name: string }) => {
+  const handleNavigate = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };
 
@@ -48,8 +57,8 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
               className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800"
             >
               <img
-                src={`/${folder}/${wallpaper.name}`}
-                alt={`${title} wallpaper ${wallpaper.id}`}
+                src={`/${folder}/${wallpaper.image}`}
+                alt={wallpaper.name}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -57,13 +66,16 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
         </div>
       </div>
 
-      <WallpaperModal 
-        isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: 0, name: 'wall1.gif' }}
-        wallpapers={wallpapers}
-        onClose={() => setSelectedWallpaper(null)}
-        onNavigate={handleNavigate}
-      />
+      {selectedWallpaper && (
+        <WallpaperModal 
+          isOpen={!!selectedWallpaper} 
+          wallpaper={selectedWallpaper}
+          wallpapers={wallpapers}
+          onClose={() => setSelectedWallpaper(null)}
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 }
+
