@@ -222,7 +222,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }
 
           ctx.putImageData(imageData, 0, 0);
-          lastFrameTime = now;
 
           if (elapsed < duration) {
             requestAnimationFrame(animate);
