@@ -28,7 +28,7 @@ export default function SplashScreen() {
     <div className="fixed inset-0 bg-[#151515] dark:bg-[#151515] z-[9999] flex flex-col items-center justify-center gap-8">
       {/* Favicon */}
       <div className="flex items-center justify-center">
-        <img src="/apple-touch-icon.png" alt="Wallpaper" size={64} className="w-16 h-16" />
+        <img src="/apple-touch-icon.png" alt="Wallpaper" className="w-16 h-16" />
       </div>
 
       {/* Título */}
