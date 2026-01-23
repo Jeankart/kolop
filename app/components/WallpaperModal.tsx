@@ -222,25 +222,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }
 
           ctx.putImageData(imageData, 0, 0);
-
-          if (elapsed < duration) {
-            requestAnimationFrame(animate);
-          } else {
-            mediaRecorder.stop();
-          }
-        };
-
-        animate();
-      };
-    } catch (error) {
-      console.error('Error descargando Live Wallpaper:', error);
-    }
-  };
-            data[i + 2] = originalData[displaceIndex + 2];
-            data[i + 3] = 255;
-          }
-
-          ctx.putImageData(imageData, 0, 0);
           lastFrameTime = now;
 
           if (elapsed < duration) {
