@@ -75,8 +75,7 @@ export default function FeaturedGallery() {
                     </div>
                   ))}
                 </div>
-              )}className="w-full h-full object-cover"
-              />
+              )}
             </div>
           ))}
         </div>
