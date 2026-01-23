@@ -17,8 +17,8 @@ export default function ClientLayout({
       const html = document.documentElement;
       
       // Bloquear en portrait
-      if (screen.orientation?.lock) {
-        screen.orientation.lock('portrait-primary').catch(() => {
+      if ((screen.orientation as any)?.lock) {
+        (screen.orientation as any).lock('portrait-primary').catch(() => {
           // Ignorar errores en navegadores que no lo soportan
         });
       }
