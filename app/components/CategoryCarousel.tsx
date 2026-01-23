@@ -41,7 +41,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
         </h2>
         
         {/* Carrusel horizontal de wallpapers */}
-        <div className="overflow-x-auto scrollbar-hide">
+        <div className="overflow-x-auto scrollbar-hide touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="flex gap-2 pb-2" style={{ width: 'fit-content', minWidth: '100%' }}>
             {/* Mostrar solo los wallpapers que existen (máximo 7) */}
             {wallpapers.slice(0, 7).map((wallpaper, i) => (
@@ -49,15 +49,23 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                 key={i}
                 onClick={() => handleWallpaperClick(wallpaper)}
                 className="wallView flex-shrink-0 aspect-[9/19.5] w-44 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-200 dark:bg-zinc-800 relative"
+                style={{ touchAction: 'manipulation' }}
               >
                 <img
                   src={`/wallUploads/${wallpaper?.image || 'wall1.png'}`}
                   alt={`${title} wallpaper ${i + 1}`}
                   className="w-full h-full object-cover"
+                  style={{ pointerEvents: 'none' }}
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    if (!img.src.includes('placeholder')) {
+                      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
+                    }
+                  }}
                 />
                 {/* Iconos apilados si es Featured, Live o Charging */}
                 {shouldShowCategoryIcon(wallpaper?.categories) && (
-                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1">
+                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1" style={{ pointerEvents: 'none' }}>
                     {getCategoryIcons(wallpaper?.categories).map((icon, idx) => (
                       <div key={idx} className="text-xs text-white">
                         {icon}
@@ -80,13 +88,21 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
         </div>
 
         <style jsx>{`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
           .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
             scroll-behavior: smooth;
+            overflow-y: hidden !important;
+          }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none !important;
+            height: 0 !important;
+          }
+          .scrollbar-hide::-webkit-scrollbar-track {
+            display: none !important;
+          }
+          .scrollbar-hide::-webkit-scrollbar-thumb {
+            display: none !important;
           }
         `}</style>
       </div>
