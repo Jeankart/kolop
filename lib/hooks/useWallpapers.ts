@@ -17,24 +17,42 @@ export const useWallpapers = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoading(true);
     try {
       const q = query(collection(db, 'wallpapers'));
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data: Wallpaper[] = [];
-        snapshot.forEach((doc) => {
-          data.push({
-            id: doc.id,
-            ...(doc.data() as Omit<Wallpaper, 'id'>),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const data: Wallpaper[] = [];
+          snapshot.forEach((doc) => {
+            data.push({
+              id: doc.id,
+              ...(doc.data() as Omit<Wallpaper, 'id'>),
+            });
           });
-        });
-        setWallpapers(data);
-        setLoading(false);
-      });
+          // Ordenar por ID numérico
+          data.sort((a, b) => {
+            const aNum = parseInt(a.id.split('_')[1]) || 0;
+            const bNum = parseInt(b.id.split('_')[1]) || 0;
+            return aNum - bNum;
+          });
+          setWallpapers(data);
+          setLoading(false);
+          setError(null);
+        },
+        (error) => {
+          console.error('Firebase Error:', error);
+          setError(`Error cargando wallpapers: ${error.message}`);
+          setLoading(false);
+        }
+      );
 
       return () => unsubscribe();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error cargando wallpapers');
+      const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
+      console.error('Error:', errorMsg);
+      setError(errorMsg);
       setLoading(false);
     }
   }, []);
@@ -48,35 +66,47 @@ export const useWallpapersByCategory = (category: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoading(true);
     try {
       const q = query(
         collection(db, 'wallpapers'),
-        where('categories', 'array-contains', category) // Cambiar a array-contains
+        where('categories', 'array-contains', category)
       );
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data: Wallpaper[] = [];
-        snapshot.forEach((doc) => {
-          data.push({
-            id: doc.id,
-            ...(doc.data() as Omit<Wallpaper, 'id'>),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const data: Wallpaper[] = [];
+          snapshot.forEach((doc) => {
+            data.push({
+              id: doc.id,
+              ...(doc.data() as Omit<Wallpaper, 'id'>),
+            });
           });
-        });
-        
-        // Ordenar por ID numérico (extrayendo el número del ID)
-        data.sort((a, b) => {
-          const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
-          const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
-          return aNum - bNum;
-        });
-        
-        setWallpapers(data);
-        setLoading(false);
-      });
+          
+          // Ordenar por ID numérico
+          data.sort((a, b) => {
+            const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
+            const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
+            return aNum - bNum;
+          });
+          
+          setWallpapers(data);
+          setLoading(false);
+          setError(null);
+        },
+        (error) => {
+          console.error('Firebase Error:', error);
+          setError(`Error cargando ${category}: ${error.message}`);
+          setLoading(false);
+        }
+      );
 
       return () => unsubscribe();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error cargando wallpapers');
+      const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
+      console.error('Error:', errorMsg);
+      setError(errorMsg);
       setLoading(false);
     }
   }, [category]);
@@ -90,30 +120,50 @@ export const useWallpapersFeatured = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoading(true);
     try {
       const q = query(
         collection(db, 'wallpapers'),
-        where('categories', 'array-contains', 'Featured') // Buscar por categoría
+        where('categories', 'array-contains', 'Featured')
       );
       
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data: Wallpaper[] = [];
-        snapshot.forEach((doc) => {
-          data.push({
-            id: doc.id,
-            ...(doc.data() as Omit<Wallpaper, 'id'>),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const data: Wallpaper[] = [];
+          snapshot.forEach((doc) => {
+            data.push({
+              id: doc.id,
+              ...(doc.data() as Omit<Wallpaper, 'id'>),
+            });
           });
-        });
-        
-        // Ordenar por ID numérico
-        data.sort((a, b) => {
-          const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
-          const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
-          return aNum - bNum;
-        });
-        
-        setWallpapers(data);
-        setLoading(false);
+          
+          // Ordenar por ID numérico
+          data.sort((a, b) => {
+            const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
+            const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
+            return aNum - bNum;
+          });
+          
+          setWallpapers(data);
+          setLoading(false);
+          setError(null);
+        },
+        (error) => {
+          console.error('Firebase Error:', error);
+          setError(`Error cargando Featured: ${error.message}`);
+          setLoading(false);
+        }
+      );
+
+      return () => unsubscribe();
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
+      console.error('Error:', errorMsg);
+      setError(errorMsg);
+      setLoading(false);
+    }
+  }, []);
       });
 
       return () => unsubscribe();
