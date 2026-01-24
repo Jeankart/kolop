@@ -17,27 +17,16 @@ export const useWallpapers = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('[useWallpapers] Hook mounted, fetching wallpapers...');
-    console.log('[useWallpapers] db object:', db);
     setLoading(true);
     
     try {
       const wallpapersRef = collection(db, 'wallpapers');
-      console.log('[useWallpapers] Collection ref:', wallpapersRef.path);
-      
       const q = query(wallpapersRef);
-      console.log('[useWallpapers] Query created');
       
-      // Try with getDocs first (simpler debugging)
-      const docsPromise = getDocs(q);
-      console.log('[useWallpapers] getDocs promise:', docsPromise);
-      
-      docsPromise
+      getDocs(q)
         .then((snapshot) => {
-          console.log('[useWallpapers] ✅ getDocs RESOLVED! Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
-            console.log('[useWallpapers] Document:', doc.id, doc.data());
             data.push({
               id: doc.id,
               ...(doc.data() as Omit<Wallpaper, 'id'>),
@@ -48,20 +37,16 @@ export const useWallpapers = () => {
             const bNum = parseInt(b.id.split('_')[1]) || 0;
             return aNum - bNum;
           });
-          console.log('[useWallpapers] Final data:', data);
           setWallpapers(data);
           setLoading(false);
           setError(null);
         })
         .catch((error) => {
-          console.error('[useWallpapers] ❌ getDocs Error:', error);
-          console.error('[useWallpapers] Error code:', error.code);
           setError(`Error cargando wallpapers: ${error.message}`);
           setLoading(false);
         });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error('[useWallpapers] Catch error:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
@@ -76,7 +61,6 @@ export const useWallpapersByCategory = (category: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log(`[useWallpapersByCategory] Hook mounted for category: ${category}`);
     setLoading(true);
     
     try {
@@ -84,17 +68,11 @@ export const useWallpapersByCategory = (category: string) => {
         collection(db, 'wallpapers'),
         where('categories', 'array-contains', category)
       );
-      console.log(`[useWallpapersByCategory] Query created for category: ${category}`);
       
-      const docsPromise = getDocs(q);
-      console.log('[useWallpapersByCategory] getDocs promise created for', category, ':', docsPromise);
-      
-      docsPromise
+      getDocs(q)
         .then((snapshot) => {
-          console.log(`[useWallpapersByCategory] ✅ getDocs RESOLVED for ${category}. Docs count:`, snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
-            console.log(`[useWallpapersByCategory] Document for ${category}:`, doc.id, doc.data());
             data.push({
               id: doc.id,
               ...(doc.data() as Omit<Wallpaper, 'id'>),
@@ -107,20 +85,16 @@ export const useWallpapersByCategory = (category: string) => {
             return aNum - bNum;
           });
           
-          console.log(`[useWallpapersByCategory] Final data for ${category}:`, data);
           setWallpapers(data);
           setLoading(false);
           setError(null);
         })
         .catch((error: any) => {
-          console.error(`[useWallpapersByCategory] ❌ getDocs Error for ${category}:`, error);
-          console.error(`[useWallpapersByCategory] Error code for ${category}:`, error.code);
           setError(`Error cargando ${category}: ${error.message}`);
           setLoading(false);
         });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error(`[useWallpapersByCategory] Catch error for ${category}:`, errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
@@ -135,7 +109,6 @@ export const useWallpapersFeatured = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('[useWallpapersFeatured] Hook mounted, fetching Featured wallpapers...');
     setLoading(true);
     
     try {
@@ -143,17 +116,11 @@ export const useWallpapersFeatured = () => {
         collection(db, 'wallpapers'),
         where('categories', 'array-contains', 'Featured')
       );
-      console.log('[useWallpapersFeatured] Query created');
       
-      const docsPromise = getDocs(q);
-      console.log('[useWallpapersFeatured] getDocs promise created:', docsPromise);
-      
-      docsPromise
+      getDocs(q)
         .then((snapshot) => {
-          console.log('[useWallpapersFeatured] ✅ getDocs RESOLVED. Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
-            console.log('[useWallpapersFeatured] Document:', doc.id, doc.data());
             data.push({
               id: doc.id,
               ...(doc.data() as Omit<Wallpaper, 'id'>),
@@ -166,20 +133,16 @@ export const useWallpapersFeatured = () => {
             return aNum - bNum;
           });
           
-          console.log('[useWallpapersFeatured] Final data:', data);
           setWallpapers(data);
           setLoading(false);
           setError(null);
         })
         .catch((error: any) => {
-          console.error('[useWallpapersFeatured] ❌ getDocs Error:', error);
-          console.error('[useWallpapersFeatured] Error code:', error.code);
           setError(`Error cargando Featured: ${error.message}`);
           setLoading(false);
         });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error('[useWallpapersFeatured] Catch error:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }

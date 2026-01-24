@@ -5,7 +5,6 @@ import Header from './components/Header';
 import BottomNavigation from './components/BottomNavigation';
 import SplashScreen from './components/SplashScreen';
 import { useEffect } from 'react';
-import { testFirebaseConnection } from '@/lib/test-firebase';
 
 export default function ClientLayout({
   children,
@@ -13,9 +12,6 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    // Test Firebase connection on mount
-    testFirebaseConnection().catch(console.error);
-    
     // Bloquear rotación
     const lockOrientation = () => {
       const html = document.documentElement;

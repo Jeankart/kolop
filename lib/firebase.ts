@@ -12,22 +12,11 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Diagnostics
-if (typeof window !== 'undefined') {
-  console.log('Firebase Config loaded:',{
-    hasApiKey: !!firebaseConfig.apiKey,
-    hasProjectId: !!firebaseConfig.projectId,
-    projectId: firebaseConfig.projectId,
-  });
-}
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore
 export const db = getFirestore(app);
-console.log('[Firebase] Firestore initialized:', db);
-console.log('[Firebase] Firestore app:', db.app.name);
 
 // Initialize Storage
 export const storage = getStorage(app);
