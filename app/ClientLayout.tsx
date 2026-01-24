@@ -29,6 +29,11 @@ export default function ClientLayout({
       };
       
       window.addEventListener('orientationchange', handleOrientationChange);
+      
+      // Optimizar scroll en móvil
+      document.documentElement.style.scrollBehavior = 'smooth';
+      document.body.style.webkitTouchCallout = 'none';
+      
       return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
       };
