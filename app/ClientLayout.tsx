@@ -15,6 +15,7 @@ export default function ClientLayout({
     // Bloquear rotación
     const lockOrientation = () => {
       const html = document.documentElement;
+      const body = document.body;
       
       // Bloquear en portrait
       if ((screen.orientation as any)?.lock) {
@@ -25,7 +26,8 @@ export default function ClientLayout({
       
       // Fallback: ocultar si se rota
       const handleOrientationChange = () => {
-        html.style.overflow = 'hidden';
+        html.style.overflow = 'auto';
+        body.style.overflow = 'auto';
       };
       
       window.addEventListener('orientationchange', handleOrientationChange);
@@ -34,8 +36,17 @@ export default function ClientLayout({
       document.documentElement.style.scrollBehavior = 'smooth';
       (document.body.style as any).webkitTouchCallout = 'none';
       
+      // Asegurar que el scroll esté habilitado por defecto
+      html.style.overflow = 'auto';
+      body.style.overflow = 'auto';
+      body.style.touchAction = 'auto';
+      
       return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
+        // Limpiar cuando el componente se desmonta
+        html.style.overflow = 'auto';
+        body.style.overflow = 'auto';
+        body.style.touchAction = 'auto';
       };
     };
 

@@ -77,11 +77,16 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       document.body.style.touchAction = 'none';
       
       return () => {
-        // Restaurar scroll
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-        document.body.style.touchAction = '';
+        // Restaurar scroll completamente
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+        document.body.style.touchAction = 'auto';
       };
+    } else {
+      // Asegurar que cuando NO está abierto, el scroll está habilitado
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+      document.body.style.touchAction = 'auto';
     }
   }, [isOpen]);
   
@@ -186,53 +191,18 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       }
 
       const blob = await response.blob();
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const filename = `${wallpaper.name}.jpg`;
 
-      if (isIOS) {
-        // iOS: Usar Web Share API para mostrar solo opciones relevantes
-        if (navigator.share) {
-          try {
-            const file = new File([blob], filename, { type: 'image/jpeg' });
-            await navigator.share({
-              files: [file],
-              title: 'Wallpaper',
-              text: wallpaper.name,
-            });
-            setDownloadSuccess(true);
-            setTimeout(() => {
-              setDownloadSuccess(false);
-            }, 3000);
-            setIsDownloading(false);
-            return;
-          } catch (error) {
-            // Usuario canceló, continuar con fallback
-            if ((error as any).name === 'AbortError') {
-              setIsDownloading(false);
-              return;
-            }
-          }
-        }
-        
-        // Fallback si Web Share no está disponible
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(url);
-      } else {
-        // Android: Descargar directamente
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }
+      // Descargar directamente sin popup
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
       // Mostrar mensaje de éxito
       setDownloadSuccess(true);
@@ -265,53 +235,18 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       }
 
       const blob = await response.blob();
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const filename = `${wallpaper.name}.mp4`;
 
-      if (isIOS) {
-        // iOS: Usar Web Share API para mostrar solo opciones relevantes
-        if (navigator.share) {
-          try {
-            const file = new File([blob], filename, { type: 'video/mp4' });
-            await navigator.share({
-              files: [file],
-              title: 'Live Wallpaper',
-              text: wallpaper.name,
-            });
-            setDownloadSuccess(true);
-            setTimeout(() => {
-              setDownloadSuccess(false);
-            }, 3000);
-            setIsDownloading(false);
-            return;
-          } catch (error) {
-            // Usuario canceló, continuar con fallback
-            if ((error as any).name === 'AbortError') {
-              setIsDownloading(false);
-              return;
-            }
-          }
-        }
-        
-        // Fallback si Web Share no está disponible
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(url);
-      } else {
-        // Android: Descargar directamente
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      }
+      // Descargar directamente sin popup
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
       setDownloadSuccess(true);
       setTimeout(() => {
