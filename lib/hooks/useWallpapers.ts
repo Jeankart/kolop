@@ -19,14 +19,26 @@ export const useWallpapers = () => {
   useEffect(() => {
     console.log('[useWallpapers] Hook mounted, fetching wallpapers...');
     setLoading(true);
+    
+    // Add timeout to debug if onSnapshot ever fires
+    let timeoutId: NodeJS.Timeout;
+    
     try {
-      const q = query(collection(db, 'wallpapers'));
-      console.log('[useWallpapers] Query created:', q);
+      const wallpapersRef = collection(db, 'wallpapers');
+      console.log('[useWallpapers] Collection ref:', wallpapersRef.path);
+      
+      const q = query(wallpapersRef);
+      console.log('[useWallpapers] Query created');
+      
+      timeoutId = setTimeout(() => {
+        console.error('[useWallpapers] TIMEOUT: onSnapshot never fired after 5s');
+      }, 5000);
       
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          console.log('[useWallpapers] Snapshot received. Docs count:', snapshot.docs.length);
+          clearTimeout(timeoutId);
+          console.log('[useWallpapers] ✅ Snapshot received! Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapers] Document:', doc.id, doc.data());
@@ -46,14 +58,20 @@ export const useWallpapers = () => {
           setLoading(false);
           setError(null);
         },
-        (error) => {
-          console.error('[useWallpapers] Firebase Error:', error);
+        (error: any) => {
+          clearTimeout(timeoutId);
+          console.error('[useWallpapers] ❌ Firebase Error:', error);
+          console.error('[useWallpapers] Error code:', error.code);
+          console.error('[useWallpapers] Error message:', error.message);
           setError(`Error cargando wallpapers: ${error.message}`);
           setLoading(false);
         }
       );
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        unsubscribe();
+      };
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
       console.error('Error:', errorMsg);
@@ -73,6 +91,9 @@ export const useWallpapersByCategory = (category: string) => {
   useEffect(() => {
     console.log(`[useWallpapersByCategory] Hook mounted for category: ${category}`);
     setLoading(true);
+    
+    let timeoutId: NodeJS.Timeout;
+    
     try {
       const q = query(
         collection(db, 'wallpapers'),
@@ -80,10 +101,15 @@ export const useWallpapersByCategory = (category: string) => {
       );
       console.log(`[useWallpapersByCategory] Query created for category: ${category}`);
       
+      timeoutId = setTimeout(() => {
+        console.error(`[useWallpapersByCategory] TIMEOUT for ${category}: onSnapshot never fired after 5s`);
+      }, 5000);
+      
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          console.log(`[useWallpapersByCategory] Snapshot for ${category}. Docs count:`, snapshot.docs.length);
+          clearTimeout(timeoutId);
+          console.log(`[useWallpapersByCategory] ✅ Snapshot for ${category}. Docs count:`, snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log(`[useWallpapersByCategory] Document for ${category}:`, doc.id, doc.data());
@@ -105,14 +131,19 @@ export const useWallpapersByCategory = (category: string) => {
           setLoading(false);
           setError(null);
         },
-        (error) => {
-          console.error(`[useWallpapersByCategory] Firebase Error for ${category}:`, error);
+        (error: any) => {
+          clearTimeout(timeoutId);
+          console.error(`[useWallpapersByCategory] ❌ Firebase Error for ${category}:`, error);
+          console.error(`[useWallpapersByCategory] Error code for ${category}:`, error.code);
           setError(`Error cargando ${category}: ${error.message}`);
           setLoading(false);
         }
       );
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        unsubscribe();
+      };
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
       console.error('Error:', errorMsg);
@@ -132,6 +163,9 @@ export const useWallpapersFeatured = () => {
   useEffect(() => {
     console.log('[useWallpapersFeatured] Hook mounted, fetching Featured wallpapers...');
     setLoading(true);
+    
+    let timeoutId: NodeJS.Timeout;
+    
     try {
       const q = query(
         collection(db, 'wallpapers'),
@@ -139,10 +173,15 @@ export const useWallpapersFeatured = () => {
       );
       console.log('[useWallpapersFeatured] Query created');
       
+      timeoutId = setTimeout(() => {
+        console.error('[useWallpapersFeatured] TIMEOUT: onSnapshot never fired after 5s');
+      }, 5000);
+      
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
-          console.log('[useWallpapersFeatured] Snapshot received. Docs count:', snapshot.docs.length);
+          clearTimeout(timeoutId);
+          console.log('[useWallpapersFeatured] ✅ Snapshot received. Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapersFeatured] Document:', doc.id, doc.data());
@@ -164,14 +203,19 @@ export const useWallpapersFeatured = () => {
           setLoading(false);
           setError(null);
         },
-        (error) => {
-          console.error('[useWallpapersFeatured] Firebase Error:', error);
+        (error: any) => {
+          clearTimeout(timeoutId);
+          console.error('[useWallpapersFeatured] ❌ Firebase Error:', error);
+          console.error('[useWallpapersFeatured] Error code:', error.code);
           setError(`Error cargando Featured: ${error.message}`);
           setLoading(false);
         }
       );
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        unsubscribe();
+      };
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
       console.error('Error:', errorMsg);
