@@ -21,9 +21,6 @@ export const useWallpapers = () => {
     console.log('[useWallpapers] db object:', db);
     setLoading(true);
     
-    // Add timeout to debug if onSnapshot ever fires
-    let timeoutId: NodeJS.Timeout;
-    
     try {
       const wallpapersRef = collection(db, 'wallpaper');
       console.log('[useWallpapers] Collection ref:', wallpapersRef.path);
@@ -31,17 +28,10 @@ export const useWallpapers = () => {
       const q = query(wallpapersRef);
       console.log('[useWallpapers] Query created');
       
-      timeoutId = setTimeout(() => {
-        console.error('[useWallpapers] TIMEOUT: onSnapshot never fired after 5s');
-        console.error('[useWallpapers] db:', db);
-        console.error('[useWallpapers] query:', q);
-      }, 5000);
-      
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          clearTimeout(timeoutId);
-          console.log('[useWallpapers] ✅ Snapshot received! Docs count:', snapshot.docs.length);
+      // Try with getDocs first (simpler debugging)
+      getDocs(q)
+        .then((snapshot) => {
+          console.log('[useWallpapers] ✅ getDocs received! Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapers] Document:', doc.id, doc.data());
@@ -50,7 +40,6 @@ export const useWallpapers = () => {
               ...(doc.data() as Omit<Wallpaper, 'id'>),
             });
           });
-          // Ordenar por ID numérico
           data.sort((a, b) => {
             const aNum = parseInt(a.id.split('_')[1]) || 0;
             const bNum = parseInt(b.id.split('_')[1]) || 0;
@@ -60,24 +49,16 @@ export const useWallpapers = () => {
           setWallpapers(data);
           setLoading(false);
           setError(null);
-        },
-        (error: any) => {
-          clearTimeout(timeoutId);
-          console.error('[useWallpapers] ❌ Firebase Error:', error);
+        })
+        .catch((error) => {
+          console.error('[useWallpapers] ❌ getDocs Error:', error);
           console.error('[useWallpapers] Error code:', error.code);
-          console.error('[useWallpapers] Error message:', error.message);
           setError(`Error cargando wallpapers: ${error.message}`);
           setLoading(false);
-        }
-      );
-
-      return () => {
-        clearTimeout(timeoutId);
-        unsubscribe();
-      };
+        });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error('Error:', errorMsg);
+      console.error('[useWallpapers] Catch error:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
@@ -95,8 +76,6 @@ export const useWallpapersByCategory = (category: string) => {
     console.log(`[useWallpapersByCategory] Hook mounted for category: ${category}`);
     setLoading(true);
     
-    let timeoutId: NodeJS.Timeout;
-    
     try {
       const q = query(
         collection(db, 'wallpaper'),
@@ -104,15 +83,9 @@ export const useWallpapersByCategory = (category: string) => {
       );
       console.log(`[useWallpapersByCategory] Query created for category: ${category}`);
       
-      timeoutId = setTimeout(() => {
-        console.error(`[useWallpapersByCategory] TIMEOUT for ${category}: onSnapshot never fired after 5s`);
-      }, 5000);
-      
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          clearTimeout(timeoutId);
-          console.log(`[useWallpapersByCategory] ✅ Snapshot for ${category}. Docs count:`, snapshot.docs.length);
+      getDocs(q)
+        .then((snapshot) => {
+          console.log(`[useWallpapersByCategory] ✅ getDocs for ${category}. Docs count:`, snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log(`[useWallpapersByCategory] Document for ${category}:`, doc.id, doc.data());
@@ -122,7 +95,6 @@ export const useWallpapersByCategory = (category: string) => {
             });
           });
           
-          // Ordenar por ID numérico
           data.sort((a, b) => {
             const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
             const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
@@ -133,23 +105,16 @@ export const useWallpapersByCategory = (category: string) => {
           setWallpapers(data);
           setLoading(false);
           setError(null);
-        },
-        (error: any) => {
-          clearTimeout(timeoutId);
-          console.error(`[useWallpapersByCategory] ❌ Firebase Error for ${category}:`, error);
+        })
+        .catch((error: any) => {
+          console.error(`[useWallpapersByCategory] ❌ getDocs Error for ${category}:`, error);
           console.error(`[useWallpapersByCategory] Error code for ${category}:`, error.code);
           setError(`Error cargando ${category}: ${error.message}`);
           setLoading(false);
-        }
-      );
-
-      return () => {
-        clearTimeout(timeoutId);
-        unsubscribe();
-      };
+        });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error('Error:', errorMsg);
+      console.error(`[useWallpapersByCategory] Catch error for ${category}:`, errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
@@ -167,8 +132,6 @@ export const useWallpapersFeatured = () => {
     console.log('[useWallpapersFeatured] Hook mounted, fetching Featured wallpapers...');
     setLoading(true);
     
-    let timeoutId: NodeJS.Timeout;
-    
     try {
       const q = query(
         collection(db, 'wallpaper'),
@@ -176,15 +139,9 @@ export const useWallpapersFeatured = () => {
       );
       console.log('[useWallpapersFeatured] Query created');
       
-      timeoutId = setTimeout(() => {
-        console.error('[useWallpapersFeatured] TIMEOUT: onSnapshot never fired after 5s');
-      }, 5000);
-      
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          clearTimeout(timeoutId);
-          console.log('[useWallpapersFeatured] ✅ Snapshot received. Docs count:', snapshot.docs.length);
+      getDocs(q)
+        .then((snapshot) => {
+          console.log('[useWallpapersFeatured] ✅ getDocs received. Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapersFeatured] Document:', doc.id, doc.data());
@@ -194,7 +151,6 @@ export const useWallpapersFeatured = () => {
             });
           });
           
-          // Ordenar por ID numérico
           data.sort((a, b) => {
             const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
             const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
@@ -205,23 +161,16 @@ export const useWallpapersFeatured = () => {
           setWallpapers(data);
           setLoading(false);
           setError(null);
-        },
-        (error: any) => {
-          clearTimeout(timeoutId);
-          console.error('[useWallpapersFeatured] ❌ Firebase Error:', error);
+        })
+        .catch((error: any) => {
+          console.error('[useWallpapersFeatured] ❌ getDocs Error:', error);
           console.error('[useWallpapersFeatured] Error code:', error.code);
           setError(`Error cargando Featured: ${error.message}`);
           setLoading(false);
-        }
-      );
-
-      return () => {
-        clearTimeout(timeoutId);
-        unsubscribe();
-      };
+        });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
-      console.error('Error:', errorMsg);
+      console.error('[useWallpapersFeatured] Catch error:', errorMsg);
       setError(errorMsg);
       setLoading(false);
     }
