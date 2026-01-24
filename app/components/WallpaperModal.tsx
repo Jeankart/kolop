@@ -250,12 +250,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       setIsDownloading(false);
     }
   };
-  };
-
-  // Perlin-like noise generator
-  const perlin = (x: number, y: number, time: number): number => {
-    return Math.sin(x * 12.9898 + y * 78.233 + time * 43758.5453) * 0.5 + 0.5;
-  };
 
   const handleDownloadLive = async () => {
     setIsDownloading(true);
