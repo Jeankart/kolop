@@ -7,48 +7,56 @@ export async function testFirebaseConnection() {
   console.log('[testFirebase] db:', db);
   
   try {
-    // First, let's check the wallpapers collection
+    // First, let's check the wallpapers collection without any filters
     const wallpapersCol = collection(db, 'wallpapers');
     console.log('[testFirebase] Querying wallpapers collection...');
     
     const q = query(wallpapersCol);
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('getDocs timeout after 3s')), 3000)
-    );
+    const snapshot = await getDocs(q);
     
-    const snapshot = await Promise.race([getDocs(q), timeoutPromise]) as any;
     console.log('[testFirebase] ✅ Wallpapers collection result:', snapshot.docs.length, 'docs');
     
     if (snapshot.docs.length > 0) {
-      console.log('[testFirebase] First doc sample:', snapshot.docs[0].data());
+      console.log('[testFirebase] ========= DOCUMENT STRUCTURE ==========');
+      const firstDoc = snapshot.docs[0];
+      const firstData = firstDoc.data();
+      console.log('[testFirebase] First doc ID:', firstDoc.id);
+      console.log('[testFirebase] First doc data:', firstData);
+      console.log('[testFirebase] Fields in first doc:', Object.keys(firstData));
+      
+      // Check if categories field exists and what format it has
+      if ('categories' in firstData) {
+        console.log('[testFirebase] ✅ "categories" field exists');
+        console.log('[testFirebase] categories value:', firstData.categories);
+        console.log('[testFirebase] categories type:', typeof firstData.categories);
+      } else {
+        console.log('[testFirebase] ❌ "categories" field does NOT exist');
+      }
+      
+      // Check if category field exists (singular)
+      if ('category' in firstData) {
+        console.log('[testFirebase] ⚠️ "category" field exists (singular):', firstData.category);
+      }
+      
+      console.log('[testFirebase] ========= TESTING QUERY FILTERS ==========');
+      // Test if filtering works
+      const { query: queryFunc, where } = await import('firebase/firestore');
+      const testCategories = ['Featured', 'Charging', 'Aesthetic'];
+      
+      for (const cat of testCategories) {
+        try {
+          const filterQ = queryFunc(wallpapersCol, where('categories', 'array-contains', cat));
+          const filterSnapshot = await getDocs(filterQ);
+          console.log(`[testFirebase] Query for "${cat}": ${filterSnapshot.docs.length} docs`);
+        } catch (e: any) {
+          console.log(`[testFirebase] Query for "${cat}" failed:`, e.message);
+        }
+      }
     }
     
     return snapshot;
   } catch (error) {
     console.error('[testFirebase] ❌ ERROR:', error);
-    
-    // If wallpapers is empty, try to find where the data really is
-    console.log('[testFirebase] Attempting to find all collections...');
-    try {
-      // Try common alternative collection names
-      const alts = ['wallpaper', 'wall', 'images', 'images_wallpaper', 'wallpapers_data'];
-      for (const altName of alts) {
-        try {
-          const altCol = collection(db, altName);
-          const altQ = query(altCol);
-          const altSnapshot = await getDocs(altQ);
-          if (altSnapshot.docs.length > 0) {
-            console.log(`[testFirebase] ⚠️ FOUND DATA in collection "${altName}": ${altSnapshot.docs.length} docs`);
-            console.log('[testFirebase] First doc:', altSnapshot.docs[0].data());
-          }
-        } catch (e) {
-          // Ignore
-        }
-      }
-    } catch (searchError) {
-      console.error('[testFirebase] Could not search collections:', searchError);
-    }
-    
     throw error;
   }
 }
