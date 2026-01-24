@@ -512,24 +512,24 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       {/* Toast de éxito */}
       {downloadSuccess && (
-        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
-          <div className="backdrop-blur-md bg-[#00d084]/20 border border-[#00d084]/50 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 shadow-lg">
-            <div className="w-5 h-5 bg-[#00d084] rounded-full flex items-center justify-center">
-              <span className="text-white text-sm">✓</span>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] animate-bounce">
+          <div className="backdrop-blur-lg bg-[#00d084]/30 border-2 border-[#00d084] text-[#00d084] font-semibold py-4 px-8 rounded-lg flex items-center gap-3 shadow-2xl w-80">
+            <div className="w-6 h-6 bg-[#00d084] rounded flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-lg">✓</span>
             </div>
-            Wallpaper downloaded to your gallery!
+            <span className="text-center flex-1">Wallpaper downloaded to your gallery!</span>
           </div>
         </div>
       )}
 
       {/* Toast de error */}
       {downloadError && (
-        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
-          <div className="backdrop-blur-md bg-red-500/20 border border-red-500/50 text-red-400 font-semibold py-3 px-6 rounded-full flex items-center gap-2 shadow-lg">
-            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm">!</span>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] animate-bounce">
+          <div className="backdrop-blur-lg bg-red-500/30 border-2 border-red-500 text-red-400 font-semibold py-4 px-8 rounded-lg flex items-center gap-3 shadow-2xl w-80">
+            <div className="w-6 h-6 bg-red-500 rounded flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-lg">!</span>
             </div>
-            {downloadError}
+            <span className="text-center flex-1">{downloadError}</span>
           </div>
         </div>
       )}
