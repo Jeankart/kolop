@@ -189,18 +189,39 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
       if (isIOS) {
-        // iOS: Usar el método nativo para compartir/guardar
+        // iOS: Intentar usar Web Share API primero
+        if (navigator.share) {
+          try {
+            const file = new File([blob], `${wallpaper.name}.jpg`, { type: 'image/jpeg' });
+            await navigator.share({
+              files: [file],
+              title: wallpaper.name,
+              text: 'Check out this wallpaper!',
+            });
+            setDownloadSuccess(true);
+            setTimeout(() => {
+              setDownloadSuccess(false);
+            }, 3000);
+            return;
+          } catch (error) {
+            // User cancelled share, continue with fallback
+          }
+        }
+        
+        // Fallback para iOS: Abrir imagen en nueva pestaña
         const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${wallpaper.name}.jpg`;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        window.open(url, '_blank');
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 100);
+        
+        setDownloadSuccess(true);
+        setDownloadError(null);
+        setTimeout(() => {
+          setDownloadSuccess(false);
+        }, 3000);
       } else {
-        // Android: Usar blob nativo
+        // Android: Descargar directamente
         const filename = `${wallpaper.name}.jpg`;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -211,13 +232,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
+        
+        setDownloadSuccess(true);
+        setTimeout(() => {
+          setDownloadSuccess(false);
+        }, 3000);
       }
-
-      // Mostrar mensaje de éxito
-      setDownloadSuccess(true);
-      setTimeout(() => {
-        setDownloadSuccess(false);
-      }, 3000);
 
     } catch (error) {
       console.error('Error downloading image:', error);
@@ -251,21 +271,36 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       const blob = await response.blob();
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+      if (isIOS && navigator.share) {
+        // iOS: Intentar compartir con Web Share API
+        try {
+          const file = new File([blob], `${wallpaper.name}.mp4`, { type: 'video/mp4' });
+          await navigator.share({
+            files: [file],
+            title: wallpaper.name,
+            text: 'Check out this live wallpaper!',
+          });
+          setDownloadSuccess(true);
+          setTimeout(() => {
+            setDownloadSuccess(false);
+          }, 3000);
+          return;
+        } catch (error) {
+          // User cancelled share, continue with fallback
+        }
+      }
+      
+      // Fallback: Descargar normalmente
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = `${wallpaper.name}.mp4`;
-      
-      if (isIOS) {
-        link.target = '_blank';
-      }
-      
+      link.style.display = 'none';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      // Mostrar mensaje de éxito
       setDownloadSuccess(true);
       setTimeout(() => {
         setDownloadSuccess(false);
