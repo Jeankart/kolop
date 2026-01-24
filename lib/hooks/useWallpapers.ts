@@ -164,14 +164,6 @@ export const useWallpapersFeatured = () => {
       setLoading(false);
     }
   }, []);
-      });
-
-      return () => unsubscribe();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error cargando wallpapers');
-      setLoading(false);
-    }
-  }, []);
 
   return { wallpapers, loading, error };
 };
