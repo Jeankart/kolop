@@ -20,7 +20,7 @@ export async function testFirebaseConnection() {
     );
     
     // Race between getDocs and timeout
-    const snapshot = await Promise.race([getDocs(q), timeoutPromise]);
+    const snapshot = await Promise.race([getDocs(q), timeoutPromise]) as any;
     console.log('[testFirebase] ✅ SUCCESS! Got snapshot with', snapshot.docs.length, 'docs');
     return snapshot;
   } catch (error) {
