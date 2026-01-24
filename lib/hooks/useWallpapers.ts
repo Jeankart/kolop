@@ -31,7 +31,7 @@ export const useWallpapers = () => {
       // Try with getDocs first (simpler debugging)
       getDocs(q)
         .then((snapshot) => {
-          console.log('[useWallpapers] ✅ getDocs received! Docs count:', snapshot.docs.length);
+          console.log('[useWallpapers] ✅ getDocs RESOLVED! Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapers] Document:', doc.id, doc.data());
@@ -83,9 +83,12 @@ export const useWallpapersByCategory = (category: string) => {
       );
       console.log(`[useWallpapersByCategory] Query created for category: ${category}`);
       
-      getDocs(q)
+      const docsPromise = getDocs(q);
+      console.log('[useWallpapersByCategory] getDocs promise created for', category, ':', docsPromise);
+      
+      docsPromise
         .then((snapshot) => {
-          console.log(`[useWallpapersByCategory] ✅ getDocs for ${category}. Docs count:`, snapshot.docs.length);
+          console.log(`[useWallpapersByCategory] ✅ getDocs RESOLVED for ${category}. Docs count:`, snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log(`[useWallpapersByCategory] Document for ${category}:`, doc.id, doc.data());
@@ -139,9 +142,12 @@ export const useWallpapersFeatured = () => {
       );
       console.log('[useWallpapersFeatured] Query created');
       
-      getDocs(q)
+      const docsPromise = getDocs(q);
+      console.log('[useWallpapersFeatured] getDocs promise created:', docsPromise);
+      
+      docsPromise
         .then((snapshot) => {
-          console.log('[useWallpapersFeatured] ✅ getDocs received. Docs count:', snapshot.docs.length);
+          console.log('[useWallpapersFeatured] ✅ getDocs RESOLVED. Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
           snapshot.forEach((doc) => {
             console.log('[useWallpapersFeatured] Document:', doc.id, doc.data());
