@@ -32,7 +32,7 @@ export default function ClientLayout({
       
       // Optimizar scroll en móvil
       document.documentElement.style.scrollBehavior = 'smooth';
-      document.body.style.webkitTouchCallout = 'none';
+      (document.body.style as any).webkitTouchCallout = 'none';
       
       return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
