@@ -25,6 +25,9 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const [touchEnd, setTouchEnd] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -64,6 +67,23 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   useEffect(() => {
     setShowMov(wallpaper.categories?.includes('Live') ?? false);
   }, [wallpaper.id]);
+
+  // Desabilitar scroll vertical cuando el modal está abierto
+  useEffect(() => {
+    if (isOpen) {
+      // Prevenir scroll vertical
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      
+      return () => {
+        // Restaurar scroll
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        document.body.style.touchAction = '';
+      };
+    }
+  }, [isOpen]);
   
   // Precargar imágenes
   useEffect(() => {
@@ -111,6 +131,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
+    
+    // Prevenir scroll vertical
+    e.preventDefault();
+    
     const currentTouch = e.targetTouches[0].clientX;
     const diff = currentTouch - touchStart;
     setDragOffset(diff);
@@ -137,46 +161,72 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   };
 
   const handleDownload = async () => {
+    setIsDownloading(true);
+    setDownloadError(null);
+    setDownloadSuccess(false);
+
     try {
       let imageUrl = getImageUrl(wallpaper);
       
       let response = await fetch(imageUrl);
       
       if (!response.ok) {
-        // Fallback al cover en wallUploads
         imageUrl = `/wallUploads/${wallpaper.image}`;
         response = await fetch(imageUrl);
       }
       
       if (!response.ok) {
-        // Último fallback a carpetas antiguas
         const folder = `wall${wallpaper.categories[0] || 'Featured'}`;
         imageUrl = `/${folder}/${wallpaper.image}`;
+        response = await fetch(imageUrl);
       }
 
+      if (!response.ok) {
+        throw new Error('Image not found');
+      }
+
+      const blob = await response.blob();
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
       if (isIOS) {
+        // iOS: Usar el método nativo para compartir/guardar
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = imageUrl;
-        link.download = wallpaper.name;
-        link.target = '_blank';
+        link.href = url;
+        link.download = `${wallpaper.name}.jpg`;
+        link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      } else {
-        const blob = await fetch(imageUrl).then(res => res.blob());
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = wallpaper.name;
-        document.body.appendChild(a);
-        a.click();
         window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+      } else {
+        // Android: Usar blob nativo
+        const filename = `${wallpaper.name}.jpg`;
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
       }
+
+      // Mostrar mensaje de éxito
+      setDownloadSuccess(true);
+      setTimeout(() => {
+        setDownloadSuccess(false);
+      }, 3000);
+
     } catch (error) {
-      console.error('Error descargando imagen:', error);
+      console.error('Error downloading image:', error);
+      setDownloadError('Failed to download wallpaper');
+      setTimeout(() => {
+        setDownloadError(null);
+      }, 3000);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -186,40 +236,49 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   };
 
   const handleDownloadLive = async () => {
+    setIsDownloading(true);
+    setDownloadError(null);
+    setDownloadSuccess(false);
+
     try {
       const movUrl = getMovUrl(wallpaper);
       const response = await fetch(movUrl);
       
       if (!response.ok) {
-        console.error('Error descargando Live Wallpaper: archivo no encontrado');
-        return;
+        throw new Error('Live wallpaper file not found');
       }
 
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const blob = await response.blob();
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${wallpaper.name}.mp4`;
+      
       if (isIOS) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${wallpaper.name}.mp4`;
         link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      } else {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${wallpaper.name}.mp4`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
       }
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Mostrar mensaje de éxito
+      setDownloadSuccess(true);
+      setTimeout(() => {
+        setDownloadSuccess(false);
+      }, 3000);
+
     } catch (error) {
-      console.error('Error descargando Live Wallpaper:', error);
+      console.error('Error downloading live wallpaper:', error);
+      setDownloadError('Failed to download live wallpaper');
+      setTimeout(() => {
+        setDownloadError(null);
+      }, 3000);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -230,6 +289,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center imgPreviewer"
+      style={{ touchAction: 'pan-x', overscrollBehavior: 'contain' }}
     >
       {/* Botón Close circular */}
       <button
@@ -354,11 +414,22 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
+          disabled={isDownloading}
+          className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-5 h-5" />
-          Download
+          {isDownloading ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Downloading...
+            </>
+          ) : (
+            <>
+              <Download className="w-5 h-5" />
+              Download
+            </>
+          )}
         </button>
+        
         {/* Botón Live - Solo si tiene categoría Live */}
         {hasLiveCategory && (
           <button
@@ -368,13 +439,47 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
             }}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
-            className="backdrop-blur-md bg-[#00d084]/20 hover:bg-[#00d084]/30 border border-[#00d084]/30 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200"
+            disabled={isDownloading}
+            className="backdrop-blur-md bg-[#00d084]/20 hover:bg-[#00d084]/30 border border-[#00d084]/30 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Download className="w-5 h-5" />
-            Live
+            {isDownloading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-[#00d084] border-t-transparent rounded-full animate-spin" />
+                Downloading...
+              </>
+            ) : (
+              <>
+                <Download className="w-5 h-5" />
+                Live
+              </>
+            )}
           </button>
         )}
       </div>
+
+      {/* Toast de éxito */}
+      {downloadSuccess && (
+        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
+          <div className="backdrop-blur-md bg-[#00d084]/20 border border-[#00d084]/50 text-[#00d084] font-semibold py-3 px-6 rounded-full flex items-center gap-2 shadow-lg">
+            <div className="w-5 h-5 bg-[#00d084] rounded-full flex items-center justify-center">
+              <span className="text-white text-sm">✓</span>
+            </div>
+            Wallpaper downloaded to your gallery!
+          </div>
+        </div>
+      )}
+
+      {/* Toast de error */}
+      {downloadError && (
+        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce">
+          <div className="backdrop-blur-md bg-red-500/20 border border-red-500/50 text-red-400 font-semibold py-3 px-6 rounded-full flex items-center gap-2 shadow-lg">
+            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm">!</span>
+            </div>
+            {downloadError}
+          </div>
+        </div>
+      )}
 
       {/* Indicador de página */}
       <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-xs sm:text-sm font-medium">
