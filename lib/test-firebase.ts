@@ -13,7 +13,13 @@ export async function testFirebaseConnection() {
     const q = query(col);
     console.log('[testFirebase] Query created:', q);
     
-    const snapshot = await getDocs(q);
+    // Create timeout promise
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('getDocs timeout after 3s')), 3000)
+    );
+    
+    // Race between getDocs and timeout
+    const snapshot = await Promise.race([getDocs(q), timeoutPromise]);
     console.log('[testFirebase] ✅ SUCCESS! Got snapshot with', snapshot.docs.length, 'docs');
     return snapshot;
   } catch (error) {
