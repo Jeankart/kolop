@@ -92,6 +92,7 @@ export default function iOSPage() {
           wallpapers={wallpapers}
           isOpen={!!selectedWallpaper}
           onClose={() => setSelectedWallpaper(null)}
+          onNavigate={setSelectedWallpaper}
         />
       )}
       
