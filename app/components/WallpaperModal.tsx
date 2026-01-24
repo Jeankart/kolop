@@ -74,19 +74,16 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       // Prevenir scroll vertical
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
+      document.body.style.touchAction = 'manipulation';
+      document.documentElement.style.touchAction = 'manipulation';
       
       return () => {
         // Restaurar scroll completamente
-        document.body.style.overflow = 'auto';
-        document.documentElement.style.overflow = 'auto';
-        document.body.style.touchAction = 'auto';
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        document.body.style.touchAction = '';
+        document.documentElement.style.touchAction = '';
       };
-    } else {
-      // Asegurar que cuando NO está abierto, el scroll está habilitado
-      document.body.style.overflow = 'auto';
-      document.documentElement.style.overflow = 'auto';
-      document.body.style.touchAction = 'auto';
     }
   }, [isOpen]);
   
@@ -313,7 +310,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center imgPreviewer"
-      style={{ touchAction: 'pan-x', overscrollBehavior: 'contain' }}
+      style={{ touchAction: 'manipulation', overscrollBehavior: 'contain', WebkitTouchCallout: 'none' }}
     >
       {/* Botón Close circular */}
       <button

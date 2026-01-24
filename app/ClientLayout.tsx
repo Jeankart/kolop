@@ -34,19 +34,18 @@ export default function ClientLayout({
       
       // Optimizar scroll en móvil
       document.documentElement.style.scrollBehavior = 'smooth';
-      (document.body.style as any).webkitTouchCallout = 'none';
       
       // Asegurar que el scroll esté habilitado por defecto
-      html.style.overflow = 'auto';
-      body.style.overflow = 'auto';
-      body.style.touchAction = 'auto';
+      html.style.overflow = '';
+      body.style.overflow = '';
+      body.style.touchAction = '';
       
       return () => {
         window.removeEventListener('orientationchange', handleOrientationChange);
         // Limpiar cuando el componente se desmonta
-        html.style.overflow = 'auto';
-        body.style.overflow = 'auto';
-        body.style.touchAction = 'auto';
+        html.style.overflow = '';
+        body.style.overflow = '';
+        body.style.touchAction = '';
       };
     };
 
