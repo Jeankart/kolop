@@ -1,4 +1,5 @@
 // Simple Firebase test - no React, just raw calls
+// Test with the CORRECT collection name: wallpapers (plural)
 import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -7,7 +8,7 @@ export async function testFirebaseConnection() {
   console.log('[testFirebase] db:', db);
   
   try {
-    const col = collection(db, 'wallpaper');
+    const col = collection(db, 'wallpapers');
     console.log('[testFirebase] Collection created:', col);
     
     const q = query(col);

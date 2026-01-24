@@ -22,7 +22,7 @@ export const useWallpapers = () => {
     setLoading(true);
     
     try {
-      const wallpapersRef = collection(db, 'wallpaper');
+      const wallpapersRef = collection(db, 'wallpapers');
       console.log('[useWallpapers] Collection ref:', wallpapersRef.path);
       
       const q = query(wallpapersRef);
@@ -81,7 +81,7 @@ export const useWallpapersByCategory = (category: string) => {
     
     try {
       const q = query(
-        collection(db, 'wallpaper'),
+        collection(db, 'wallpapers'),
         where('categories', 'array-contains', category)
       );
       console.log(`[useWallpapersByCategory] Query created for category: ${category}`);
@@ -140,7 +140,7 @@ export const useWallpapersFeatured = () => {
     
     try {
       const q = query(
-        collection(db, 'wallpaper'),
+        collection(db, 'wallpapers'),
         where('categories', 'array-contains', 'Featured')
       );
       console.log('[useWallpapersFeatured] Query created');
