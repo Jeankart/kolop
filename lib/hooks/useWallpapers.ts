@@ -29,7 +29,10 @@ export const useWallpapers = () => {
       console.log('[useWallpapers] Query created');
       
       // Try with getDocs first (simpler debugging)
-      getDocs(q)
+      const docsPromise = getDocs(q);
+      console.log('[useWallpapers] getDocs promise:', docsPromise);
+      
+      docsPromise
         .then((snapshot) => {
           console.log('[useWallpapers] ✅ getDocs RESOLVED! Docs count:', snapshot.docs.length);
           const data: Wallpaper[] = [];
