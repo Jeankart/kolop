@@ -18,6 +18,7 @@ export const useWallpapers = () => {
 
   useEffect(() => {
     console.log('[useWallpapers] Hook mounted, fetching wallpapers...');
+    console.log('[useWallpapers] db object:', db);
     setLoading(true);
     
     // Add timeout to debug if onSnapshot ever fires
@@ -32,6 +33,8 @@ export const useWallpapers = () => {
       
       timeoutId = setTimeout(() => {
         console.error('[useWallpapers] TIMEOUT: onSnapshot never fired after 5s');
+        console.error('[useWallpapers] db:', db);
+        console.error('[useWallpapers] query:', q);
       }, 5000);
       
       const unsubscribe = onSnapshot(
