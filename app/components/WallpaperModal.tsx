@@ -192,8 +192,29 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       const blob = await response.blob();
       const filename = `${wallpaper.name}.jpg`;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-      // Descargar directamente sin popup
+      if (isIOS && navigator.share) {
+        // iOS: Web Share API - solo opciones nativas (Guardar imagen, Guardar en Archivos)
+        try {
+          const file = new File([blob], filename, { type: 'image/jpeg' });
+          await navigator.share({
+            files: [file],
+          });
+          setDownloadSuccess(true);
+          setTimeout(() => setDownloadSuccess(false), 3000);
+          setIsDownloading(false);
+          return;
+        } catch (error) {
+          // Si el usuario cancela o hay error, continuar con descarga directa
+          if ((error as any).name === 'AbortError') {
+            setIsDownloading(false);
+            return;
+          }
+        }
+      }
+
+      // Fallback: Descargar directamente
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -236,8 +257,29 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       const blob = await response.blob();
       const filename = `${wallpaper.name}.mp4`;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-      // Descargar directamente sin popup
+      if (isIOS && navigator.share) {
+        // iOS: Web Share API - solo opciones nativas
+        try {
+          const file = new File([blob], filename, { type: 'video/mp4' });
+          await navigator.share({
+            files: [file],
+          });
+          setDownloadSuccess(true);
+          setTimeout(() => setDownloadSuccess(false), 3000);
+          setIsDownloading(false);
+          return;
+        } catch (error) {
+          // Si el usuario cancela o hay error, continuar con descarga directa
+          if ((error as any).name === 'AbortError') {
+            setIsDownloading(false);
+            return;
+          }
+        }
+      }
+
+      // Fallback: Descargar directamente
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
