@@ -15,7 +15,7 @@ const SLIDES: CarouselSlide[] = [
     id: 1,
     title: 'IOS 26 LIVE',
     videoUrl: 'https://videos.pexels.com/video-files/15283134/15283134-hd_1080_1920_30fps.mp4',
-    link: '/ios26'
+    link: '/ios'
   },
   {
     id: 2,
@@ -69,7 +69,7 @@ export default function HeroBanner() {
 
           {/* Content */}
           <div className="heroBannerContent absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg">
+            <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg opacity-50">
               {SLIDES[currentSlide].title}
             </h1>
           </div>
@@ -83,10 +83,10 @@ export default function HeroBanner() {
                   e.preventDefault();
                   setCurrentSlide(index);
                 }}
-                className={`heroBannerIndicatorDot transition-all ${
+                className={`heroBannerIndicatorDot rounded transition-all ${
                   index === currentSlide
-                    ? 'bg-[#00d084] w-5 h-1.5'
-                    : 'bg-white/30 hover:bg-white/50 w-1.5 h-1.5'
+                    ? 'bg-[#00d084] w-3 h-1'
+                    : 'bg-white/30 hover:bg-white/50 w-1 h-1'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />

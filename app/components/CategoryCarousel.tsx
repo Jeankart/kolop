@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
+import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
+import { Image } from 'lucide-react';
 
 interface Wallpaper {
   id: string;
@@ -36,9 +38,25 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
   return (
     <section className="containSection">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-lg md:text-2xl font-bold mb-8 text-white dark:text-white">
-          {emoji} {title}
-        </h2>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg md:text-2xl font-bold text-white dark:text-white">
+              {emoji} {title}
+            </h2>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span>|</span>
+              <Image className="w-4 h-4" />
+              <span className="text-xs">{wallpapers.length}</span>
+            </div>
+          </div>
+          <Link
+            href={moreLink}
+            className="px-2 py-0.5 rounded-full border border-white bg-black hover:bg-zinc-900 text-white font-normal text-xs transition-colors mr-6 opacity-70"
+            style={{ fontSize: '10px' }}
+          >
+            More
+          </Link>
+        </div>
         
         {/* Carrusel horizontal de wallpapers */}
         <div className="overflow-x-auto scrollbar-hide touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
@@ -52,24 +70,38 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                 style={{ touchAction: 'manipulation' }}
               >
                 <img
-                  src={`/wallUploads/${wallpaper?.image || 'wall1.png'}`}
+                  src={`/wallUploads/${getGifPath(wallpaper?.image) || 'wall1.png'}`}
                   alt={`${title} wallpaper ${i + 1}`}
                   className="w-full h-full object-cover"
                   style={{ pointerEvents: 'none' }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
-                    if (!img.src.includes('placeholder')) {
+                    const currentSrc = img.src;
+                    // Si es un .gif que falló, intenta con .jpg
+                    if (currentSrc.includes('.gif') && !currentSrc.includes('.jpg')) {
+                      const jpgSrc = currentSrc.replace(/\.gif$/, '.jpg');
+                      if (jpgSrc !== currentSrc) {
+                        img.src = jpgSrc;
+                        return;
+                      }
+                    }
+                    // Si todo falla, mostrar placeholder
+                    if (!currentSrc.includes('placeholder') && !currentSrc.includes('data:')) {
                       img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
                     }
                   }}
                 />
                 {/* Iconos apilados si es Featured, Live o Charging */}
                 {shouldShowCategoryIcon(wallpaper?.categories) && (
-                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1" style={{ pointerEvents: 'none' }}>
-                    {getCategoryIcons(wallpaper?.categories).map((icon, idx) => (
-                      <div key={idx} className="text-xs text-white">
-                        {icon}
-                      </div>
+                  <div className="absolute top-2 left-2 flex flex-col gap-0.5 leading-none" style={{ pointerEvents: 'none' }}>
+                    {getCategoryIcons(wallpaper?.categories).map((iconUrl, idx) => (
+                      <img
+                        key={idx}
+                        src={iconUrl}
+                        alt="category-icon"
+                        className="w-4 h-4 block"
+                        style={{ imageRendering: 'crisp-edges', lineHeight: '1' }}
+                      />
                     ))}
                   </div>
                 )}

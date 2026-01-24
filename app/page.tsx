@@ -106,11 +106,20 @@ export default function Home() {
         moreLink="/anime"
       />
 
+      {/* IOS Carousel */}
+      <HomeCategoryCarousel
+        category="IOS"
+        title="IOS"
+        emoji="🍎"
+        folder="wallUploads"
+        moreLink="/ios"
+      />
+
       {/* iOS 26 Live Special Section */}
       <section className="px-4 md:px-6 py-12 max-w-7xl mx-auto homeiOS26Section">
         <div className="homeios26CardWrapper">
-          <Link href="/ios26">
-            <div className="homeios26Card relative w-full h-96 md:h-[500px] rounded-xl overflow-hidden group cursor-pointer">
+          <Link href="/ios">
+            <div className="homeios26Card relative w-full h-72 md:h-80 rounded-xl overflow-hidden group cursor-pointer">
               {/* Background gradient */}
               <div className="homeios26CardBg absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-cyan-900" />
 
@@ -136,8 +145,8 @@ export default function Home() {
                 <h2 className="homeios26CardTitle text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
                   iOS 26 Live
                 </h2>
-                <p className="homeios26CardDesc text-lg md:text-xl text-cyan-200 drop-shadow-lg">
-                  Colección exclusiva de fondos dinámicos
+                <p className="homeios26CardDesc text-lg md:text-xl text-zinc-300 drop-shadow-lg">
+                  Exclusive collection of dynamic wallpapers
                 </p>
                 <div className="homeios26CardArrow mt-6 text-3xl group-hover:translate-y-2 transition-transform duration-300">
                   ↓

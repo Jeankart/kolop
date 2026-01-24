@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Image } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersByCategory } from '@/lib/hooks/useWallpapers';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
+import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
 
 interface Wallpaper {
   id: string;
@@ -51,6 +52,11 @@ export default function LiveGallery() {
           <h1 className="text-lg md:text-2xl font-bold text-white dark:text-white">
             Live
           </h1>
+          <div className="flex items-center gap-2 text-zinc-400">
+            <span>|</span>
+            <Image className="w-4 h-4" />
+            <span className="text-sm">{wallpapers.length}</span>
+          </div>
         </div>
 
         {/* Grid de 4 columnas */}
@@ -62,17 +68,35 @@ export default function LiveGallery() {
               className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
             >
               <img
-                src={`/wallUploads/${wallpaper.image}`}
+                src={`/wallUploads/${getGifPath(wallpaper.image)}`}
                 alt={wallpaper.name}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  const currentSrc = img.src;
+                  if (currentSrc.includes('.gif') && !currentSrc.includes('.jpg')) {
+                    const jpgSrc = currentSrc.replace(/\.gif$/, '.jpg');
+                    if (jpgSrc !== currentSrc) {
+                      img.src = jpgSrc;
+                      return;
+                    }
+                  }
+                  if (!currentSrc.includes('placeholder') && !currentSrc.includes('data:')) {
+                    img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
+                  }
+                }}
               />
               {/* Iconos apilados si es Featured, Live o Charging */}
               {shouldShowCategoryIcon(wallpaper.categories) && (
-                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1">
-                  {getCategoryIcons(wallpaper.categories).map((icon, idx) => (
-                    <div key={idx} className="text-xs text-white">
-                      {icon}
-                    </div>
+                <div className="absolute top-2 left-2 flex flex-col gap-0.5 leading-none">
+                  {getCategoryIcons(wallpaper.categories).map((iconUrl, idx) => (
+                    <img
+                      key={idx}
+                      src={iconUrl}
+                      alt="category-icon"
+                      className="w-4 h-4 block"
+                      style={{ imageRendering: 'crisp-edges', lineHeight: '1' }}
+                    />
                   ))}
                 </div>
               )}

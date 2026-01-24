@@ -4,9 +4,9 @@
 
 export function getCategoryIcons(categories: string[]): string[] {
   const icons: Record<string, string> = {
-    Live: '🔴',
-    Charging: '🔌',
-    Featured: '⭐',
+    Live: '/icons/live.png',
+    Charging: '/icons/charging.png',
+    Featured: '/icons/featured.png',
   };
   
   // Retornar array de iconos en el orden: Featured, Live, Charging

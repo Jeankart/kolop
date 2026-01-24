@@ -47,10 +47,10 @@ export default function Header() {
             )}
           </button>
 
-          {/* Título centrado */}
-          <h1 className="flex-1 text-center text-lg font-black tracking-tight text-white dark:text-white">
-            Wallpaper
-          </h1>
+          {/* Logo centrado */}
+          <Link href="/" className="flex-1 flex justify-center">
+            <img src="/kloop-logo.png" alt="Kloop Logo" className="h-6 w-auto" />
+          </Link>
 
           {/* Botón Info a la derecha */}
           <button

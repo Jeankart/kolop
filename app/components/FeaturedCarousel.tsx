@@ -5,6 +5,8 @@ import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
 import { getCategoryIcons } from '@/lib/utils/categoryIcons';
+import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
+import { Image } from 'lucide-react';
 
 interface Wallpaper {
   id: string;
@@ -31,9 +33,25 @@ export default function FeaturedCarousel() {
     return (
       <section className="containSection">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-lg md:text-2xl font-bold mb-8 text-white dark:text-white">
-            Hot 🔥
-          </h2>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg md:text-2xl font-bold text-white dark:text-white">
+                Hot 🔥
+              </h2>
+              <div className="flex items-center gap-2 text-zinc-400">
+                <span>|</span>
+                <Image className="w-4 h-4" />
+                <span className="text-xs">{wallpapers.length}</span>
+              </div>
+            </div>
+            <Link
+              href="/featured"
+              className="px-2 py-0.5 rounded-full border border-white bg-black hover:bg-zinc-900 text-white font-normal text-xs transition-colors mr-6 opacity-70"
+              style={{ fontSize: '10px' }}
+            >
+              More
+            </Link>
+          </div>
           <div className="flex gap-4 pb-2">
             {Array.from({ length: 5 }).map((_, i) => (
               <div
@@ -50,9 +68,25 @@ export default function FeaturedCarousel() {
   return (
     <section className="containSection">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-lg md:text-2xl font-bold mb-8 text-white dark:text-white">
-          Hot 🔥
-        </h2>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg md:text-2xl font-bold text-white dark:text-white">
+              Hot 🔥
+            </h2>
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span>|</span>
+              <Image className="w-4 h-4" />
+              <span className="text-xs">{wallpapers.length}</span>
+            </div>
+          </div>
+          <Link
+            href="/featured"
+            className="px-2 py-0.5 rounded-full border border-white bg-black hover:bg-zinc-900 text-white font-normal text-xs transition-colors mr-6 opacity-70"
+            style={{ fontSize: '10px' }}
+          >
+            More
+          </Link>
+        </div>
         
         {/* Carrusel horizontal de wallpapers */}
         <div className="overflow-x-auto scrollbar-hide">
@@ -64,16 +98,34 @@ export default function FeaturedCarousel() {
                 className="wallView flex-shrink-0 aspect-[9/19.5] w-44 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-200 dark:bg-zinc-800 relative group"
               >
                 <img
-                  src={`/wallUploads/${wallpaper.image}`}
+                  src={`/wallUploads/${getGifPath(wallpaper.image)}`}
                   alt={wallpaper.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    const currentSrc = img.src;
+                    if (currentSrc.includes('.gif') && !currentSrc.includes('.jpg')) {
+                      const jpgSrc = currentSrc.replace(/\.gif$/, '.jpg');
+                      if (jpgSrc !== currentSrc) {
+                        img.src = jpgSrc;
+                        return;
+                      }
+                    }
+                    if (!currentSrc.includes('placeholder') && !currentSrc.includes('data:')) {
+                      img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
+                    }
+                  }}
                 />
                 {/* Iconos de categoría */}
-                <div className="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded flex flex-col gap-1">
-                  {getCategoryIcons(wallpaper.categories).map((icon, idx) => (
-                    <div key={idx} className="text-xs text-white">
-                      {icon}
-                    </div>
+                <div className="absolute top-2 left-2 flex flex-col gap-0.5 leading-none">
+                  {getCategoryIcons(wallpaper.categories).map((iconUrl, idx) => (
+                    <img
+                      key={idx}
+                      src={iconUrl}
+                      alt="category-icon"
+                      className="w-4 h-4 block"
+                      style={{ imageRendering: 'crisp-edges', lineHeight: '1' }}
+                    />
                   ))}
                 </div>
               </div>
