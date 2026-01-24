@@ -187,43 +187,43 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       const blob = await response.blob();
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const filename = `${wallpaper.name}.jpg`;
 
       if (isIOS) {
-        // iOS: Intentar usar Web Share API primero
+        // iOS: Usar Web Share API para mostrar solo opciones relevantes
         if (navigator.share) {
           try {
-            const file = new File([blob], `${wallpaper.name}.jpg`, { type: 'image/jpeg' });
+            const file = new File([blob], filename, { type: 'image/jpeg' });
             await navigator.share({
               files: [file],
-              title: wallpaper.name,
-              text: 'Check out this wallpaper!',
+              title: 'Wallpaper',
+              text: wallpaper.name,
             });
             setDownloadSuccess(true);
             setTimeout(() => {
               setDownloadSuccess(false);
             }, 3000);
+            setIsDownloading(false);
             return;
           } catch (error) {
-            // User cancelled share, continue with fallback
+            // Usuario canceló, continuar con fallback
+            if ((error as any).name === 'AbortError') {
+              setIsDownloading(false);
+              return;
+            }
           }
         }
         
-        // Fallback para iOS: Abrir imagen en nueva pestaña
-        const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        setTimeout(() => {
-          window.URL.revokeObjectURL(url);
-        }, 100);
-        
-        setDownloadSuccess(true);
-        setDownloadError(null);
-        setTimeout(() => {
-          setDownloadSuccess(false);
-        }, 3000);
+        // Fallback si Web Share no está disponible
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
       } else {
         // Android: Descargar directamente
-        const filename = `${wallpaper.name}.jpg`;
-        const url = window.URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
@@ -231,13 +231,14 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        setDownloadSuccess(true);
-        setTimeout(() => {
-          setDownloadSuccess(false);
-        }, 3000);
+        URL.revokeObjectURL(url);
       }
+
+      // Mostrar mensaje de éxito
+      setDownloadSuccess(true);
+      setTimeout(() => {
+        setDownloadSuccess(false);
+      }, 3000);
 
     } catch (error) {
       console.error('Error downloading image:', error);
@@ -248,6 +249,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     } finally {
       setIsDownloading(false);
     }
+  };
   };
 
   // Perlin-like noise generator
@@ -270,36 +272,52 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       const blob = await response.blob();
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const filename = `${wallpaper.name}.mp4`;
 
-      if (isIOS && navigator.share) {
-        // iOS: Intentar compartir con Web Share API
-        try {
-          const file = new File([blob], `${wallpaper.name}.mp4`, { type: 'video/mp4' });
-          await navigator.share({
-            files: [file],
-            title: wallpaper.name,
-            text: 'Check out this live wallpaper!',
-          });
-          setDownloadSuccess(true);
-          setTimeout(() => {
-            setDownloadSuccess(false);
-          }, 3000);
-          return;
-        } catch (error) {
-          // User cancelled share, continue with fallback
+      if (isIOS) {
+        // iOS: Usar Web Share API para mostrar solo opciones relevantes
+        if (navigator.share) {
+          try {
+            const file = new File([blob], filename, { type: 'video/mp4' });
+            await navigator.share({
+              files: [file],
+              title: 'Live Wallpaper',
+              text: wallpaper.name,
+            });
+            setDownloadSuccess(true);
+            setTimeout(() => {
+              setDownloadSuccess(false);
+            }, 3000);
+            setIsDownloading(false);
+            return;
+          } catch (error) {
+            // Usuario canceló, continuar con fallback
+            if ((error as any).name === 'AbortError') {
+              setIsDownloading(false);
+              return;
+            }
+          }
         }
+        
+        // Fallback si Web Share no está disponible
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+      } else {
+        // Android: Descargar directamente
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       }
-      
-      // Fallback: Descargar normalmente
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${wallpaper.name}.mp4`;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
 
       setDownloadSuccess(true);
       setTimeout(() => {
