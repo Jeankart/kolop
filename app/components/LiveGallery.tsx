@@ -90,9 +90,10 @@ export default function LiveGallery() {
                   }
                 }}
               />
+
               {/* Iconos apilados si es Featured, Live o Charging */}
               {shouldShowCategoryIcon(wallpaper.categories) && (
-                <div className="absolute top-2 left-2 flex flex-col gap-0.5 leading-none">
+                <div className="absolute top-2 left-2 flex flex-col gap-0.5 leading-none" style={{ pointerEvents: 'none' }}>
                   {getCategoryIcons(wallpaper.categories).map((iconUrl, idx) => (
                     <img
                       key={idx}

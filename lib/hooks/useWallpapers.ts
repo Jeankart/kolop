@@ -119,33 +119,34 @@ export const useWallpapersFeatured = () => {
     try {
       const q = query(
         collection(db, 'wallpapers'),
-        where('categories', 'array-contains', 'Featured')
+        where('featured', '==', true)
       );
       
-      getDocs(q)
-        .then((snapshot) => {
-          const data: Wallpaper[] = [];
-          snapshot.forEach((doc) => {
-            data.push({
-              id: doc.id,
-              ...(doc.data() as Omit<Wallpaper, 'id'>),
-            });
+      // Usar onSnapshot para escuchar cambios en tiempo real
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const data: Wallpaper[] = [];
+        snapshot.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            ...(doc.data() as Omit<Wallpaper, 'id'>),
           });
-          
-          data.sort((a, b) => {
-            const aNum = parseInt(a.id.split('_')[1] || '999999', 10);
-            const bNum = parseInt(b.id.split('_')[1] || '999999', 10);
-            return aNum - bNum;
-          });
-          
-          setWallpapers(data);
-          setLoading(false);
-          setError(null);
-        })
-        .catch((error: any) => {
-          setError(`Error cargando Featured: ${error.message}`);
-          setLoading(false);
         });
+        
+        data.sort((a, b) => {
+          const aNum = parseInt(a.id, 10);
+          const bNum = parseInt(b.id, 10);
+          return aNum - bNum;
+        });
+        
+        setWallpapers(data);
+        setLoading(false);
+        setError(null);
+      }, (error: any) => {
+        setError(`Error cargando Featured: ${error.message}`);
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
       setError(errorMsg);

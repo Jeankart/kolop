@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ChevronLeft, Image } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
-import ColorFilter from './ColorFilter';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
 import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
 
@@ -29,20 +28,6 @@ interface CategoryGalleryProps {
 
 export default function CategoryGallery({ title, folder, wallpapers }: CategoryGalleryProps) {
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
-  const [filteredWallpapers, setFilteredWallpapers] = useState<Wallpaper[]>([]);
-  const [hasFilter, setHasFilter] = useState(false);
-
-  const handleFilterChange = (filtered: Wallpaper[]) => {
-    if (filtered.length === wallpapers.length) {
-      setHasFilter(false);
-      setFilteredWallpapers([]);
-    } else {
-      setHasFilter(true);
-      setFilteredWallpapers(filtered);
-    }
-  };
-
-  const displayedWallpapers = hasFilter ? filteredWallpapers : wallpapers;
 
   const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
@@ -74,14 +59,9 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
           </div>
         </div>
 
-        {/* ColorFilter */}
-        {wallpapers.length > 0 && (
-          <ColorFilter wallpapers={wallpapers} onFilterChange={handleFilterChange} />
-        )}
-
         {/* Grid de 4 columnas */}
         <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-          {displayedWallpapers.map((wallpaper) => (
+          {wallpapers.map((wallpaper) => (
             <div
               key={wallpaper.id}
               onClick={() => handleWallpaperClick(wallpaper)}
