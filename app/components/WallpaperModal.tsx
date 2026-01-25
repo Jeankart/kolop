@@ -410,7 +410,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                 <video
                   key={`video-${wp.id}`}
                   src={getMovUrl(wp) || undefined}
-                  className="w-auto h-full object-cover"
+                  className="w-full h-auto object-contain"
                   autoPlay
                   loop
                   playsInline
@@ -424,7 +424,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                 <img
                   src={getImageUrl(wp)}
                   alt={wp.name}
-                  className="w-auto h-full object-cover"
+                  className="w-full h-auto object-contain"
                   draggable={false}
                   onError={(e) => {
                     console.error(`[WallpaperModal] Error loading image for ${wp.id}:`, getImageUrl(wp), wp.files);
