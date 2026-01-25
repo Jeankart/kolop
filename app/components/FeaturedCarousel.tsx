@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
@@ -26,10 +26,12 @@ export default function FeaturedCarousel() {
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
   // Set the 3rd wallpaper as default when wallpapers load
-  if (wallpapers.length > 0 && !selectedWallpaper) {
-    const initialWallpaper = wallpapers[Math.min(2, wallpapers.length - 1)];
-    setSelectedWallpaper(initialWallpaper);
-  }
+  useEffect(() => {
+    if (wallpapers.length > 0 && !selectedWallpaper) {
+      const initialWallpaper = wallpapers[Math.min(2, wallpapers.length - 1)];
+      setSelectedWallpaper(initialWallpaper);
+    }
+  }, [wallpapers, selectedWallpaper]);
 
   const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
