@@ -52,16 +52,20 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     return null;
   };
 
-  // Verificar si tiene categoría Live
-  const hasLiveCategory = wallpaper.categories?.includes('Live');
+  // Verificar si tiene categoría Live Y tiene video disponible
+  const hasLiveCategory = wallpaper.categories?.includes('Live') && !!wallpaper.files.video;
   
   // Estado para saber si mostrar video o imagen
-  const [showMov, setShowMov] = useState(() => wallpaper.categories?.includes('Live') ?? false);
+  // Por defecto, mostrar video si existe, sino imagen
+  const [showMov, setShowMov] = useState(() => {
+    return wallpaper.categories?.includes('Live') && !!wallpaper.files.video;
+  });
   
   // Actualizar showMov cuando el wallpaper cambia
   useEffect(() => {
-    setShowMov(wallpaper.categories?.includes('Live') ?? false);
-  }, [wallpaper.id]);
+    const hasVideo = wallpaper.categories?.includes('Live') && !!wallpaper.files.video;
+    setShowMov(hasVideo);
+  }, [wallpaper.id, wallpaper.files.video]);
 
   // Desabilitar scroll vertical cuando el modal está abierto
   useEffect(() => {
@@ -398,6 +402,8 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   loop
                   controls
                   playsInline
+                  muted={false}
+                  preload="auto"
                   onError={(e) => {
                     console.error('Error loading video:', getMovUrl(wp), e);
                   }}
