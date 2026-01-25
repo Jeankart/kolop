@@ -47,8 +47,9 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   
   // Función para obtener la ruta completa de la imagen
   const getImageUrl = (wp: Wallpaper) => {
-    // Usar el archivo download para mostrar en alta resolución
-    const url = `/wallUploads/${wp.files.download}`;
+    // Usar el archivo download para mostrar en alta resolución, con fallback a cover
+    const downloadOrCover = wp.files.download || wp.files.cover;
+    const url = `/wallUploads/${downloadOrCover}`;
     console.log(`[WallpaperModal] Image URL for ${wp.id}: ${url}`, wp.files);
     return url;
   };

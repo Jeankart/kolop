@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
@@ -25,7 +25,16 @@ export default function FeaturedCarousel() {
   const { wallpapers, loading } = useWallpapersFeatured();
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
+  // Log when wallpapers load
+  useEffect(() => {
+    if (!loading && wallpapers.length > 0) {
+      console.log('[FeaturedCarousel] Loaded wallpapers:', wallpapers.length);
+      console.log('[FeaturedCarousel] First wallpaper:', wallpapers[0]);
+    }
+  }, [wallpapers, loading]);
+
   const handleWallpaperClick = (wallpaper: Wallpaper) => {
+    console.log('[FeaturedCarousel] Clicked wallpaper:', wallpaper);
     setSelectedWallpaper(wallpaper);
   };
 
