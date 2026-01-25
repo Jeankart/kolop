@@ -44,7 +44,10 @@ export default function iOSPage() {
             iOS Infinite
           </h1>
         </div>
-        <p className="text-zinc-400 mb-8 ios26Subtitle">
+        <p className="text-zinc-400 mb-8 ios26Subtitle flex items-center gap-2">
+          <Link href="/" className="text-zinc-400 hover:text-[#00d084] transition-colors">
+            <ChevronLeft className="w-4 h-4" />
+          </Link>
           IOS Infinite Wallpapers
         </p>
 
