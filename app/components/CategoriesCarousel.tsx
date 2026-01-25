@@ -101,7 +101,7 @@ export default function CategoriesCarousel() {
         <div className="overflow-y-hidden overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible' }}>
           <div className="flex gap-3 py-4 px-3" style={{ width: 'fit-content', minWidth: '100%' }}>
             {categories.map((category, index) => {
-              const baseClass = `flex-shrink-0 flex flex-col items-center justify-center gap-2 w-16 h-16 rounded-2xl backdrop-blur-md bg-gradient-to-br from-[#686868]/30 to-[#686868]/10 dark:from-[#686868]/30 dark:to-[#686868]/10 border border-[#686868]/50 dark:border-[#686868]/50 hover:border-[#686868]/80 hover:from-[#686868]/40 hover:to-[#686868]/20 transition-all duration-300 hover:scale-110 cursor-pointer relative`;
+              const baseClass = `flex-shrink-0 flex flex-col items-center justify-center gap-0.5 w-16 h-16 rounded-2xl backdrop-blur-md bg-gradient-to-br from-[#686868]/30 to-[#686868]/10 dark:from-[#686868]/30 dark:to-[#686868]/10 border border-[#686868]/50 dark:border-[#686868]/50 hover:border-[#686868]/80 hover:from-[#686868]/40 hover:to-[#686868]/20 transition-all duration-300 hover:scale-110 cursor-pointer relative`;
               
               return (
                 <button
@@ -117,7 +117,7 @@ export default function CategoriesCarousel() {
                   <div className="flex items-center justify-center relative z-10">
                     {IconMap[category.icon](category.color)}
                   </div>
-                  <span className="text-[0.65rem] font-medium text-white dark:text-white text-center leading-none relative z-10 w-full px-0.5">{category.name}</span>
+                  <span className="text-[0.5rem] font-medium text-white dark:text-white text-center leading-none relative z-10 w-full px-0.5 h-3 flex items-center justify-center">{category.name}</span>
                 </button>
               );
             })}
