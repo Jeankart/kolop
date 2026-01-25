@@ -25,6 +25,12 @@ export default function FeaturedCarousel() {
   const { wallpapers, loading } = useWallpapersFeatured();
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
 
+  // Set the 3rd wallpaper as default when wallpapers load
+  if (wallpapers.length > 0 && !selectedWallpaper) {
+    const initialWallpaper = wallpapers[Math.min(2, wallpapers.length - 1)];
+    setSelectedWallpaper(initialWallpaper);
+  }
+
   const handleWallpaperClick = (wallpaper: Wallpaper) => {
     setSelectedWallpaper(wallpaper);
   };

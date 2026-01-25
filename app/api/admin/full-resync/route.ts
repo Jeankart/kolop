@@ -57,7 +57,7 @@ function normalizeCategory(cat: string): string {
   if (lower === 'ai') return 'AI';
   if (lower === 'anime') return 'Anime';
   if (lower === 'cars') return 'Cars';
-  if (lower === 'cats') return 'Cats';
+  if (lower === 'widgets') return 'Widgets';
   if (lower === 'charging') return 'Charging';
   if (lower === 'cute') return 'Cute';
   if (lower === 'films') return 'Films';

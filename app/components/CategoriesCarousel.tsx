@@ -8,7 +8,7 @@ const categories = [
   { name: 'Charging', icon: 'Charging', href: '/charging', color: '#ffaa00' },
   { name: 'AI', icon: 'AI', href: '/ai', color: '#7c3aed' },
   { name: 'Aesthetic', icon: 'Aesthetic', href: '/aesthetic', color: '#ff1493' },
-  { name: 'Cats', icon: 'Cats', href: '/cats', color: '#ff6b9d' },
+  { name: 'Widgets', icon: 'Widgets', href: '/widgets', color: '#ff6b9d' },
   { name: 'Cars', icon: 'Cars', href: '/cars', color: '#00d4ff' },
   { name: 'B&W', icon: 'BW', href: '/bw', color: '#ffffff' },
   { name: 'Urban', icon: 'Urban', href: '/urban', color: '#ffa500' },
@@ -36,13 +36,12 @@ const IconMap: { [key: string]: (color: string) => ReactElement } = {
   Aesthetic: (color) => (
     <div style={{ color, fontSize: '24px', fontWeight: 'bold' }}>!</div>
   ),
-  Cats: (color) => (
+  Widgets: (color) => (
     <svg viewBox="0 0 24 24" className="w-8 h-8" fill={color} stroke="none">
-      <path d="M12 2C16 5 18 7 18 12C18 16 16 18 12 18C8 18 6 16 6 12C6 7 8 5 12 2Z" />
-      <path d="M9 9L11 11M13 9L15 11" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      <path d="M12 15C11 14 10 14 9 14" stroke="white" strokeWidth="1" fill="none" strokeLinecap="round" />
-      <line x1="9" y1="3" x2="7" y2="1" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="15" y1="3" x2="17" y2="1" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+      <rect x="2" y="2" width="8" height="8" rx="1" />
+      <rect x="14" y="2" width="8" height="8" rx="1" />
+      <rect x="2" y="14" width="8" height="8" rx="1" />
+      <rect x="14" y="14" width="8" height="8" rx="1" />
     </svg>
   ),
   Cars: (color) => (

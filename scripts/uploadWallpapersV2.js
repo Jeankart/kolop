@@ -63,7 +63,7 @@ function parseFilename(filename) {
   }
   
   // Validar categorías válidas
-  const validCategories = ['Featured', 'Live', 'Charging', 'AI', 'Aesthetic', 'Cats', 'Cars', 'B&W', 'Urban', 'Films', 'Cute', 'Anime', 'Hot'];
+  const validCategories = ['Featured', 'Live', 'Charging', 'AI', 'Aesthetic', 'Widgets', 'Cars', 'B&W', 'Urban', 'Films', 'Cute', 'Anime', 'Hot'];
   const invalidCats = categories.filter(cat => !validCategories.includes(cat));
   
   if (invalidCats.length > 0) {

@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Wallpaper - Download Premium Wallpapers',
-  description: 'Discover and download high-quality wallpapers. Categories: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging and more. Beautiful backgrounds for your device.',
+  description: 'Discover and download high-quality wallpapers. Categories: iOS, Live, AI, Aesthetic, Anime, Cars, Widgets, Charging and more. Beautiful backgrounds for your device.',
   keywords: 'wallpapers, backgrounds, download, free, iOS, Android, categories, premium',
   openGraph: {
     title: 'Wallpaper - Download Premium Wallpapers',

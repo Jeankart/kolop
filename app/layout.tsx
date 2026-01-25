@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Wallpaper - Download Premium Wallpapers",
-  description: "Discover and download high-quality wallpapers: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging and more. Beautiful backgrounds for your device.",
+  description: "Discover and download high-quality wallpapers: iOS, Live, AI, Aesthetic, Anime, Cars, Widgets, Charging and more. Beautiful backgrounds for your device.",
   keywords: "wallpaper, backgrounds, 4K, iOS, Android, download, free, premium wallpapers, live wallpapers",
   authors: [{ name: "Wallpaper App" }],
   icons: {
