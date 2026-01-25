@@ -112,13 +112,20 @@ export async function POST(request: NextRequest) {
         }
 
         // Crear/actualizar documento en Firestore
+        const normalizeCategory = (cat: string): string => {
+          const lower = cat.toLowerCase();
+          // Mantener en mayúsculas: IOS, B&W, Live
+          if (lower === 'ios') return 'IOS';
+          if (lower === 'b&w') return 'B&W';
+          if (lower === 'live') return 'Live';
+          // Otros: capitalizar normalmente
+          return cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+        };
+
         const wallpaperData: any = {
           id,
           name: `Wallpaper ${id}`,
-          categories: files.categories.map((cat) => {
-            // Capitalizar categorías
-            return cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
-          }),
+          categories: files.categories.map(normalizeCategory),
           files: {
             cover,
             download,
