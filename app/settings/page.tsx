@@ -1,45 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Moon, Sun, Share2, HelpCircle, Trash2, Globe } from 'lucide-react';
+import { ChevronLeft, Share2, HelpCircle, Trash2 } from 'lucide-react';
 import Header from '@/app/components/Header';
 import BottomNavigation from '@/app/components/BottomNavigation';
 
 export default function SettingsPage() {
-  const [darkMode, setDarkMode] = useState(true);
-  const [language, setLanguage] = useState('en');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Load from localStorage on mount
-    const savedTheme = localStorage.getItem('theme');
-    const savedLanguage = localStorage.getItem('language');
-    
-    if (savedTheme) {
-      setDarkMode(savedTheme === 'dark');
-    }
-    if (savedLanguage) {
-      setLanguage(savedLanguage);
-    }
-  }, []);
-
-  const handleThemeToggle = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', newMode ? 'dark' : 'light');
-    }
-  };
-
-  const handleLanguageChange = (lang: string) => {
-    setLanguage(lang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('language', lang);
-    }
-  };
-
   const handleClearCache = () => {
     if (typeof window !== 'undefined') {
       if (confirm('Clear application cache? This action cannot be undone.')) {
@@ -59,8 +25,6 @@ export default function SettingsPage() {
     }
   };
 
-  if (!mounted) return null;
-
   return (
     <main className="bg-zinc-950 min-h-screen overflow-x-hidden">
       <Header />
@@ -75,62 +39,6 @@ export default function SettingsPage() {
 
         {/* Configuration Sections */}
         <div className="space-y-6">
-          {/* Section: Appearance */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-              Appearance
-            </h2>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white">Dark Mode</p>
-                <p className="text-xs text-zinc-400 mt-1">Use dark colors on the interface</p>
-              </div>
-              <button
-                onClick={handleThemeToggle}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  darkMode ? 'bg-[#00d084]' : 'bg-zinc-700'
-                }`}
-              >
-                <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
-                    darkMode ? 'translate-x-7' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-
-          {/* Section: Language */}
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Globe className="w-5 h-5" />
-              Language
-            </h2>
-            <div className="space-y-2">
-              <button
-                onClick={() => handleLanguageChange('es')}
-                className={`w-full px-4 py-2 rounded-lg transition-colors text-left ${
-                  language === 'es'
-                    ? 'bg-[#00d084] text-black font-semibold'
-                    : 'bg-zinc-800 text-white hover:bg-zinc-700'
-                }`}
-              >
-                🇪🇸 Spanish
-              </button>
-              <button
-                onClick={() => handleLanguageChange('en')}
-                className={`w-full px-4 py-2 rounded-lg transition-colors text-left ${
-                  language === 'en'
-                    ? 'bg-[#00d084] text-black font-semibold'
-                    : 'bg-zinc-800 text-white hover:bg-zinc-700'
-                }`}
-              >
-                🇬🇧 English
-              </button>
-            </div>
-          </div>
-
           {/* Section: Share */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
