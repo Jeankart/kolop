@@ -524,6 +524,21 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-xs sm:text-sm font-medium">
         {currentIndex + 1} / {wallpapers.length}
       </div>
+
+      <style jsx>{`
+        video {
+          pointer-events: none !important;
+        }
+        video::-webkit-media-controls {
+          display: none !important;
+        }
+        video::-webkit-media-controls-enclosure {
+          display: none !important;
+        }
+        video::-moz-media-controls {
+          display: none !important;
+        }
+      `}</style>
     </div>
   );
 }
