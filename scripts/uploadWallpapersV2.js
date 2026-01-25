@@ -63,7 +63,7 @@ function parseFilename(filename) {
   }
   
   // Validar categorías válidas
-  const validCategories = ['Featured', 'Live', 'Charging', 'AI', 'Aesthetic', 'Widgets', 'Cars', 'B&W', 'Urban', 'Films', 'Cute', 'Anime', 'Hot'];
+  const validCategories = ['Featured', 'Live', 'Charging', 'AI', 'Aesthetic', 'Widgets', 'Cars', 'B&W', 'Urban', 'Films', 'Cute', 'Anime', 'IOS'];
   const invalidCats = categories.filter(cat => !validCategories.includes(cat));
   
   if (invalidCats.length > 0) {
@@ -117,10 +117,16 @@ async function uploadWallpapers() {
       categories.forEach(cat => wallpapers.get(id).categories.add(cat));
       
       // Determinar si es cover (gif) o lg (jpg)
+      // Prefer .gif for cover, fallback to .jpg
       if (ext === '.gif') {
         wallpapers.get(id).files.cover = file;
-      } else {
-        wallpapers.get(id).files.lg = file;
+      } else if (ext === '.jpg') {
+        // If no cover yet, use jpg as cover; otherwise store as lg
+        if (!wallpapers.get(id).files.cover) {
+          wallpapers.get(id).files.cover = file;
+        } else {
+          wallpapers.get(id).files.lg = file;
+        }
       }
     }
     
@@ -135,17 +141,20 @@ async function uploadWallpapers() {
       const categories = Array.from(data.categories);
       
       if (!cover) {
-        console.log(`  ⏭️  ${id} - Sin cover (.gif), saltando`);
+        console.log(`  ⏭️  ${id} - Sin imagen, saltando`);
         skippedCount++;
         continue;
       }
       
       try {
-        const docId = `wallpaper_${id}`;
+        const docId = id; // Use numeric ID directly as doc ID
         const name = `Wall ${id}`;
         
         // Determinar si es featured
         const isFeatured = categories.includes('Featured');
+        
+        // Determine download file (prefer jpg if available, otherwise use cover)
+        const downloadFile = lg || cover;
         
         console.log(`  ⬆️  ${id} - Categorías: ${categories.join(', ')}`);
         
@@ -153,7 +162,10 @@ async function uploadWallpapers() {
           id: id, // ID numérico como string
           name: name,
           categories: categories, // Array de categorías
-          image: cover, // Nombre del cover
+          files: {
+            cover: cover, // .gif o .jpg para preview
+            download: downloadFile, // .jpg para descarga, o el mismo cover
+          },
           featured: isFeatured,
           downloads: 0,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
