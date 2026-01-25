@@ -15,6 +15,8 @@ const COLOR_PALETTE = [
   { name: 'Blue', hex: '#3b82f6' },
   { name: 'Purple', hex: '#a855f7' },
   { name: 'Pink', hex: '#ec4899' },
+  { name: 'White', hex: '#ffffff' },
+  { name: 'Black', hex: '#000000' },
 ];
 
 const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
@@ -144,14 +146,14 @@ export default function ColorFilter({ wallpapers, onFilterChange }: ColorFilterP
           {/* OFF Button - Inicial filter */}
           <button
             onClick={() => handleColorSelect('OFF')}
-            className={`flex-shrink-0 h-3 px-3 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
+            className={`flex-shrink-0 h-3 px-3 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 border border-white ${
               selectedColor === 'OFF'
-                ? 'bg-white text-black'
-                : 'border border-white border-opacity-40 text-white text-opacity-40 hover:text-opacity-60'
+                ? 'bg-black text-white'
+                : 'bg-black text-white text-opacity-40 border-opacity-40 hover:text-opacity-60 hover:border-opacity-60'
             }`}
             title="Show all"
           >
-            OFF
+            <span className="text-2xs">OFF</span>
           </button>
 
           {/* Color Pills */}
@@ -163,7 +165,7 @@ export default function ColorFilter({ wallpapers, onFilterChange }: ColorFilterP
                 selectedColor === color.name
                   ? 'ring-2 ring-white ring-offset-2 ring-offset-zinc-950 scale-110'
                   : 'opacity-50 hover:opacity-80'
-              }`}
+              } ${color.name === 'White' || color.name === 'Black' ? 'border border-white' : ''}`}
               style={{ backgroundColor: color.hex }}
               title={color.name}
             />
