@@ -109,7 +109,7 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
         <WallpaperModal 
           isOpen={!!selectedWallpaper} 
           wallpaper={selectedWallpaper}
-          wallpapers={displayedWallpapers}
+          wallpapers={wallpapers}
           onClose={() => setSelectedWallpaper(null)}
           onNavigate={handleNavigate}
         />
