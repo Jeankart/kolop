@@ -149,6 +149,8 @@ export default function Home() {
                 muted
                 loop
                 playsInline
+                controls={false}
+                preload="auto"
                 className="homeios26CardVideo absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-300"
               >
                 <source

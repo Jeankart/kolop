@@ -55,6 +55,8 @@ export default function HeroBanner() {
                 muted
                 loop
                 playsInline
+                controls={false}
+                preload="auto"
                 className={`heroBannerVideo absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
                   index === currentSlide ? 'opacity-100' : 'opacity-0'
                 }`}
