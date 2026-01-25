@@ -36,19 +36,31 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Log when wallpaper changes
+  useEffect(() => {
+    console.log('[WallpaperModal] Opened with wallpaper:', wallpaper);
+    console.log('[WallpaperModal] Files:', wallpaper.files);
+    console.log('[WallpaperModal] Categories:', wallpaper.categories);
+  }, [wallpaper.id]);
+
   const currentIndex = wallpapers.findIndex(w => w.id === wallpaper.id);
   
   // Función para obtener la ruta completa de la imagen
   const getImageUrl = (wp: Wallpaper) => {
     // Usar el archivo download para mostrar en alta resolución
-    return `/wallUploads/${wp.files.download}`;
+    const url = `/wallUploads/${wp.files.download}`;
+    console.log(`[WallpaperModal] Image URL for ${wp.id}: ${url}`, wp.files);
+    return url;
   };
 
   // Función para obtener ruta del video
   const getMovUrl = (wp: Wallpaper) => {
     if (wp.files.video) {
-      return `/wallUploads/${wp.files.video}`;
+      const url = `/wallUploads/${wp.files.video}`;
+      console.log(`[WallpaperModal] Video URL for ${wp.id}: ${url}`);
+      return url;
     }
+    console.log(`[WallpaperModal] No video for ${wp.id}`, wp.files);
     return null;
   };
 
@@ -405,7 +417,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   muted={false}
                   preload="auto"
                   onError={(e) => {
-                    console.error('Error loading video:', getMovUrl(wp), e);
+                    console.error(`[WallpaperModal] Error loading video for ${wp.id}:`, getMovUrl(wp), e);
                   }}
                 />
               ) : (
@@ -415,10 +427,12 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   className="w-auto h-full object-cover"
                   draggable={false}
                   onError={(e) => {
+                    console.error(`[WallpaperModal] Error loading image for ${wp.id}:`, getImageUrl(wp), wp.files);
                     // Fallback al cover en wallUploads
                     (e.target as HTMLImageElement).src = `/wallUploads/${wp.files.cover}`;
                     // Último fallback a carpetas antiguas
                     (e.target as HTMLImageElement).onerror = () => {
+                      console.warn(`[WallpaperModal] Fallback also failed for ${wp.id}, trying old folder`);
                       const folder = `wall${wp.categories[0] || 'Featured'}`;
                       (e.target as HTMLImageElement).src = `/${folder}/${wp.files.cover}`;
                     };

@@ -42,8 +42,8 @@ const UPLOAD_FOLDER = path.join(__dirname, '../public/wallUploads');
  * Retorna: { id: '26337', categories: ['Cars', 'Live', 'Charging'] }
  */
 function parseFilename(filename) {
-  // Remover extensión
-  const nameWithoutExt = filename.replace(/\.(gif|jpg|png)$/, '');
+  // Remover extensión (incluyendo mp4)
+  const nameWithoutExt = filename.replace(/\.(gif|jpg|png|mp4)$/, '');
   
   // Split por guiones
   const parts = nameWithoutExt.split('-');
