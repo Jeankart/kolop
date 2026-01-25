@@ -10,93 +10,93 @@ export default function TermsPage() {
     <main className="bg-zinc-950 min-h-screen overflow-x-hidden">
       <Header />
       <section className="px-4 md:px-6 py-8 max-w-3xl mx-auto pt-24 pb-20">
-        {/* Header con botón de regreso */}
+        {/* Header with back button */}
         <div className="flex items-center gap-3 mb-8">
           <Link href="/settings" className="text-white hover:text-[#00d084] transition-colors">
             <ChevronLeft className="w-6 h-6" />
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Términos de Servicio</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">Terms of Service</h1>
         </div>
 
-        {/* Contenido */}
+        {/* Content */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-8 space-y-6 text-zinc-300">
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">1. Aceptación de Términos</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">1. Acceptance of Terms</h2>
             <p>
-              Al acceder y usar Wallpaper, aceptas estos términos de servicio en su totalidad. Si no estás de acuerdo, por favor no uses nuestro servicio.
+              By accessing and using Wallpaper, you accept these terms of service in their entirety. If you do not agree, please do not use our service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">2. Licencia de Uso</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">2. License of Use</h2>
             <p className="mb-2">
-              Te otorgamos una licencia limitada, no exclusiva y revocable para:
+              We grant you a limited, non-exclusive and revocable license to:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Descargar wallpapers para uso personal</li>
-              <li>Acceder a nuestro contenido</li>
-              <li>No revender ni distribuir comercialmente</li>
+              <li>Download wallpapers for personal use</li>
+              <li>Access our content</li>
+              <li>Not resell or commercially distribute</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">3. Contenido del Usuario</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">3. User Content</h2>
             <p>
-              Cualquier contenido que envíes es responsabilidad tuya. Al enviar contenido, nos das licencia para usarlo en nuestro servicio.
+              Any content you submit is your responsibility. By submitting content, you grant us a license to use it in our service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">4. Derechos de Autor</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">4. Copyright</h2>
             <p className="mb-2">
-              Respetamos los derechos de autor. Si crees que se ha infringido un derecho:
+              We respect copyright. If you believe a copyright has been infringed:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Contacta a support@wallpaper.com</li>
-              <li>Proporciona detalles del contenido</li>
-              <li>Incluye evidencia de propiedad</li>
+              <li>Contact support@kloop.wallpapers.app</li>
+              <li>Provide details of the content</li>
+              <li>Include evidence of ownership</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">5. Prohibiciones</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">5. Prohibitions</h2>
             <p className="mb-2">
-              No debes:
+              You must not:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Usar la app para actividades ilegales</li>
-              <li>Acosar o amenazar a otros usuarios</li>
-              <li>Intentar hackear o dañar el servicio</li>
-              <li>Recopilar datos sin consentimiento</li>
-              <li>Usar bots o scripts automatizados</li>
+              <li>Use the app for illegal activities</li>
+              <li>Harass or threaten other users</li>
+              <li>Attempt to hack or damage the service</li>
+              <li>Collect data without consent</li>
+              <li>Use bots or automated scripts</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">6. Limitación de Responsabilidad</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">6. Limitation of Liability</h2>
             <p>
-              Wallpaper se proporciona "tal cual". No somos responsables de daños incidentales, consecuentes o punitivos. Tu único remedio es dejar de usar el servicio.
+              Wallpaper is provided "as is". We are not responsible for incidental, consequential or punitive damages. Your only remedy is to stop using the service.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">7. Cambios en el Servicio</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">7. Changes to Service</h2>
             <p>
-              Nos reservamos el derecho de modificar o discontinuar el servicio en cualquier momento, con o sin noticia previa.
+              We reserve the right to modify or discontinue the service at any time, with or without notice.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">8. Terminación</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">8. Termination</h2>
             <p>
-              Podemos terminar tu acceso al servicio en cualquier momento si violas estos términos o por cualquier otra razón.
+              We may terminate your access to the service at any time if you violate these terms or for any other reason.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-3">9. Ley Aplicable</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">9. Governing Law</h2>
             <p>
-              Estos términos se rigen por la ley aplicable en tu jurisdicción.
+              These terms are governed by the applicable law in your jurisdiction.
             </p>
           </section>
 

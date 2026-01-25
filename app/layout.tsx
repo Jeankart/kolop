@@ -23,9 +23,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Wallpaper - Descarga los Mejores Fondos de Pantalla",
-  description: "Descubre y descarga wallpapers de alta calidad: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging y más. Fondos de pantalla para tu dispositivo.",
-  keywords: "wallpaper, fondos, fondo de pantalla, iOS, Android, descarga, gratis, fondos de pantalla 4K",
+  title: "Wallpaper - Download Premium Wallpapers",
+  description: "Discover and download high-quality wallpapers: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging and more. Beautiful backgrounds for your device.",
+  keywords: "wallpaper, backgrounds, 4K, iOS, Android, download, free, premium wallpapers, live wallpapers",
   authors: [{ name: "Wallpaper App" }],
   icons: {
     icon: "/favicon.ico",
@@ -38,14 +38,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "es_ES",
-    url: "https://wallpaper.example.com",
-    title: "Wallpaper - Descarga Fondos de Pantalla",
-    description: "Los mejores wallpapers de alta calidad para tu dispositivo",
+    locale: "en_US",
+    url: "https://kloop.wallpapers.app",
+    title: "Wallpaper - Download Premium Wallpapers",
+    description: "The best high-quality wallpapers for your device",
     siteName: "Wallpaper",
     images: [
       {
-        url: "https://wallpaper.example.com/og-image.jpg",
+        url: "https://kloop.wallpapers.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Wallpaper App",
@@ -54,9 +54,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wallpaper - Descarga Fondos de Pantalla",
-    description: "Los mejores wallpapers de alta calidad para tu dispositivo",
-    images: ["https://wallpaper.example.com/og-image.jpg"],
+    title: "Wallpaper - Download Premium Wallpapers",
+    description: "The best high-quality wallpapers for your device",
+    images: ["https://kloop.wallpapers.app/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     googleBot: "index, follow",
   },
   alternates: {
-    canonical: "https://wallpaper.example.com",
+    canonical: "https://kloop.wallpapers.app",
   },
 };
 
@@ -80,7 +80,7 @@ export default function RootLayout({
   const organizationSchema = generateOrganizationSchema();
 
   return (
-    <html lang="es" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning className="dark">
       <head>
         {/* Schema.org JSON-LD */}
         <Script

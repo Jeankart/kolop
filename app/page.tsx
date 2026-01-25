@@ -6,17 +6,17 @@ import HomeCategoryCarousel from './components/HomeCategoryCarousel';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Wallpaper - Descarga Fondos de Pantalla Gratis',
-  description: 'Descubre y descarga wallpapers de alta calidad. Categorías: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging y más. Fondos de pantalla para tu dispositivo.',
-  keywords: 'wallpapers, fondos de pantalla, descargar, gratis, iOS, Android, categorías',
+  title: 'Wallpaper - Download Premium Wallpapers',
+  description: 'Discover and download high-quality wallpapers. Categories: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging and more. Beautiful backgrounds for your device.',
+  keywords: 'wallpapers, backgrounds, download, free, iOS, Android, categories, premium',
   openGraph: {
-    title: 'Wallpaper - Descarga Fondos de Pantalla',
-    description: 'Los mejores wallpapers de alta calidad para tu dispositivo',
+    title: 'Wallpaper - Download Premium Wallpapers',
+    description: 'The best high-quality wallpapers for your device',
     type: 'website',
-    url: 'https://wallpaper.example.com',
+    url: 'https://kloop.wallpapers.app',
     images: [
       {
-        url: 'https://wallpaper.example.com/og-image.jpg',
+        url: 'https://kloop.wallpapers.app/og-image.jpg',
         width: 1200,
         height: 630,
       },

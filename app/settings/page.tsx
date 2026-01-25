@@ -1,27 +1,51 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, Moon, Sun, Bell, Share2, HelpCircle } from 'lucide-react';
+import { ChevronLeft, Moon, Sun, Share2, HelpCircle, Trash2, Globe } from 'lucide-react';
 import Header from '@/app/components/Header';
 import BottomNavigation from '@/app/components/BottomNavigation';
 
 export default function SettingsPage() {
   const [darkMode, setDarkMode] = useState(true);
-  const [notifications, setNotifications] = useState(true);
+  const [language, setLanguage] = useState('en');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Load from localStorage on mount
+    const savedTheme = localStorage.getItem('theme');
+    const savedLanguage = localStorage.getItem('language');
+    
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'dark');
+    }
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
 
   const handleThemeToggle = () => {
-    setDarkMode(!darkMode);
-    // En una versión real, guardarías esto en localStorage
+    const newMode = !darkMode;
+    setDarkMode(newMode);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', !darkMode ? 'dark' : 'light');
+      localStorage.setItem('theme', newMode ? 'dark' : 'light');
     }
   };
 
-  const handleNotifications = () => {
-    setNotifications(!notifications);
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('notifications', JSON.stringify(!notifications));
+      localStorage.setItem('language', lang);
+    }
+  };
+
+  const handleClearCache = () => {
+    if (typeof window !== 'undefined') {
+      if (confirm('Clear application cache? This action cannot be undone.')) {
+        localStorage.clear();
+        alert('Cache cleared successfully');
+      }
     }
   };
 
@@ -29,36 +53,38 @@ export default function SettingsPage() {
     if (navigator.share) {
       navigator.share({
         title: 'Wallpaper',
-        text: 'Descarga los mejores wallpapers para tu dispositivo',
+        text: 'Download the best wallpapers for your device',
         url: window.location.origin,
       });
     }
   };
 
+  if (!mounted) return null;
+
   return (
     <main className="bg-zinc-950 min-h-screen overflow-x-hidden">
       <Header />
       <section className="px-4 md:px-6 py-8 max-w-2xl mx-auto pt-24 pb-20">
-        {/* Header con botón de regreso */}
+        {/* Header with back button */}
         <div className="flex items-center gap-3 mb-8">
           <Link href="/" className="text-white hover:text-[#00d084] transition-colors">
             <ChevronLeft className="w-6 h-6" />
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Ajustes</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">Settings</h1>
         </div>
 
-        {/* Secciones de Configuración */}
+        {/* Configuration Sections */}
         <div className="space-y-6">
-          {/* Sección: Apariencia */}
+          {/* Section: Appearance */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-              Apariencia
+              Appearance
             </h2>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white">Modo Oscuro</p>
-                <p className="text-xs text-zinc-400 mt-1">Usa colores oscuros en la interfaz</p>
+                <p className="text-white">Dark Mode</p>
+                <p className="text-xs text-zinc-400 mt-1">Use dark colors on the interface</p>
               </div>
               <button
                 onClick={handleThemeToggle}
@@ -75,86 +101,115 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Sección: Notificaciones */}
+          {/* Section: Language */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Bell className="w-5 h-5" />
-              Notificaciones
+              <Globe className="w-5 h-5" />
+              Language
             </h2>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white">Notificaciones de nuevos wallpapers</p>
-                <p className="text-xs text-zinc-400 mt-1">Recibe notificaciones cuando hay nuevos contenidos</p>
-              </div>
+            <div className="space-y-2">
               <button
-                onClick={handleNotifications}
-                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  notifications ? 'bg-[#00d084]' : 'bg-zinc-700'
+                onClick={() => handleLanguageChange('es')}
+                className={`w-full px-4 py-2 rounded-lg transition-colors text-left ${
+                  language === 'es'
+                    ? 'bg-[#00d084] text-black font-semibold'
+                    : 'bg-zinc-800 text-white hover:bg-zinc-700'
                 }`}
               >
-                <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
-                    notifications ? 'translate-x-7' : 'translate-x-1'
-                  }`}
-                />
+                🇪🇸 Spanish
+              </button>
+              <button
+                onClick={() => handleLanguageChange('en')}
+                className={`w-full px-4 py-2 rounded-lg transition-colors text-left ${
+                  language === 'en'
+                    ? 'bg-[#00d084] text-black font-semibold'
+                    : 'bg-zinc-800 text-white hover:bg-zinc-700'
+                }`}
+              >
+                🇬🇧 English
               </button>
             </div>
           </div>
 
-          {/* Sección: Compartir */}
+          {/* Section: Share */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <Share2 className="w-5 h-5" />
-              Compartir
+              Share
             </h2>
             <button
               onClick={handleShare}
               className="w-full px-4 py-3 bg-[#00d084] text-black font-semibold rounded-lg hover:bg-[#00c770] transition-colors"
             >
-              Compartir Wallpaper
+              Share Wallpaper
             </button>
-            <p className="text-xs text-zinc-400 mt-3">Invita a tus amigos a descubrir nuestros wallpapers</p>
+            <p className="text-xs text-zinc-400 mt-3">Invite your friends to discover our wallpapers</p>
           </div>
 
-          {/* Sección: Acerca de */}
+          {/* Section: Storage */}
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
+            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Trash2 className="w-5 h-5" />
+              Storage
+            </h2>
+            <div className="space-y-4">
+              <div className="bg-zinc-800/50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-zinc-400">Application cache</p>
+                  <p className="text-xs bg-zinc-700 text-zinc-200 px-2 py-1 rounded">~2.5 MB</p>
+                </div>
+                <p className="text-xs text-zinc-500">Automatically cleaned every 30 days</p>
+              </div>
+              <button
+                onClick={handleClearCache}
+                className="w-full px-4 py-2 bg-red-900/50 hover:bg-red-900 text-red-200 border border-red-800 rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear Cache
+              </button>
+              <p className="text-xs text-zinc-500 text-center">This action cannot be undone</p>
+            </div>
+          </div>
+
+          {/* Section: About */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <HelpCircle className="w-5 h-5" />
-              Información
+              About
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-zinc-400">Versión</span>
+                <span className="text-zinc-400">Version</span>
                 <span className="text-white font-semibold">1.0.0</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-zinc-400">Wallpapers disponibles</span>
+                <span className="text-zinc-400">Available wallpapers</span>
                 <span className="text-white font-semibold">17+</span>
               </div>
             </div>
           </div>
 
-          {/* Sección: Enlaces útiles */}
+          {/* Section: Useful Links */}
           <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-            <h2 className="text-lg font-bold text-white mb-4">Enlaces útiles</h2>
+            <h2 className="text-lg font-bold text-white mb-4">Useful Links</h2>
             <div className="space-y-2">
               <Link
                 href="/privacy"
                 className="block px-4 py-2 text-[#00d084] hover:text-[#00c770] transition-colors text-sm"
               >
-                → Política de Privacidad
+                → Privacy Policy
               </Link>
               <Link
                 href="/terms"
                 className="block px-4 py-2 text-[#00d084] hover:text-[#00c770] transition-colors text-sm"
               >
-                → Términos de Servicio
+                → Terms of Service
               </Link>
               <a
-                href="mailto:support@wallpaper.com"
+                href="mailto:support@kloop.wallpapers.app"
                 className="block px-4 py-2 text-[#00d084] hover:text-[#00c770] transition-colors text-sm"
               >
-                → Contacto
+                → Contact
               </a>
             </div>
           </div>
@@ -165,7 +220,7 @@ export default function SettingsPage() {
               Made with ❤️ for wallpaper lovers
             </p>
             <p className="text-zinc-600 text-xs mt-2">
-              © 2026 Wallpaper. Todos los derechos reservados.
+              © 2026 Wallpaper. All rights reserved.
             </p>
           </div>
         </div>
