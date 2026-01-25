@@ -7,6 +7,7 @@ import WallpaperModal from '@/app/components/WallpaperModal';
 import { useWallpapersByCategory } from '@/lib/hooks/useWallpapers';
 import Header from '@/app/components/Header';
 import BottomNavigation from '@/app/components/BottomNavigation';
+import ColorFilter from '@/app/components/ColorFilter';
 
 interface Wallpaper {
   id: string;
@@ -20,6 +21,20 @@ interface Wallpaper {
 export default function iOSPage() {
   const { wallpapers, loading, error } = useWallpapersByCategory('IOS');
   const [selectedWallpaper, setSelectedWallpaper] = useState<Wallpaper | null>(null);
+  const [filteredWallpapers, setFilteredWallpapers] = useState<Wallpaper[]>([]);
+  const [hasFilter, setHasFilter] = useState(false);
+
+  const handleFilterChange = (filtered: Wallpaper[]) => {
+    if (filtered.length === wallpapers.length) {
+      setHasFilter(false);
+      setFilteredWallpapers([]);
+    } else {
+      setHasFilter(true);
+      setFilteredWallpapers(filtered);
+    }
+  };
+
+  const displayedWallpapers = hasFilter ? filteredWallpapers : wallpapers;
 
   if (loading) {
     return (
@@ -51,6 +66,10 @@ export default function iOSPage() {
           IOS Infinite Wallpapers
         </p>
 
+        {wallpapers.length > 0 && (
+          <ColorFilter wallpapers={wallpapers} onFilterChange={handleFilterChange} />
+        )}
+
         {error && (
           <div className="text-red-500 text-center py-8">{error}</div>
         )}
@@ -62,7 +81,7 @@ export default function iOSPage() {
         ) : (
           <div className="ios26AsymmetricGrid grid grid-cols-4 gap-4 md:gap-6 auto-rows-[200px]">
             {/* Mostrar wallpapers en el grid */}
-            {wallpapers.map((wallpaper, index) => (
+            {displayedWallpapers.map((wallpaper, index) => (
               <div
                 key={wallpaper.id}
                 onClick={() => setSelectedWallpaper(wallpaper)}
