@@ -413,9 +413,8 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   className="w-auto h-full object-cover"
                   autoPlay
                   loop
-                  controls
                   playsInline
-                  muted={false}
+                  muted={true}
                   preload="auto"
                   onError={(e) => {
                     console.error(`[WallpaperModal] Error loading video for ${wp.id}:`, getMovUrl(wp), e);
