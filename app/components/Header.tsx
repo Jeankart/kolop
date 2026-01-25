@@ -18,7 +18,7 @@ export default function Header() {
     { name: 'Charging', emoji: '🔌', path: '/charging' },
     { name: 'AI', emoji: '🤖', path: '/ai' },
     { name: 'Aesthetic', emoji: '🎨', path: '/aesthetic' },
-    { name: 'Cats', emoji: '🐱', path: '/cats' },
+    { name: 'Widgets', emoji: '🎚️', path: '/widgets' },
     { name: 'Cars', emoji: '🏎️', path: '/cars' },
     { name: 'B&W', emoji: '⚫', path: '/bw' },
     { name: 'Urban', emoji: '🏙️', path: '/urban' },

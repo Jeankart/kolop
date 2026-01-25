@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'anime',
     'bw',
     'cars',
-    'cats',
+    'widgets',
     'charging',
     'cute',
     'films',

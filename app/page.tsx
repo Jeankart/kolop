@@ -63,13 +63,13 @@ export default function Home() {
         moreLink="/aesthetic"
       />
 
-      {/* Cats Carousel */}
+      {/* Widgets Carousel */}
       <HomeCategoryCarousel
-        category="Cats"
-        title="Cats"
-        emoji="🐱"
-        folder="wallCats"
-        moreLink="/cats"
+        category="Widgets"
+        title="Widgets"
+        emoji="🎚️"
+        folder="wallWidgets"
+        moreLink="/widgets"
       />
 
       {/* Cars Carousel */}
