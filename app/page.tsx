@@ -1,8 +1,28 @@
+import { Metadata } from 'next';
 import HeroBanner from './components/HeroBanner';
 import CategoriesCarousel from './components/CategoriesCarousel';
 import FeaturedCarousel from './components/FeaturedCarousel';
 import HomeCategoryCarousel from './components/HomeCategoryCarousel';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Wallpaper - Descarga Fondos de Pantalla Gratis',
+  description: 'Descubre y descarga wallpapers de alta calidad. Categorías: iOS, Live, AI, Aesthetic, Anime, Cars, Cats, Charging y más. Fondos de pantalla para tu dispositivo.',
+  keywords: 'wallpapers, fondos de pantalla, descargar, gratis, iOS, Android, categorías',
+  openGraph: {
+    title: 'Wallpaper - Descarga Fondos de Pantalla',
+    description: 'Los mejores wallpapers de alta calidad para tu dispositivo',
+    type: 'website',
+    url: 'https://wallpaper.example.com',
+    images: [
+      {
+        url: 'https://wallpaper.example.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+};
 
 export default function Home() {
   return (

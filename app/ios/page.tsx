@@ -7,6 +7,12 @@ import WallpaperModal from '@/app/components/WallpaperModal';
 import { useWallpapersByCategory } from '@/lib/hooks/useWallpapers';
 import Header from '@/app/components/Header';
 import BottomNavigation from '@/app/components/BottomNavigation';
+import { getCategoryMetadata } from '@/lib/seo/categoryMetadata';
+
+// Metadata para SEO
+export async function generateMetadata() {
+  return getCategoryMetadata('IOS');
+}
 
 interface Wallpaper {
   id: string;

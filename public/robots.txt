@@ -1,0 +1,27 @@
+# Robots.txt para Wallpaper App
+# Permite que todos los buscadores indexen el sitio
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /.next/
+Disallow: /node_modules/
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://wallpaper.example.com/sitemap.xml
+Sitemap: https://wallpaper.example.com/sitemap-categories.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Request-rate (requests per second)
+Request-rate: 10/1s
