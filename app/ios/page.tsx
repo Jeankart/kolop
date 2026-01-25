@@ -13,7 +13,11 @@ interface Wallpaper {
   id: string;
   name: string;
   categories: string[];
-  image: string;
+  files: {
+    cover: string;
+    download: string;
+    video?: string;
+  };
   featured: boolean;
   downloads: number;
 }
@@ -98,7 +102,7 @@ export default function iOSPage() {
                 }`}
               >
                 <img
-                  src={`/wallUploads/${wallpaper.image}`}
+                  src={`/wallUploads/${wallpaper.files.cover}`}
                   alt={wallpaper.name}
                   className="ios26GridImage w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />

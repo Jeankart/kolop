@@ -10,8 +10,12 @@ import { Image } from 'lucide-react';
 interface Wallpaper {
   id: string;
   name: string;
-  categories: string[]; // Cambiar de category a categories array
-  image: string;
+  categories: string[];
+  files: {
+    cover: string;
+    download: string;
+    video?: string;
+  };
   featured: boolean;
   downloads: number;
 }
@@ -70,7 +74,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                 style={{ touchAction: 'manipulation' }}
               >
                 <img
-                  src={`/wallUploads/${getGifPath(wallpaper?.image) || 'wall1.png'}`}
+                  src={`/wallUploads/${getGifPath(wallpaper?.files.cover) || 'wall1.png'}`}
                   alt={`${title} wallpaper ${i + 1}`}
                   className="w-full h-full object-cover"
                   style={{ pointerEvents: 'none' }}

@@ -11,8 +11,12 @@ import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
 interface Wallpaper {
   id: string;
   name: string;
-  categories: string[]; // Cambiar de category a categories array
-  image: string;
+  categories: string[];
+  files: {
+    cover: string;
+    download: string;
+    video?: string;
+  };
   featured: boolean;
   downloads: number;
 }
@@ -84,7 +88,7 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
               className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
             >
               <img
-                src={`/wallUploads/${getGifPath(wallpaper.image)}`}
+                src={`/wallUploads/${getGifPath(wallpaper.files.cover)}`}
                 alt={wallpaper.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {

@@ -5,8 +5,12 @@ import { db } from '../firebase';
 export interface Wallpaper {
   id: string;
   name: string;
-  categories: string[]; // Cambiar de category a categories array
-  image: string;
+  categories: string[];
+  files: {
+    cover: string;      // .gif o .jpg para preview
+    download: string;   // .jpg para descarga
+    video?: string;     // .mp4 para video descargable (opcional)
+  };
   featured: boolean;
   downloads: number;
 }

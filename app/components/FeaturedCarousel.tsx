@@ -11,8 +11,12 @@ import { Image } from 'lucide-react';
 interface Wallpaper {
   id: string;
   name: string;
-  categories: string[]; // Cambiar de category a categories array
-  image: string;
+  categories: string[];
+  files: {
+    cover: string;
+    download: string;
+    video?: string;
+  };
   featured: boolean;
   downloads: number;
 }
