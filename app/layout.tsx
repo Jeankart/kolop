@@ -34,18 +34,18 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Wallpaper",
+    title: "Kloop",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kloop.wallpapers.app",
+    url: "https://kloop.vercel.app",
     title: "Wallpaper - Download Premium Wallpapers",
     description: "The best high-quality wallpapers for your device",
     siteName: "Wallpaper",
     images: [
       {
-        url: "https://kloop.wallpapers.app/og-image.jpg",
+        url: "https://kloop.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Wallpaper App",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Wallpaper - Download Premium Wallpapers",
     description: "The best high-quality wallpapers for your device",
-    images: ["https://kloop.wallpapers.app/og-image.jpg"],
+    images: ["https://kloop.vercel.app/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     googleBot: "index, follow",
   },
   alternates: {
-    canonical: "https://kloop.wallpapers.app",
+    canonical: "https://kloop.vercel.app",
   },
 };
 

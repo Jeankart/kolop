@@ -22,9 +22,9 @@ export function generateOrganizationSchema() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Wallpaper App',
-    url: 'https://kloop.wallpapers.app',
+    url: 'https://kloop.vercel.app',
     description: 'The best app to download high-quality wallpapers',
-    image: 'https://kloop.wallpapers.app/og-image.jpg',
+    image: 'https://kloop.vercel.app/og-image.jpg',
     sameAs: [
       'https://twitter.com/wallpaperapp',
       'https://instagram.com/wallpaperapp',
@@ -38,7 +38,7 @@ export function generateCollectionPageSchema(category: string) {
     '@type': 'CollectionPage',
     name: `${category} Wallpapers`,
     description: `Download ${category} wallpapers. High-quality backgrounds for your device.`,
-    url: `https://kloop.wallpapers.app/${category.toLowerCase()}`,
+    url: `https://kloop.vercel.app/${category.toLowerCase()}`,
   };
 }
 

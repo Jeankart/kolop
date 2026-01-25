@@ -52,7 +52,7 @@ export default function TermsPage() {
               We respect copyright. If you believe a copyright has been infringed:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Contact support@kloop.wallpapers.app</li>
+              <li>Contact support@kloop.vercel.app</li>
               <li>Provide details of the content</li>
               <li>Include evidence of ownership</li>
             </ul>

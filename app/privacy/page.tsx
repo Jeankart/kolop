@@ -82,7 +82,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-3">7. Contact</h2>
             <p>
-              If you have questions about this policy, please contact us at: <span className="text-[#00d084]">support@kloop.wallpapers.app</span>
+              If you have questions about this policy, please contact us at: <span className="text-[#00d084]">support@kloop.vercel.app</span>
             </p>
           </section>
 

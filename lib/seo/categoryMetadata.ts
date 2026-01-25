@@ -70,7 +70,7 @@ export function getCategoryMetadata(category: string): Metadata {
       title: info.title,
       description: info.description,
       type: 'website',
-      url: `https://kloop.wallpapers.app/${categoryKey}`,
+      url: `https://kloop.vercel.app/${categoryKey}`,
     },
   };
 }

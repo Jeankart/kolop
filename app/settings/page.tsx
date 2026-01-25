@@ -114,7 +114,7 @@ export default function SettingsPage() {
                 → Terms of Service
               </Link>
               <a
-                href="mailto:support@kloop.wallpapers.app"
+                href="mailto:support@kloop.vercel.app"
                 className="block px-4 py-2 text-[#00d084] hover:text-[#00c770] transition-colors text-sm"
               >
                 → Contact
