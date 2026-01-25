@@ -6,8 +6,12 @@ import { useState, useRef, useEffect } from 'react';
 interface Wallpaper {
   id: string;
   name: string;
-  categories: string[]; // Cambiar de category a categories array
-  image: string;
+  categories: string[];
+  files: {
+    cover: string;
+    download: string;
+    video?: string;
+  };
   featured: boolean;
   downloads: number;
 }
@@ -34,27 +38,18 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const currentIndex = wallpapers.findIndex(w => w.id === wallpaper.id);
   
-  // Función para convertir nombre de archivo cover (.gif) a jpg
-  const getLgImagePath = (imagePath: string) => {
-    return imagePath.replace(/\.gif$/, '.jpg');
-  };
-  
-  // Función para obtener la ruta del video .mp4
-  const getMovPath = (imagePath: string) => {
-    return imagePath.replace(/\.gif$/, '.mp4');
-  };
-  
   // Función para obtener la ruta completa de la imagen
   const getImageUrl = (wp: Wallpaper) => {
-    // Siempre usar wallUploads como carpeta principal, con fallback a carpetas antiguas
-    const lgPath = getLgImagePath(wp.image);
-    return `/wallUploads/${lgPath}`;
+    // Usar el archivo download para mostrar en alta resolución
+    return `/wallUploads/${wp.files.download}`;
   };
 
   // Función para obtener ruta del video
   const getMovUrl = (wp: Wallpaper) => {
-    const movPath = getMovPath(wp.image);
-    return `/wallUploads/${movPath}`;
+    if (wp.files.video) {
+      return `/wallUploads/${wp.files.video}`;
+    }
+    return null;
   };
 
   // Verificar si tiene categoría Live
@@ -173,13 +168,13 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       let response = await fetch(imageUrl);
       
       if (!response.ok) {
-        imageUrl = `/wallUploads/${wallpaper.image}`;
+        imageUrl = `/wallUploads/${wallpaper.files.cover}`;
         response = await fetch(imageUrl);
       }
       
       if (!response.ok) {
         const folder = `wall${wallpaper.categories[0] || 'Featured'}`;
-        imageUrl = `/${folder}/${wallpaper.image}`;
+        imageUrl = `/${folder}/${wallpaper.files.cover}`;
         response = await fetch(imageUrl);
       }
 
@@ -246,6 +241,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
     try {
       const movUrl = getMovUrl(wallpaper);
+      if (!movUrl) {
+        throw new Error('Live wallpaper video not available');
+      }
+      
       const response = await fetch(movUrl);
       
       if (!response.ok) {
@@ -391,10 +390,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
               key={wp.id}
               className="flex-shrink-0 w-full h-full flex items-center justify-center"
             >
-              {showMov && wp.categories?.includes('Live') ? (
+              {showMov && wp.categories?.includes('Live') && getMovUrl(wp) ? (
                 <video
                   key={`video-${wp.id}`}
-                  src={getMovUrl(wp)}
+                  src={getMovUrl(wp) || undefined}
                   className="w-auto h-full object-cover"
                   autoPlay
                   loop
@@ -412,11 +411,11 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   draggable={false}
                   onError={(e) => {
                     // Fallback al cover en wallUploads
-                    (e.target as HTMLImageElement).src = `/wallUploads/${wp.image}`;
+                    (e.target as HTMLImageElement).src = `/wallUploads/${wp.files.cover}`;
                     // Último fallback a carpetas antiguas
                     (e.target as HTMLImageElement).onerror = () => {
                       const folder = `wall${wp.categories[0] || 'Featured'}`;
-                      (e.target as HTMLImageElement).src = `/${folder}/${wp.image}`;
+                      (e.target as HTMLImageElement).src = `/${folder}/${wp.files.cover}`;
                     };
                   }}
                 />

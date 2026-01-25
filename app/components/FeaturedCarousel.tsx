@@ -102,7 +102,7 @@ export default function FeaturedCarousel() {
                 className="wallView flex-shrink-0 aspect-[9/19.5] w-44 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-200 dark:bg-zinc-800 relative group"
               >
                 <img
-                  src={`/wallUploads/${getGifPath(wallpaper.image)}`}
+                  src={`/wallUploads/${wallpaper.files.cover}`}
                   alt={wallpaper.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -160,7 +160,7 @@ export default function FeaturedCarousel() {
 
       <WallpaperModal 
         isOpen={!!selectedWallpaper} 
-        wallpaper={selectedWallpaper || { id: '0', name: 'wall1', categories: ['Featured'], image: 'wall1.gif', featured: true, downloads: 0 }}
+        wallpaper={selectedWallpaper || { id: '0', name: 'wall1', categories: ['Featured'], files: { cover: 'wall1.gif', download: 'wall1.jpg' }, featured: true, downloads: 0 }}
         wallpapers={wallpapers}
         onClose={() => setSelectedWallpaper(null)}
         onNavigate={handleNavigate}

@@ -93,13 +93,9 @@ export async function POST(request: NextRequest) {
         const docRef = doc(db, 'wallpapers', id);
         const docSnap = await getDoc(docRef);
 
+        let isUpdate = false;
         if (docSnap.exists()) {
-          results.push({
-            success: false,
-            message: `⏭️  ID ${id} - Ya existe en Firestore`,
-          });
-          skipCount++;
-          continue;
+          isUpdate = true;
         }
 
         // Determinar archivos a usar
@@ -115,8 +111,8 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // Crear documento en Firestore
-        const wallpaperData: WallpaperData = {
+        // Crear/actualizar documento en Firestore
+        const wallpaperData: any = {
           id,
           name: `Wallpaper ${id}`,
           categories: files.categories.map((cat) => {
@@ -129,15 +125,17 @@ export async function POST(request: NextRequest) {
             ...(video && { video }),
           },
           featured: files.categories.some((cat) => cat.toLowerCase() === 'featured'),
-          downloads: 0,
+          ...(isUpdate && { downloads: docSnap.data()?.downloads || 0 }),
+          ...(!isUpdate && { downloads: 0 }),
         };
 
         await setDoc(docRef, wallpaperData);
 
         const filesList = [cover, download, ...(video ? [video] : [])].join(', ');
+        const action = isUpdate ? '🔄 Actualizado' : '✅ Creado';
         results.push({
           success: true,
-          message: `✅ ID ${id} → ${files.categories.join(', ')} (${filesList})`,
+          message: `${action} ID ${id} → ${files.categories.join(', ')} (${filesList})`,
         });
         successCount++;
       } catch (error) {

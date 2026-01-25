@@ -128,7 +128,7 @@ export default function ColorFilter({ wallpapers, onFilterChange }: ColorFilterP
     const filtered: any[] = [];
 
     for (const wallpaper of wallpapers) {
-      const imagePath = `/wallUploads/${wallpaper.image}`;
+      const imagePath = `/wallUploads/${wallpaper.files.cover}`;
       const dominantColor = await getDominantColor(imagePath);
 
       if (dominantColor === colorName) {
