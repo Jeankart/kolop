@@ -26,20 +26,24 @@ export default function SplashScreen() {
 
   return (
     <div className="fixed inset-0 bg-[#151515] dark:bg-[#151515] z-[9999] flex flex-col items-center justify-center gap-8">
-      {/* Logo con animación zoom in/out */}
+      {/* Icono con animación zoom in/out */}
       <div className="flex items-center justify-center">
         <img 
-          src="/kloop-logo.png" 
-          alt="Kolop Logo" 
-          className="w-20 h-20 rounded-lg"
+          src="/apple-touch-icon.png" 
+          alt="Wallpaper Icon" 
+          className="w-16 h-16 rounded-lg"
           style={{
             animation: 'zoomPulse 2s ease-in-out infinite'
           }}
         />
       </div>
 
-      {/* Título */}
-      <h1 className="text-3xl font-black tracking-tight text-white">Wallpaper</h1>
+      {/* Logo Kloop */}
+      <img 
+        src="/kloop-logo.png" 
+        alt="Kloop Logo" 
+        className="w-32 h-auto"
+      />
 
       {/* Barra de carga con glow mejorado */}
       <div className="w-48 h-1.5 bg-[#686868]/30 rounded-full overflow-hidden shadow-2xl shadow-[#00d084]">
