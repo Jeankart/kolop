@@ -146,14 +146,14 @@ export default function ColorFilter({ wallpapers, onFilterChange }: ColorFilterP
           {/* OFF Button - Inicial filter */}
           <button
             onClick={() => handleColorSelect('OFF')}
-            className={`flex-shrink-0 h-3 px-3 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 border border-white ${
+            className={`flex-shrink-0 h-3 px-3 rounded-full flex items-center justify-center font-medium transition-all duration-200 border border-white ${
               selectedColor === 'OFF'
                 ? 'bg-black text-white'
                 : 'bg-black text-white text-opacity-40 border-opacity-40 hover:text-opacity-60 hover:border-opacity-60'
             }`}
             title="Show all"
           >
-            <span className="text-2xs">OFF</span>
+            <span className="text-2xs leading-none">OFF</span>
           </button>
 
           {/* Color Pills */}
