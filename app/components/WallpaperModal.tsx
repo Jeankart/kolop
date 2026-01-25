@@ -95,14 +95,13 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       };
     };
 
-    // Precargar siguiente
-    if (currentIndex < wallpapers.length - 1) {
-      preloadImage(getImageUrl(wallpapers[currentIndex + 1]));
-    }
-    // Precargar anterior
-    if (currentIndex > 0) {
-      preloadImage(getImageUrl(wallpapers[currentIndex - 1]));
-    }
+    // Opcional: precargar siguiente/anterior (desactivado por rendimiento)
+    // if (currentIndex < wallpapers.length - 1) {
+    //   preloadImage(getImageUrl(wallpapers[currentIndex + 1]));
+    // }
+    // if (currentIndex > 0) {
+    //   preloadImage(getImageUrl(wallpapers[currentIndex - 1]));
+    // }
   }, [currentIndex, wallpapers, isOpen]);
 
   if (!isOpen) return null;

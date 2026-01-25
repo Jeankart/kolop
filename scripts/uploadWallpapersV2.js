@@ -99,7 +99,7 @@ async function uploadWallpapers() {
       if (file.startsWith('.')) continue; // Skip .DS_Store
       
       const ext = path.extname(file).toLowerCase();
-      if (!['.gif', '.jpg', '.png'].includes(ext)) {
+      if (!['.gif', '.jpg', '.png', '.mp4'].includes(ext)) {
         console.warn(`  ⚠️  Extensión no soportada: ${file}`);
         continue;
       }
@@ -116,17 +116,19 @@ async function uploadWallpapers() {
       // Agregar categorías
       categories.forEach(cat => wallpapers.get(id).categories.add(cat));
       
-      // Determinar si es cover (gif) o lg (jpg)
-      // Prefer .gif for cover, fallback to .jpg
+      // Determinar tipo de archivo
       if (ext === '.gif') {
         wallpapers.get(id).files.cover = file;
-      } else if (ext === '.jpg') {
+      } else if (ext === '.jpg' || ext === '.png') {
         // If no cover yet, use jpg as cover; otherwise store as lg
         if (!wallpapers.get(id).files.cover) {
           wallpapers.get(id).files.cover = file;
         } else {
-          wallpapers.get(id).files.lg = file;
+          wallpapers.get(id).files.download = file;
         }
+      } else if (ext === '.mp4') {
+        // Almacenar video para Live wallpapers
+        wallpapers.get(id).files.video = file;
       }
     }
     
@@ -137,7 +139,7 @@ async function uploadWallpapers() {
     
     // Procesar cada wallpaper
     for (const [id, data] of wallpapers) {
-      const { cover, lg } = data.files;
+      const { cover, download, video } = data.files;
       const categories = Array.from(data.categories);
       
       if (!cover) {
@@ -153,19 +155,27 @@ async function uploadWallpapers() {
         // Determinar si es featured
         const isFeatured = categories.includes('Featured');
         
-        // Determine download file (prefer jpg if available, otherwise use cover)
-        const downloadFile = lg || cover;
+        // Determine download file (prefer download if available, otherwise use cover)
+        const downloadFile = download || cover;
         
         console.log(`  ⬆️  ${id} - Categorías: ${categories.join(', ')}`);
+        
+        // Build files object dynamically
+        const filesObj = {
+          cover: cover, // .gif o .jpg para preview
+          download: downloadFile, // .jpg para descarga, o el mismo cover
+        };
+        
+        // Add video only if it exists
+        if (video) {
+          filesObj.video = video;
+        }
         
         await db.collection('wallpapers').doc(docId).set({
           id: id, // ID numérico como string
           name: name,
           categories: categories, // Array de categorías
-          files: {
-            cover: cover, // .gif o .jpg para preview
-            download: downloadFile, // .jpg para descarga, o el mismo cover
-          },
+          files: filesObj,
           featured: isFeatured,
           downloads: 0,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
