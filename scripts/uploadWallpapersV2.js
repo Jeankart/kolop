@@ -92,7 +92,7 @@ async function uploadWallpapers() {
       process.exit(0);
     }
     
-    // Agrupar archivos por ID
+    // Agrupar archivos por ID - PRIMERO mapear qué archivos existen
     const wallpapers = new Map();
     
     for (const file of files) {
@@ -110,26 +110,43 @@ async function uploadWallpapers() {
       const { id, categories } = parsed;
       
       if (!wallpapers.has(id)) {
-        wallpapers.set(id, { categories: new Set(categories), files: {} });
+        wallpapers.set(id, { categories: new Set(categories), files: { gif: null, jpg: null, png: null, mp4: null } });
       }
       
       // Agregar categorías
       categories.forEach(cat => wallpapers.get(id).categories.add(cat));
       
-      // Determinar tipo de archivo
+      // Almacenar qué archivos existen
       if (ext === '.gif') {
-        wallpapers.get(id).files.cover = file;
-      } else if (ext === '.jpg' || ext === '.png') {
-        // If no cover yet, use jpg as cover; otherwise store as lg
-        if (!wallpapers.get(id).files.cover) {
-          wallpapers.get(id).files.cover = file;
-        } else {
-          wallpapers.get(id).files.download = file;
-        }
+        wallpapers.get(id).files.gif = file;
+      } else if (ext === '.jpg') {
+        wallpapers.get(id).files.jpg = file;
+      } else if (ext === '.png') {
+        wallpapers.get(id).files.png = file;
       } else if (ext === '.mp4') {
-        // Almacenar video para Live wallpapers
-        wallpapers.get(id).files.video = file;
+        wallpapers.get(id).files.mp4 = file;
       }
+    }
+    
+    // SEGUNDO pass: Decidir qué archivo usar para cada campo basado en lo que existe
+    for (const [id, data] of wallpapers) {
+      const { gif, jpg, png, mp4 } = data.files;
+      
+      // Determinar cover: Preferir GIF, luego JPG, luego PNG
+      const cover = gif || jpg || png;
+      
+      // Determinar download: Preferir JPG, luego PNG, luego GIF
+      const download = jpg || png || gif;
+      
+      // Determinar video: Solo MP4
+      const video = mp4;
+      
+      // Actualizar files con los valores finales
+      data.files = {
+        cover,
+        download,
+        video
+      };
     }
     
     console.log(`📂 Encontrados ${wallpapers.size} wallpapers\n`);
@@ -155,15 +172,12 @@ async function uploadWallpapers() {
         // Determinar si es featured
         const isFeatured = categories.includes('Featured');
         
-        // Determine download file (prefer download if available, otherwise use cover)
-        const downloadFile = download || cover;
-        
         console.log(`  ⬆️  ${id} - Categorías: ${categories.join(', ')}`);
         
-        // Build files object dynamically
+        // Build files object (cover, download, and video are already determined in second pass)
         const filesObj = {
-          cover: cover, // .gif o .jpg para preview
-          download: downloadFile, // .jpg para descarga, o el mismo cover
+          cover: cover,      // GIF si existe, sino JPG/PNG
+          download: download, // JPG/PNG para descargar
         };
         
         // Add video only if it exists
