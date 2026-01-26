@@ -99,7 +99,7 @@ async function uploadWallpapers() {
       if (file.startsWith('.')) continue; // Skip .DS_Store
       
       const ext = path.extname(file).toLowerCase();
-      if (!['.gif', '.jpg', '.png', '.mp4'].includes(ext)) {
+      if (!['.gif', '.jpg', '.jpeg', '.png', '.mp4'].includes(ext)) {
         console.warn(`  ⚠️  Extensión no soportada: ${file}`);
         continue;
       }
@@ -119,7 +119,7 @@ async function uploadWallpapers() {
       // Almacenar qué archivos existen
       if (ext === '.gif') {
         wallpapers.get(id).files.gif = file;
-      } else if (ext === '.jpg') {
+      } else if (ext === '.jpg' || ext === '.jpeg') {
         wallpapers.get(id).files.jpg = file;
       } else if (ext === '.png') {
         wallpapers.get(id).files.png = file;
