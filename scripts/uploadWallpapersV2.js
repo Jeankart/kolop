@@ -43,7 +43,7 @@ const UPLOAD_FOLDER = path.join(__dirname, '../public/wallUploads');
  */
 function parseFilename(filename) {
   // Remover extensión (incluyendo mp4)
-  const nameWithoutExt = filename.replace(/\.(gif|jpg|png|mp4)$/, '');
+  const nameWithoutExt = filename.replace(/\.(gif|jpg|jpeg|png|mp4)$/, '');
   
   // Split por guiones
   const parts = nameWithoutExt.split('-');
