@@ -187,12 +187,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         imageUrl = `/wallUploads/${wallpaper.files.cover}`;
         response = await fetch(imageUrl);
       }
-      
-      if (!response.ok) {
-        const folder = `wall${wallpaper.categories[0] || 'Featured'}`;
-        imageUrl = `/${folder}/${wallpaper.files.cover}`;
-        response = await fetch(imageUrl);
-      }
 
       if (!response.ok) {
         throw new Error('Image not found');
@@ -430,12 +424,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                     console.error(`[WallpaperModal] Error loading image for ${wp.id}:`, getImageUrl(wp), wp.files);
                     // Fallback al cover en wallUploads
                     (e.target as HTMLImageElement).src = `/wallUploads/${wp.files.cover}`;
-                    // Último fallback a carpetas antiguas
-                    (e.target as HTMLImageElement).onerror = () => {
-                      console.warn(`[WallpaperModal] Fallback also failed for ${wp.id}, trying old folder`);
-                      const folder = `wall${wp.categories[0] || 'Featured'}`;
-                      (e.target as HTMLImageElement).src = `/${folder}/${wp.files.cover}`;
-                    };
                   }}
                 />
               )}

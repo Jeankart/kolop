@@ -5,7 +5,7 @@ import { ChevronLeft, Image } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
-import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
+import { getJpgPath } from '@/lib/utils/imageHelper';
 
 interface Wallpaper {
   id: string;

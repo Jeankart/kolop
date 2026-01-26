@@ -6,7 +6,7 @@ import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { useWallpapersFeatured } from '@/lib/hooks/useWallpapers';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
-import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
+import { getJpgPath } from '@/lib/utils/imageHelper';
 
 interface Wallpaper {
   id: string;
@@ -72,20 +72,12 @@ export default function FeaturedGallery() {
               className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
             >
               <img
-                src={`/wallUploads/${getGifPath(wallpaper.files.cover)}`}
+                src={`/wallUploads/${wallpaper.files.cover}`}
                 alt={wallpaper.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
-                  const currentSrc = img.src;
-                  if (currentSrc.includes('.gif') && !currentSrc.includes('.jpg')) {
-                    const jpgSrc = currentSrc.replace(/\.gif$/, '.jpg');
-                    if (jpgSrc !== currentSrc) {
-                      img.src = jpgSrc;
-                      return;
-                    }
-                  }
-                  if (!currentSrc.includes('placeholder') && !currentSrc.includes('data:')) {
+                  if (!img.src.includes('placeholder') && !img.src.includes('data:')) {
                     img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
                   }
                 }}

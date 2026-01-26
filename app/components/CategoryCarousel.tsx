@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
-import { getGifPath, getJpgPath } from '@/lib/utils/imageHelper';
+import { getJpgPath } from '@/lib/utils/imageHelper';
 import { Image } from 'lucide-react';
 
 interface Wallpaper {
@@ -74,23 +74,14 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                 style={{ touchAction: 'manipulation' }}
               >
                 <img
-                  src={`/wallUploads/${getGifPath(wallpaper?.files.cover) || 'wall1.png'}`}
+                  src={`/wallUploads/${wallpaper?.files.cover || 'wall1.png'}`}
                   alt={`${title} wallpaper ${i + 1}`}
                   className="w-full h-full object-cover"
                   style={{ pointerEvents: 'none' }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
-                    const currentSrc = img.src;
-                    // Si es un .gif que falló, intenta con .jpg
-                    if (currentSrc.includes('.gif') && !currentSrc.includes('.jpg')) {
-                      const jpgSrc = currentSrc.replace(/\.gif$/, '.jpg');
-                      if (jpgSrc !== currentSrc) {
-                        img.src = jpgSrc;
-                        return;
-                      }
-                    }
-                    // Si todo falla, mostrar placeholder
-                    if (!currentSrc.includes('placeholder') && !currentSrc.includes('data:')) {
+                    // Fallback to placeholder
+                    if (!img.src.includes('placeholder') && !img.src.includes('data:')) {
                       img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23333" width="100" height="100"/%3E%3C/svg%3E';
                     }
                   }}
