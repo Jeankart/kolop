@@ -104,7 +104,7 @@ export default function FeaturedCarousel() {
         {/* Carrusel horizontal de wallpapers */}
         <div className="overflow-x-auto scrollbar-hide">
           <div className="flex gap-2 pb-2" style={{ width: 'fit-content', minWidth: '100%' }}>
-            {wallpapers.map((wallpaper) => (
+            {wallpapers.slice(0, 8).map((wallpaper) => (
               <div
                 key={wallpaper.id}
                 onClick={() => handleWallpaperClick(wallpaper)}
