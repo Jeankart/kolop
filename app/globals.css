@@ -132,11 +132,20 @@ body,
   }
 }
 
-/* Image display fixes */
+/* Image display fixes for carousels and galleries */
 .h-auto {
   height: -webkit-fill-available;
 }
 
 .object-contain {
   object-fit: cover;
+}
+
+/* Splash screen - restore normal display */
+.splashScreen .h-auto {
+  height: auto;
+}
+
+.splashScreen .object-contain {
+  object-fit: contain;
 }

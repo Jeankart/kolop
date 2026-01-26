@@ -25,7 +25,7 @@ export default function SplashScreen() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#151515] dark:bg-[#151515] z-[9999] flex flex-col items-center justify-center gap-8">
+    <div className="splashScreen fixed inset-0 bg-[#151515] dark:bg-[#151515] z-[9999] flex flex-col items-center justify-center gap-8">
       {/* Icono con animación zoom in/out */}
       <div className="flex items-center justify-center">
         <img 
