@@ -104,8 +104,8 @@ export default function CategoriesCarousel() {
                   className={baseClass}
                   title={category.name}
                   style={{
-                    filter: `drop-shadow(0 0 5px ${category.color}66) drop-shadow(0 0 2px ${category.color}33)`,
-                    boxShadow: `inset 0 0 10px ${category.color}22`,
+                    filter: `drop-shadow(0 0 2.5px ${category.color}33) drop-shadow(0 0 1px ${category.color}19)`,
+                    boxShadow: `inset 0 0 5px ${category.color}11`,
                   }}
                 >
                   <div className="flex items-center justify-center relative z-10 flex-1" style={{ overflow: 'visible' }}>

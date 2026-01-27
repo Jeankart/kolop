@@ -25,7 +25,7 @@ export default function BottomNavigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 p-3 rounded-lg transition-all duration-200 ${
+                className={`flex flex-col items-center justify-center h-full gap-0 p-3 rounded-lg transition-all duration-200 ${
                   isActive
                     ? 'text-[#00d084]'
                     : 'text-white/60 dark:text-white/60 hover:text-white dark:hover:text-white'
