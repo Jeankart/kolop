@@ -149,3 +149,10 @@ body,
 .splashScreen .object-contain {
   object-fit: contain;
 }
+
+/* Force portrait orientation on mobile - hide all content in landscape */
+@media (max-aspect-ratio: 9/16) and (orientation: landscape) {
+  body {
+    display: none !important;
+  }
+}
