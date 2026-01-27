@@ -33,7 +33,7 @@ export default function ClientLayout({
     <ThemeProvider>
       <SplashScreen />
       <Header />
-      <main className="pt-16 pb-24 bg-[#151515] dark:bg-[#151515]">
+      <main className="pb-24 bg-[#151515] dark:bg-[#151515]">
         {children}
       </main>
       <BottomNavigation />
