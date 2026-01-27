@@ -89,7 +89,7 @@ export default function CategoriesCarousel() {
   const router = useRouter();
 
   return (
-    <section className="categoriasSection pt-4" style={{ paddingTop: '1rem', paddingBottom: '1rem', paddingLeft: '1rem', overflow: 'visible' }}>
+    <section className="categoriasSection pt-4" style={{ paddingTop: '1rem', paddingBottom: '0rem', paddingLeft: '0rem', overflow: 'visible' }}>
       <div className="max-w-6xl mx-auto" style={{ overflow: 'visible' }}>
         {/* Carrusel horizontal */}
         <div className="overflow-y-hidden overflow-x-auto scrollbar-hide" style={{ overflowY: 'visible' }}>
