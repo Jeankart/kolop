@@ -63,7 +63,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
         </div>
         
         {/* Carrusel horizontal de wallpapers */}
-        <div className="overflow-x-auto scrollbar-hide touch-pan-x" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="overflow-x-auto scrollbar-hide touch-pan-x" style={{ WebkitOverflowScrolling: 'touch', paddingTop: '1rem', paddingBottom: '0rem', paddingLeft: '0rem', overflow: 'visible' }}>
           <div className="flex gap-2 pb-2" style={{ width: 'fit-content', minWidth: '100%' }}>
             {/* Mostrar solo los wallpapers que existen (máximo 8) */}
             {wallpapers.slice(0, 8).map((wallpaper, i) => (

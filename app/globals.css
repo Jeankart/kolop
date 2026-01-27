@@ -36,6 +36,8 @@ body {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: contain;
+  margin: 0;
+  padding: 0;
 }
 
 /* Ocultar scrollbar pero permitir scroll */
@@ -148,11 +150,4 @@ body,
 
 .splashScreen .object-contain {
   object-fit: contain;
-}
-
-/* Force portrait orientation on mobile - hide all content in landscape */
-@media (max-aspect-ratio: 9/16) and (orientation: landscape) {
-  body {
-    display: none !important;
-  }
 }

@@ -12,44 +12,21 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    // Bloquear rotación
-    const lockOrientation = () => {
-      const html = document.documentElement;
-      const body = document.body;
-      
-      // Bloquear en portrait
-      if ((screen.orientation as any)?.lock) {
-        (screen.orientation as any).lock('portrait-primary').catch(() => {
-          // Ignorar errores en navegadores que no lo soportan
-        });
-      }
-      
-      // Fallback: ocultar si se rota
-      const handleOrientationChange = () => {
-        html.style.overflow = 'auto';
-        body.style.overflow = 'auto';
+    // Bloquear rotación solo en móvil
+    const isMobile = window.innerWidth < 768;
+    
+    if (isMobile) {
+      const lockOrientation = () => {
+        // Bloquear en portrait
+        if ((screen.orientation as any)?.lock) {
+          (screen.orientation as any).lock('portrait-primary').catch(() => {
+            // Ignorar errores en navegadores que no lo soportan
+          });
+        }
       };
-      
-      window.addEventListener('orientationchange', handleOrientationChange);
-      
-      // Optimizar scroll en móvil
-      document.documentElement.style.scrollBehavior = 'smooth';
-      
-      // Asegurar que el scroll esté habilitado por defecto
-      html.style.overflow = '';
-      body.style.overflow = '';
-      body.style.touchAction = '';
-      
-      return () => {
-        window.removeEventListener('orientationchange', handleOrientationChange);
-        // Limpiar cuando el componente se desmonta
-        html.style.overflow = '';
-        body.style.overflow = '';
-        body.style.touchAction = '';
-      };
-    };
 
-    lockOrientation();
+      lockOrientation();
+    }
   }, []);
 
   return (

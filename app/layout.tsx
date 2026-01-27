@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import ClientLayout from "./ClientLayout";
+import DesktopMobileWrapper from "./components/DesktopMobileWrapper";
 import { generateWebsiteSchema, generateOrganizationSchema } from "@/lib/seo/schemaGenerator";
 
 const geistSans = Geist({
@@ -98,7 +99,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#151515] dark:bg-[#151515] text-white dark:text-white`}
       >
-        <ClientLayout>{children}</ClientLayout>
+        <DesktopMobileWrapper>
+          <ClientLayout>{children}</ClientLayout>
+        </DesktopMobileWrapper>
       </body>
     </html>
   );
