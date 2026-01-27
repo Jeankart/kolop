@@ -16,7 +16,7 @@ export default function BottomNavigation() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-20 backdrop-blur-md bg-[#686868]/20 dark:bg-[#686868]/20 border-t border-[#686868]/30 dark:border-[#686868]/30">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-around h-20 pb-safe">
+        <div className="flex items-center justify-around h-20">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;

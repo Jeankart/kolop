@@ -26,7 +26,6 @@
   --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --spacing-safe: max(0px, env(safe-area-inset-top));
 }
 
 html,
@@ -39,23 +38,6 @@ body {
   overscroll-behavior: contain;
   margin: 0;
   padding: 0;
-}
-
-/* Safe Area Utilities */
-.pt-safe {
-  padding-top: max(0px, env(safe-area-inset-top));
-}
-
-.pb-safe {
-  padding-bottom: max(0px, env(safe-area-inset-bottom));
-}
-
-.pl-safe {
-  padding-left: max(0px, env(safe-area-inset-left));
-}
-
-.pr-safe {
-  padding-right: max(0px, env(safe-area-inset-right));
 }
 
 /* Ocultar scrollbar pero permitir scroll */
