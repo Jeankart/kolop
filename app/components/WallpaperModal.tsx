@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff } from 'lucide-react';
+import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff, Circle, Sparkles, Zap } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface Wallpaper {
@@ -32,9 +32,48 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Inyectar SVG de filtros disponibles
+  useEffect(() => {
+    const svgContainer = document.createElement('div');
+    svgContainer.innerHTML = `
+      <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Filtro Glitch: Aberración cromática -->
+          <filter id="glitch-filter" x="-50%" y="-50%" width="200%" height="200%">
+            <feDisplacementMap in="SourceGraphic" scale="8" xChannelSelector="R" yChannelSelector="G" />
+            <feColorMatrix type="saturate" values="0.6" />
+            <feComponentTransfer>
+              <feFuncR type="linear" slope="1.15" />
+              <feFuncG type="linear" slope="1.15" />
+              <feFuncB type="linear" slope="1.15" />
+            </feComponentTransfer>
+          </filter>
+          
+          <!-- Filtro Bloom -->
+          <filter id="bloom-filter" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+            <feComponentTransfer>
+              <feFuncR type="linear" slope="1.4" intercept="0" />
+              <feFuncG type="linear" slope="1.4" intercept="0" />
+              <feFuncB type="linear" slope="1.4" intercept="0" />
+            </feComponentTransfer>
+          </filter>
+          
+          <!-- Filtro B&N -->
+          <filter id="bw-filter">
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+        </defs>
+      </svg>
+    `;
+    document.body.appendChild(svgContainer);
+    return () => svgContainer.remove();
+  }, []);
 
   // Log when wallpaper changes
   useEffect(() => {
@@ -157,7 +196,178 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     setTouchEnd(e.changedTouches[0].clientX);
     setIsDragging(false);
     handleSwipe();
-    setDragOffset(0);
+  };
+
+  const getFilterCSS = (filter: string | null): string => {
+    // SVG filters + CSS fallback para máxima compatibilidad
+    switch (filter) {
+      case 'bw':
+        return 'grayscale(1)';
+      case 'bloom':
+        // Bloom: desenfoque brillante y saturado con brillo extra
+        return 'blur(4px) brightness(1.3) contrast(1.15) saturate(1.5) drop-shadow(0 0 8px rgba(0,255,136,0.3))';
+      case 'glitch':
+        // Glitch: Aberración cromática visual con drop-shadows de colores
+        // Simula el efecto RGB shift visible
+        return 'contrast(1.6) brightness(1.08) saturate(0.7) drop-shadow(2px 2px 0px rgba(255,0,0,0.4)) drop-shadow(-2px -2px 0px rgba(0,255,0,0.3)) drop-shadow(4px 0px 0px rgba(0,0,255,0.3))';
+      default:
+        return 'none';
+    }
+  };
+
+  const applyFilterToCanvas = async (imgSrc: string, filter: string | null): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+
+        if (filter === 'glitch') {
+          // Glitch: Aberración cromática - Patrón de p5.js
+          // Crear 3 canvas separados para cada canal RGB con desplazamientos
+          
+          // Canvas para cada canal
+          const canvasR = document.createElement('canvas');
+          canvasR.width = img.width;
+          canvasR.height = img.height;
+          const ctxR = canvasR.getContext('2d', { willReadFrequently: true });
+          
+          const canvasG = document.createElement('canvas');
+          canvasG.width = img.width;
+          canvasG.height = img.height;
+          const ctxG = canvasG.getContext('2d', { willReadFrequently: true });
+          
+          const canvasB = document.createElement('canvas');
+          canvasB.width = img.width;
+          canvasB.height = img.height;
+          const ctxB = canvasB.getContext('2d', { willReadFrequently: true });
+          
+          if (!ctxR || !ctxG || !ctxB) {
+            reject(new Error('Canvas context not available'));
+            return;
+          }
+          
+          // Desplazamientos diferentes para cada canal (como en p5.js)
+          const offsetR = 10;  // Red: -10px, -10px
+          const offsetG = 6;   // Green: offset intermedio
+          const offsetB = 10;  // Blue: offset opuesto
+          
+          // Dibujar canal Rojo (desplazado arriba-izquierda)
+          ctxR.drawImage(img, -offsetR, -offsetR);
+          
+          // Dibujar canal Verde (desplazado ligeramente)
+          ctxG.drawImage(img, offsetG * 0.5, 0);
+          
+          // Dibujar canal Azul (desplazado abajo-derecha)
+          ctxB.drawImage(img, offsetB, offsetB);
+          
+          // Obtener imageData de cada canal
+          const dataR = ctxR.getImageData(0, 0, img.width, img.height).data;
+          const dataG = ctxG.getImageData(0, 0, img.width, img.height).data;
+          const dataB = ctxB.getImageData(0, 0, img.width, img.height).data;
+          
+          // Dibujar la imagen original como base
+          ctx.drawImage(img, 0, 0);
+          
+          // Obtener el resultado y combinar canales
+          const result = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = result.data;
+          
+          // Combinar canales RGB con los desplazamientos
+          for (let i = 0; i < data.length; i += 4) {
+            // Extraer cada canal de su canvas desplazado
+            data[i] = dataR[i];        // Red desde canvasR
+            data[i + 1] = dataG[i + 1]; // Green desde canvasG
+            data[i + 2] = dataB[i + 2]; // Blue desde canvasB
+            data[i + 3] = 255;         // Alpha
+          }
+          
+          ctx.putImageData(result, 0, 0);
+          
+          // Aplicar overlay con screen blend mode (superponer con la imagen original)
+          ctx.globalAlpha = 0.5;
+          ctx.globalCompositeOperation = 'screen';
+          ctx.drawImage(img, 0, 0);
+          ctx.globalAlpha = 1;
+          ctx.globalCompositeOperation = 'source-over';
+          
+          // Aplicar efectos finales
+          const finalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const finalPixels = finalData.data;
+          
+          for (let i = 0; i < finalPixels.length; i += 4) {
+            // Aumentar contraste y brillo para el efecto glitch
+            finalPixels[i] = Math.min(255, finalPixels[i] * 1.1 + 5);
+            finalPixels[i + 1] = Math.min(255, finalPixels[i + 1] * 1.1 + 5);
+            finalPixels[i + 2] = Math.min(255, finalPixels[i + 2] * 1.1 + 5);
+          }
+          
+          ctx.putImageData(finalData, 0, 0);
+          
+        } else if (filter === 'bloom') {
+          // Bloom: Blur con brightness
+          ctx.drawImage(img, 0, 0);
+          ctx.filter = 'blur(8px)';
+          ctx.globalAlpha = 0.6;
+          ctx.drawImage(img, 0, 0);
+          
+          ctx.globalAlpha = 1;
+          ctx.filter = 'none';
+          ctx.drawImage(img, 0, 0);
+          
+          // Aumentar brightness y saturación
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          const brightness = 1.4;
+          const saturate = 1.6;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            // Aplicar brightness
+            data[i] = Math.min(255, data[i] * brightness);
+            data[i + 1] = Math.min(255, data[i + 1] * brightness);
+            data[i + 2] = Math.min(255, data[i + 2] * brightness);
+            
+            // Aplicar saturación
+            const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            data[i] = Math.min(255, gray + (data[i] - gray) * saturate);
+            data[i + 1] = Math.min(255, gray + (data[i + 1] - gray) * saturate);
+            data[i + 2] = Math.min(255, gray + (data[i + 2] - gray) * saturate);
+          }
+          ctx.putImageData(imageData, 0, 0);
+          
+        } else if (filter === 'bw') {
+          // Blanco y negro
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          
+          for (let i = 0; i < data.length; i += 4) {
+            const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+            data[i] = gray;
+            data[i + 1] = gray;
+            data[i + 2] = gray;
+          }
+          ctx.putImageData(imageData, 0, 0);
+          
+        } else {
+          ctx.drawImage(img, 0, 0);
+        }
+
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('Failed to convert canvas to blob'));
+        }, 'image/jpeg', 0.95);
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = imgSrc;
+    });
   };
 
   const handleSwipe = () => {
@@ -192,7 +402,18 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         throw new Error('Image not found');
       }
 
-      const blob = await response.blob();
+      let blob = await response.blob();
+      
+      // Aplicar filtro si está activo
+      if (activeFilter) {
+        try {
+          blob = await applyFilterToCanvas(imageUrl, activeFilter);
+        } catch (error) {
+          console.error('Error applying filter:', error);
+          // Continuar sin filtro si hay error
+        }
+      }
+
       const filename = `${wallpaper.name}.jpg`;
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
@@ -367,6 +588,63 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         </button>
       )}
 
+      {/* Filtros - Columna Izquierda */}
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-10">
+        {/* B&N */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveFilter(activeFilter === 'bw' ? null : 'bw');
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+            activeFilter === 'bw'
+              ? 'bg-white/20 border-white/50'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+          }`}
+          title="Blanco y Negro"
+        >
+          <Circle className="w-5 h-5 text-white" />
+        </button>
+
+        {/* Bloom */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveFilter(activeFilter === 'bloom' ? null : 'bloom');
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+            activeFilter === 'bloom'
+              ? 'bg-[#00d084]/20 border-[#00d084]/50'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+          }`}
+          title="Bloom Glitter"
+        >
+          <Sparkles className="w-5 h-5 text-white" />
+        </button>
+
+        {/* Glitch */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveFilter(activeFilter === 'glitch' ? null : 'glitch');
+          }}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+            activeFilter === 'glitch'
+              ? 'bg-red-500/20 border-red-500/50'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+          }`}
+          title="Glitch Grunge"
+        >
+          <Zap className="w-5 h-5 text-white" />
+        </button>
+      </div>
+
       {/* Botón Next */}
       {currentIndex < wallpapers.length - 1 && (
         <button
@@ -405,6 +683,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   key={`video-${wp.id}`}
                   src={getMovUrl(wp) || undefined}
                   className="w-full h-auto object-contain"
+                  style={{
+                    filter: getFilterCSS(activeFilter),
+                    mixBlendMode: activeFilter ? 'screen' : 'normal'
+                  }}
                   autoPlay
                   loop
                   playsInline
@@ -419,6 +701,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
                   src={getImageUrl(wp)}
                   alt={wp.name}
                   className="w-full h-auto object-contain"
+                  style={{
+                    filter: getFilterCSS(activeFilter),
+                    mixBlendMode: activeFilter ? 'screen' : 'normal'
+                  }}
                   draggable={false}
                   onError={(e) => {
                     console.error(`[WallpaperModal] Error loading image for ${wp.id}:`, getImageUrl(wp), wp.files);

@@ -14,19 +14,19 @@ const SLIDES: CarouselSlide[] = [
   {
     id: 1,
     title: 'IOS 26 LIVE',
-    videoUrl: 'https://videos.pexels.com/video-files/15283134/15283134-hd_1080_1920_30fps.mp4',
+    videoUrl: '/Hero/IOS 26.mp4',
     link: '/ios'
   },
   {
     id: 2,
     title: 'AESTHETIC',
-    videoUrl: 'https://videos.pexels.com/video-files/8674248/8674248-hd_1080_1920_25fps.mp4',
+    videoUrl: '/Hero/Aesthetic.mp4',
     link: '/aesthetic'
   },
   {
     id: 3,
     title: 'URBAN',
-    videoUrl: 'https://videos.pexels.com/video-files/6942248/6942248-hd_1080_1920_30fps.mp4',
+    videoUrl: '/Hero/Urban.mp4',
     link: '/urban'
   }
 ];
@@ -66,8 +66,8 @@ export default function HeroBanner() {
             ))}
           </div>
 
-          {/* Overlay gradient para mejor contraste */}
-          <div className="heroBannerOverlay absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+          {/* Overlay - Velo oscuro uniforme al 60% */}
+          <div className="heroBannerOverlay absolute inset-0 bg-black/60" />
 
           {/* Content */}
           <div className="heroBannerContent absolute inset-0 flex flex-col items-center justify-center text-center px-4">
