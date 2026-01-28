@@ -113,10 +113,11 @@ export default function FeaturedCarousel() {
                 <img
                   src={`/wallUploads/${wallpaper.files.cover}`}
                   alt={wallpaper.name}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
+                  className="w-full h-full object-cover blur-placeholder"
                   onLoad={(e) => {
-                    (e.target as HTMLImageElement).classList.add('loaded');
+                    const img = e.target as HTMLImageElement;
+                    img.classList.remove('blur-placeholder');
+                    img.classList.add('loaded');
                   }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;

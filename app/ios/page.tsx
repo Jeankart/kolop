@@ -61,7 +61,7 @@ export default function iOSPage() {
 
         {wallpapers.length === 0 && !loading ? (
           <div className="text-zinc-400 text-center py-20">
-            <p>No hay wallpapers disponibles</p>
+            <p>No wallpapers available</p>
           </div>
         ) : (
           <div className="ios26AsymmetricGrid grid grid-cols-4 gap-4 md:gap-6 auto-rows-[200px]">

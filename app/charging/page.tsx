@@ -34,7 +34,7 @@ export default function ChargingPage() {
     return (
       <div className="min-h-screen pt-20 pb-10 bg-[#151515] flex items-center justify-center">
         <div className="text-white text-center">
-          <p>No hay wallpapers en esta categoría</p>
+          <p>No wallpapers available in this category</p>
           <p className="text-sm text-gray-400 mt-2">Total: {wallpapers.length}</p>
         </div>
       </div>

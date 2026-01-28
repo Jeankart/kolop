@@ -53,9 +53,12 @@ export default function FeaturedGallery() {
           >
             <ChevronLeft className="w-6 h-6 text-white dark:text-white" />
           </Link>
-          <h1 className="text-lg md:text-2xl font-bold text-white dark:text-white">
-            Destacados
-          </h1>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔥</span>
+            <h1 className="text-lg md:text-2xl font-bold text-white dark:text-white">
+              Hot
+            </h1>
+          </div>
           <div className="flex items-center gap-2 text-zinc-400">
             <span>|</span>
             <Image className="w-4 h-4" />

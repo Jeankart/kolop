@@ -14,9 +14,10 @@ export default function SplashScreen() {
     } else {
       sessionStorage.setItem('splashShown', 'true');
       
+      // Aumentar a 2.5 segundos para que cargue todo de fondo
       const timer = setTimeout(() => {
         setIsVisible(false);
-      }, 1000);
+      }, 2500);
 
       return () => clearTimeout(timer);
     }
@@ -33,7 +34,7 @@ export default function SplashScreen() {
           alt="Wallpaper Icon" 
           className="w-16 h-16 rounded-lg"
           style={{
-            animation: 'zoomPulse 2s ease-in-out infinite'
+            animation: 'zoomPulse 2.5s ease-in-out infinite'
           }}
         />
       </div>
@@ -50,7 +51,7 @@ export default function SplashScreen() {
         <div 
           className="h-full bg-[#00d084] rounded-full"
           style={{
-            animation: 'loadingBar 1s ease-in-out forwards',
+            animation: 'loadingBar 2.5s ease-in-out forwards',
             boxShadow: '0 0 15px rgba(0, 208, 132, 1), 0 0 30px rgba(0, 208, 132, 0.9), 0 0 50px rgba(0, 208, 132, 0.7), 0 0 70px rgba(0, 208, 132, 0.5)'
           }}
         />

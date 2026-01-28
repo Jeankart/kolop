@@ -27,6 +27,7 @@ interface WallpaperModalProps {
 export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose, onNavigate }: WallpaperModalProps) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+  const [touchStartTime, setTouchStartTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -178,6 +179,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
+    setTouchStartTime(Date.now());
     setIsDragging(true);
   };
 
@@ -195,6 +197,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const handleTouchEnd = (e: React.TouchEvent) => {
     setTouchEnd(e.changedTouches[0].clientX);
     setIsDragging(false);
+    setDragOffset(0); // Reset drag offset para snap back
     handleSwipe();
   };
 
@@ -372,15 +375,25 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   const handleSwipe = () => {
     const diff = touchStart - touchEnd;
+    const timeDiff = Date.now() - touchStartTime;
     
-    // Sensibilidad: 30px para swipe
-    if (diff > 30) {
-      // Swipe left - siguiente
+    // Calcular velocidad (pixels per millisecond)
+    const velocity = Math.abs(diff) / (timeDiff || 1);
+    
+    // Si la velocidad es alta (momentum), usar threshold bajo (20px)
+    // Si es baja (lento), usar threshold alto (80px) 
+    const threshold = velocity > 0.5 ? 20 : 80;
+    
+    // Swipe left - siguiente
+    if (diff > threshold) {
       goToNext();
-    } else if (diff < -30) {
-      // Swipe right - anterior
+    } 
+    // Swipe right - anterior
+    else if (diff < -threshold) {
       goToPrevious();
     }
+    // Si no hay suficiente movimiento, quedarse en el wallpaper actual
+    // (no hace nada, el drag offset se resetea)
   };
 
   const handleDownload = async () => {
@@ -775,11 +788,11 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       {/* Toast de éxito */}
       {downloadSuccess && (
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[100] animate-bounce">
-          <div className="backdrop-blur-lg bg-[#00d084]/30 border-2 border-[#00d084] text-[#00d084] font-semibold py-4 px-8 rounded-lg flex items-center gap-3 shadow-2xl w-80">
-            <div className="w-6 h-6 bg-[#00d084] rounded flex items-center justify-center flex-shrink-0">
+          <div className="backdrop-blur-lg bg-[#00d084]/30 border-2 border-[#00d084] text-white font-semibold py-4 px-8 rounded-3xl flex items-center gap-3 shadow-2xl w-80">
+            <div className="w-6 h-6 bg-[#00d084] rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-white text-lg">✓</span>
             </div>
-            <span className="text-center flex-1">Wallpaper downloaded to your gallery!</span>
+            <span className="text-center flex-1 text-white">Wallpaper downloaded!</span>
           </div>
         </div>
       )}

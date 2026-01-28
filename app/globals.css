@@ -166,17 +166,17 @@ body,
 }
 
 /* Lazy loading blur placeholder effect */
-img[loading="lazy"]:not(.loaded) {
+img.blur-placeholder {
   background-color: #27272a;
-  filter: blur(10px);
+  filter: blur(15px) brightness(0.8);
   animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-img[loading="lazy"].loaded {
+img.loaded {
   background-color: transparent;
   filter: blur(0);
   animation: none;
-  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes pulse {

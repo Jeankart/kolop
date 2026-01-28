@@ -76,11 +76,12 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                 <img
                   src={`/wallUploads/${wallpaper?.files.cover || 'wall1.png'}`}
                   alt={`${title} wallpaper ${i + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover blur-placeholder"
                   style={{ pointerEvents: 'none' }}
-                  loading="lazy"
                   onLoad={(e) => {
-                    (e.target as HTMLImageElement).classList.add('loaded');
+                    const img = e.target as HTMLImageElement;
+                    img.classList.remove('blur-placeholder');
+                    img.classList.add('loaded');
                   }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
