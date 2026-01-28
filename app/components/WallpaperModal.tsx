@@ -34,6 +34,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [isUpscaling, setIsUpscaling] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -608,20 +609,73 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         {/* 4K Button with Premium Star */}
         <div className="relative">
           <button
-            onClick={(e) => {
+            onClick={async (e) => {
               e.stopPropagation();
-              setActiveFilter(activeFilter === '4k' ? null : '4k');
+              setIsUpscaling(true);
+              try {
+                // Cargar la imagen
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                img.onload = () => {
+                  // Crear canvas 4x más grande
+                  const canvas = document.createElement('canvas');
+                  canvas.width = img.width * 4;
+                  canvas.height = img.height * 4;
+                  
+                  const ctx = canvas.getContext('2d');
+                  if (!ctx) throw new Error('Canvas context not available');
+                  
+                  // Mejorar calidad del upscaling
+                  ctx.imageSmoothingEnabled = true;
+                  (ctx as any).imageSmoothingQuality = 'high';
+                  
+                  // Dibujar imagen escalada
+                  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                  
+                  // Descargar
+                  canvas.toBlob((blob) => {
+                    if (!blob) throw new Error('Failed to create blob');
+                    
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${wallpaper.name || 'wallpaper'}-4K.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    
+                    setIsUpscaling(false);
+                  }, 'image/jpeg', 0.95);
+                };
+                
+                img.onerror = () => {
+                  setIsUpscaling(false);
+                  throw new Error('Failed to load image');
+                };
+                
+                img.src = getImageUrl(wallpaper);
+              } catch (error) {
+                console.error('4K upscaling error:', error);
+                setIsUpscaling(false);
+              }
             }}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
-            className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
-              activeFilter === '4k'
+            disabled={isUpscaling}
+            className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 disabled:opacity-50 ${
+              isUpscaling
                 ? 'bg-[#00d084]/20 border-[#00d084]/50 shadow-lg shadow-[#00d084]/20'
                 : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
             }`}
-            title="4K Enhancement"
+            title="4K Enhancement - Download upscaled"
           >
-            <span className="text-white font-bold text-sm">4K</span>
+            {isUpscaling ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <span className="text-white font-bold text-sm">4K</span>
+            )}
           </button>
           {/* PRO Badge with Star */}
           <div className="absolute -top-3 -right-2 bg-amber-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">
