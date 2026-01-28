@@ -623,7 +623,13 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           >
             <span className="text-white font-bold text-sm">4K</span>
           </button>
-          <span className="absolute -top-1 -right-1 text-xs">✨</span>
+          {/* PRO Badge with Star */}
+          <div className="absolute -top-3 -right-2 bg-amber-500 px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">
+            <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1L9.5 5.5L14 6L10.5 9.5L11 14L7 11.5L3 14L3.5 9.5L0 6L4.5 5.5L7 1Z" fill="black"/>
+            </svg>
+            <span className="text-black text-[8px] font-bold">PRO</span>
+          </div>
         </div>
 
         {/* Share Button */}
