@@ -5,7 +5,7 @@ import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
 import { getJpgPath } from '@/lib/utils/imageHelper';
-import { Image } from 'lucide-react';
+import { Image as LucideImage } from 'lucide-react';
 
 interface Wallpaper {
   id: string;
@@ -49,7 +49,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
             </h2>
             <div className="flex items-center gap-2 text-zinc-400">
               <span>|</span>
-              <Image className="w-4 h-4" />
+              <LucideImage className="w-4 h-4" />
               <span className="text-xs">{wallpapers.length}</span>
             </div>
           </div>
