@@ -1,7 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
+import { 
+  useWallpapersByCategory, 
+  useWallpapersFeatured,
+  useWallpapersLive 
+} from '@/lib/hooks/useWallpapers';
 
 const categories = [
   { name: 'Live', icon: 'Live', href: '/live', color: '#00ff88' },
@@ -89,6 +94,38 @@ const IconMap: { [key: string]: (color: string) => ReactElement } = {
 
 export default function CategoriesCarousel() {
   const router = useRouter();
+  const [counts, setCounts] = useState<{ [key: string]: number }>({});
+  
+  // Fetch wallpaper counts for each category
+  const { wallpapers: liveWallpapers } = useWallpapersByCategory('Live');
+  const { wallpapers: chargingWallpapers } = useWallpapersByCategory('Charging');
+  const { wallpapers: aiWallpapers } = useWallpapersByCategory('AI');
+  const { wallpapers: aestheticWallpapers } = useWallpapersByCategory('Aesthetic');
+  const { wallpapers: widgetsWallpapers } = useWallpapersByCategory('Widgets');
+  const { wallpapers: carsWallpapers } = useWallpapersByCategory('Cars');
+  const { wallpapers: bwWallpapers } = useWallpapersByCategory('B&W');
+  const { wallpapers: urbanWallpapers } = useWallpapersByCategory('Urban');
+  const { wallpapers: filmsWallpapers } = useWallpapersByCategory('Films');
+  const { wallpapers: cuteWallpapers } = useWallpapersByCategory('Cute');
+  const { wallpapers: animeWallpapers } = useWallpapersByCategory('Anime');
+  const { wallpapers: featuredWallpapers } = useWallpapersFeatured();
+
+  useEffect(() => {
+    setCounts({
+      'Live': liveWallpapers.length,
+      'Charging': chargingWallpapers.length,
+      'AI': aiWallpapers.length,
+      'Aesthetic': aestheticWallpapers.length,
+      'Widgets': widgetsWallpapers.length,
+      'Cars': carsWallpapers.length,
+      'B&W': bwWallpapers.length,
+      'Urban': urbanWallpapers.length,
+      'Films': filmsWallpapers.length,
+      'Cute': cuteWallpapers.length,
+      'Anime': animeWallpapers.length,
+      'Featured': featuredWallpapers.length,
+    });
+  }, [liveWallpapers, chargingWallpapers, aiWallpapers, aestheticWallpapers, widgetsWallpapers, carsWallpapers, bwWallpapers, urbanWallpapers, filmsWallpapers, cuteWallpapers, animeWallpapers, featuredWallpapers]);
 
   return (
     <section className="categoriasSection pt-4" style={{ paddingTop: '1rem', paddingBottom: '0rem', paddingLeft: '0rem', overflow: 'visible' }}>
@@ -113,6 +150,18 @@ export default function CategoriesCarousel() {
                   <div className="flex items-center justify-center relative z-10 flex-1" style={{ overflow: 'visible' }}>
                     {IconMap[category.icon](category.color)}
                   </div>
+                  
+                  {/* Badge rojo con glow */}
+                  {counts[category.name] > 0 && (
+                    <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold shadow-lg"
+                      style={{
+                        boxShadow: '0 0 8px rgba(239, 68, 68, 0.8), 0 0 12px rgba(239, 68, 68, 0.5), inset 0 0 3px rgba(255, 255, 255, 0.3)'
+                      }}
+                    >
+                      {counts[category.name] > 99 ? '99+' : counts[category.name]}
+                    </div>
+                  )}
+                  
                   <span className="text-[0.5rem] font-medium text-white dark:text-white text-center leading-none relative z-10 w-full px-0.5 h-2.5 flex items-center justify-center">{category.name}</span>
                 </button>
               );
