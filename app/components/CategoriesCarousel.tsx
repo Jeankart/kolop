@@ -45,17 +45,19 @@ const IconMap: { [key: string]: (color: string) => ReactElement } = {
     </svg>
   ),
   Cars: (color) => (
-    <svg viewBox="0 0 24 24" className="w-8 h-8" fill={color} stroke="none">
-      <path d="M2 14L3 10H21L22 14C22 15 21 16 20 16H4C3 16 2 15 2 14Z" />
-      <circle cx="5" cy="16" r="1.5" fill="white" />
-      <circle cx="19" cy="16" r="1.5" fill="white" />
-      <rect x="6" y="11" width="12" height="2" fill={color} opacity="0.6" />
+    <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke={color} strokeWidth="2">
+      <ellipse cx="12" cy="12" rx="9" ry="5" />
+      <circle cx="6" cy="16" r="2" fill={color} />
+      <circle cx="18" cy="16" r="2" fill={color} />
+      <path d="M8 11L7 8c-.5-1 0-2 1-2h8c1 0 1.5 1 1 2l-1 3" stroke={color} fill="none" strokeLinecap="round" />
     </svg>
   ),
   BW: (color) => (
-    <svg viewBox="0 0 24 24" className="w-8 h-8" fill={color} stroke="none">
-      <circle cx="12" cy="12" r="8" style={{ filter: `drop-shadow(0 0 3px ${color})` }} />
-      <path d="M12 4V20M4 12H20" stroke="white" strokeWidth="1" fill="none" />
+    <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke={color} strokeWidth="2">
+      <circle cx="12" cy="12" r="9" fill={color} />
+      <path d="M12 3A9 9 0 0112 21V3Z" fill="white" />
+      <circle cx="12" cy="9" r="1.5" fill={color === '#ffffff' ? '#000' : color} />
+      <circle cx="12" cy="15" r="1.5" fill={color === '#ffffff' ? '#000' : color} />
     </svg>
   ),
   Urban: (color) => (

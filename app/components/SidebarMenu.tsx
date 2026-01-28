@@ -143,22 +143,33 @@ export default function SidebarMenu() {
             <h3 className="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider px-4 mb-3">
               Categorías
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {categories.map((category) => (
                 <Link
                   key={category.path}
                   href={category.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 ${
                     isActive(category.path)
-                      ? 'bg-[#686868]/30 text-[#00d084]'
-                      : 'text-white hover:bg-[#686868]/20'
+                      ? 'bg-gradient-to-br from-[#686868]/40 to-[#686868]/20 border border-[#686868]/80'
+                      : 'bg-gradient-to-br from-[#686868]/20 to-[#686868]/10 border border-[#686868]/30 hover:from-[#686868]/30 hover:to-[#686868]/15 hover:border-[#686868]/50'
                   }`}
+                  style={
+                    isActive(category.path)
+                      ? {
+                          boxShadow: `inset 0 0 8px ${category.color}22, 0 0 12px ${category.color}33`,
+                        }
+                      : {
+                          boxShadow: `inset 0 0 4px ${category.color}11, 0 0 6px ${category.color}19`,
+                        }
+                  }
                 >
-                  <div className="flex items-center justify-center w-5 h-5">
-                    {IconMap[category.icon](category.color)}
+                  <div className="flex items-center justify-center w-6 h-6 flex-shrink-0">
+                    {IconMap[category.icon](isActive(category.path) ? category.color : category.color)}
                   </div>
-                  <span className="font-medium">{category.name}</span>
+                  <span className={`font-medium text-sm ${isActive(category.path) ? 'text-white' : 'text-white'}`}>
+                    {category.name}
+                  </span>
                 </Link>
               ))}
             </div>

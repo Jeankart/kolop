@@ -88,16 +88,18 @@ body,
 @keyframes fadeInModal {
   from {
     opacity: 0;
+    backdrop-filter: blur(0px);
   }
   to {
     opacity: 1;
+    backdrop-filter: blur(12px);
   }
 }
 
 @keyframes slideInNext {
   from {
     opacity: 0;
-    transform: translateX(100%);
+    transform: translateX(40px);
   }
   to {
     opacity: 1;
@@ -108,7 +110,7 @@ body,
 @keyframes slideInPrev {
   from {
     opacity: 0;
-    transform: translateX(-100%);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
@@ -116,16 +118,27 @@ body,
   }
 }
 
+@keyframes scaleInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .imgPreviewer {
-  animation: fadeInModal 0.3s ease-in-out;
+  animation: fadeInModal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .wallpaperImage {
-  animation: slideInNext 0.4s ease-in-out;
+  animation: slideInNext 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wallpaperImage.prev {
-  animation: slideInPrev 0.4s ease-in-out;
+  animation: slideInPrev 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 768px) {
@@ -156,14 +169,14 @@ body,
 img[loading="lazy"]:not(.loaded) {
   background-color: #27272a;
   filter: blur(10px);
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 img[loading="lazy"].loaded {
   background-color: transparent;
   filter: blur(0);
   animation: none;
-  transition: filter 0.3s ease-out;
+  transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes pulse {
@@ -171,6 +184,30 @@ img[loading="lazy"].loaded {
     opacity: 1;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.6;
   }
+}
+
+/* Smooth page transitions */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Button transitions fluidas */
+button, a, [role="button"] {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Input transitions fluidas */
+input, textarea, select {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Hover y active states suaves */
+button:hover, a:hover, [role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+button:active, a:active, [role="button"]:active {
+  transform: translateY(0);
 }

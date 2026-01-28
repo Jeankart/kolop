@@ -583,7 +583,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10 hidden sm:flex"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/40 border border-[#686868]/30 hover:border-[#686868]/60 flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) z-10 hidden sm:flex hover:shadow-lg hover:shadow-white/10 hover:scale-110"
           aria-label="Previous"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
@@ -600,10 +600,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
             activeFilter === 'bw'
-              ? 'bg-white/20 border-white/50'
-              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+              ? 'bg-white/20 border-white/50 shadow-lg shadow-white/20'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
           }`}
           title="Blanco y Negro"
         >
@@ -618,10 +618,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
             activeFilter === 'bloom'
-              ? 'bg-[#00d084]/20 border-[#00d084]/50'
-              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+              ? 'bg-[#00d084]/20 border-[#00d084]/50 shadow-lg shadow-[#00d084]/20'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
           }`}
           title="Bloom Glitter"
         >
@@ -636,10 +636,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors duration-200 ${
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
             activeFilter === 'glitch'
-              ? 'bg-red-500/20 border-red-500/50'
-              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/30'
+              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20'
+              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
           }`}
           title="Glitch Grunge"
         >
@@ -656,7 +656,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10 hidden sm:flex"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/40 border border-[#686868]/30 hover:border-[#686868]/60 flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) z-10 hidden sm:flex hover:shadow-lg hover:shadow-white/10 hover:scale-110"
           aria-label="Next"
         >
           <ChevronRight className="w-6 h-6 text-white" />
@@ -672,7 +672,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           className="flex w-full h-full"
           style={{
             transform: `translateX(calc(-${currentIndex * 100}% + ${dragOffset}px))`,
-            transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+            transition: isDragging ? 'none' : 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
           {wallpapers.map((wp) => (
@@ -730,7 +730,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
           disabled={isDownloading}
-          className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/40 border border-[#686868]/30 hover:border-[#686868]/60 text-white font-semibold py-3 px-6 rounded-full flex items-center gap-2 transition-all duration-300 cubic-bezier(0.16,1,0.3,1) disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-white/10"
         >
           {isDownloading ? (
             <>
