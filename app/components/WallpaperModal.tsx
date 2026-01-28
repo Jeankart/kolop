@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff, Circle, Sparkles, Zap } from 'lucide-react';
+import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff, Share2, Zap } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface Wallpaper {
@@ -204,11 +204,11 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const getFilterCSS = (filter: string | null): string => {
     // SVG filters + CSS fallback para máxima compatibilidad
     switch (filter) {
-      case 'bw':
-        return 'grayscale(1)';
-      case 'bloom':
-        // Bloom: desenfoque brillante y saturado con brillo extra
-        return 'blur(4px) brightness(1.3) contrast(1.15) saturate(1.5) drop-shadow(0 0 8px rgba(0,255,136,0.3))';
+      case 'invert':
+        return 'invert(1)';
+      case '4k':
+        // 4K effect: aumentar contraste y claridad
+        return 'contrast(1.2) brightness(1.05) saturate(1.1) drop-shadow(0 0 2px rgba(0,212,132,0.2))';
       case 'glitch':
         // Glitch: Aberración cromática visual con drop-shadows de colores
         // Simula el efecto RGB shift visible
@@ -605,56 +605,70 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
       {/* Filtros - Columna Izquierda */}
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-10">
-        {/* B&N */}
+        {/* 4K Button with Premium Star */}
+        <div className="relative">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveFilter(activeFilter === '4k' ? null : '4k');
+            }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+            className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
+              activeFilter === '4k'
+                ? 'bg-[#00d084]/20 border-[#00d084]/50 shadow-lg shadow-[#00d084]/20'
+                : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
+            }`}
+            title="4K Enhancement"
+          >
+            <span className="text-white font-bold text-sm">4K</span>
+          </button>
+          <span className="absolute -top-1 -right-1 text-xs">✨</span>
+        </div>
+
+        {/* Share Button */}
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.stopPropagation();
-            setActiveFilter(activeFilter === 'bw' ? null : 'bw');
+            try {
+              const imageUrl = getImageUrl(wallpaper);
+              if (navigator.share) {
+                await navigator.share({
+                  title: `${wallpaper.name} - Wallpaper`,
+                  text: 'Check out this amazing wallpaper!',
+                  url: window.location.href
+                });
+              } else {
+                // Fallback: copy to clipboard
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+              }
+            } catch (error) {
+              console.error('Share error:', error);
+            }
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
-          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
-            activeFilter === 'bw'
-              ? 'bg-white/20 border-white/50 shadow-lg shadow-white/20'
-              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
-          }`}
-          title="Blanco y Negro"
+          className="w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10"
+          title="Share"
         >
-          <Circle className="w-5 h-5 text-white" />
+          <Share2 className="w-5 h-5 text-white" />
         </button>
 
-        {/* Bloom */}
+        {/* Invert Colors Filter */}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setActiveFilter(activeFilter === 'bloom' ? null : 'bloom');
+            setActiveFilter(activeFilter === 'invert' ? null : 'invert');
           }}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
           className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
-            activeFilter === 'bloom'
-              ? 'bg-[#00d084]/20 border-[#00d084]/50 shadow-lg shadow-[#00d084]/20'
+            activeFilter === 'invert'
+              ? 'bg-purple-500/20 border-purple-500/50 shadow-lg shadow-purple-500/20'
               : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
           }`}
-          title="Bloom Glitter"
-        >
-          <Sparkles className="w-5 h-5 text-white" />
-        </button>
-
-        {/* Glitch */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setActiveFilter(activeFilter === 'glitch' ? null : 'glitch');
-          }}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:scale-110 ${
-            activeFilter === 'glitch'
-              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20'
-              : 'bg-[#686868]/20 border-[#686868]/30 hover:bg-[#686868]/40 hover:border-[#686868]/60 hover:shadow-lg hover:shadow-white/10'
-          }`}
-          title="Glitch Grunge"
+          title="Invert Colors"
         >
           <Zap className="w-5 h-5 text-white" />
         </button>
