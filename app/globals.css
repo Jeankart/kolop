@@ -151,3 +151,29 @@ body,
 .splashScreen .object-contain {
   object-fit: contain;
 }
+
+/* Lazy loading blur placeholder effect */
+img[loading="lazy"]:not(.loaded) {
+  background-color: #27272a;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+img[loading="lazy"]:where([src*="wallUploads"]):not(.loaded) {
+  filter: blur(10px);
+  transition: filter 0.3s ease-out;
+}
+
+img[loading="lazy"].loaded {
+  background-color: transparent;
+  filter: blur(0) !important;
+  animation: none !important;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

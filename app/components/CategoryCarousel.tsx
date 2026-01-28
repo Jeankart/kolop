@@ -42,7 +42,7 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
   return (
     <section className="containSection">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h2 className="text-lg md:text-2xl font-bold text-white dark:text-white">
               {emoji} {title}
@@ -78,6 +78,10 @@ export default function CategoryCarousel({ title, emoji, wallpapers, folder, mor
                   alt={`${title} wallpaper ${i + 1}`}
                   className="w-full h-full object-cover"
                   style={{ pointerEvents: 'none' }}
+                  loading="lazy"
+                  onLoad={(e) => {
+                    (e.target as HTMLImageElement).classList.add('loaded');
+                  }}
                   onError={(e) => {
                     const img = e.target as HTMLImageElement;
                     if (!img.src.includes('placeholder') && !img.src.includes('data:')) {

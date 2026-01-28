@@ -32,8 +32,8 @@ export default function Header() {
   return (
     <>
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-40 bg-[#151515]/80 dark:bg-[#151515]/80 backdrop-blur-md border-b border-zinc-800 dark:border-zinc-800 py-2">
-        <div className="flex items-center justify-between px-4">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#151515]/80 dark:bg-[#151515]/80 backdrop-blur-md border-b border-zinc-800 dark:border-zinc-800" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div className="flex items-center justify-between px-4 py-2">
           {/* Menu hamburguesa */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
