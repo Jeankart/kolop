@@ -4,8 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ReactElement, useEffect, useState } from 'react';
 import { 
   useWallpapersByCategory, 
-  useWallpapersFeatured,
-  useWallpapersLive 
+  useWallpapersFeatured
 } from '@/lib/hooks/useWallpapers';
 
 const categories = [
