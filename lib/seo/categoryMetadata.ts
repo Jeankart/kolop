@@ -99,7 +99,9 @@ export function getCategoryMetadata(category: string): Metadata {
     title: info.title,
     description: info.description,
     keywords: info.keywords,
-    canonical: `https://kloop.vercel.app/${categoryKey}`,
+    alternates: {
+      canonical: `https://kloop.vercel.app/${categoryKey}`,
+    },
     openGraph: {
       title: info.title,
       description: info.description,
