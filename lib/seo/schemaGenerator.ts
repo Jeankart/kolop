@@ -4,8 +4,13 @@ export function generateWebsiteSchema() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Kloop Wallpapers',
-    description: 'Discover and download the best wallpapers for your device',
+    description: 'Discover and download premium high-quality wallpapers for iPhone, iPad, Android and desktop',
     url: 'https://kloop.vercel.app',
+    image: 'https://kloop.vercel.app/apple-touch-icon.png',
+    sameAs: [
+      'https://twitter.com/wallpaperapp',
+      'https://instagram.com/wallpaperapp',
+    ],
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -21,56 +26,56 @@ export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Wallpaper App',
+    name: 'Kloop - Premium Wallpapers',
     url: 'https://kloop.vercel.app',
-    description: 'The best app to download high-quality wallpapers',
-    image: 'https://kloop.vercel.app/og-image.jpg',
+    description: 'Premium wallpaper platform offering high-quality, curated backgrounds for all devices',
+    image: 'https://kloop.vercel.app/apple-touch-icon.png',
     sameAs: [
       'https://twitter.com/wallpaperapp',
       'https://instagram.com/wallpaperapp',
     ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'Customer Support',
+      url: 'https://kloop.vercel.app',
+    },
   };
 }
 
-export function generateCollectionPageSchema(category: string) {
+export function generateBreadcrumbSchema(category: string, categoryName: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://kloop.vercel.app',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryName,
+        item: `https://kloop.vercel.app/${category}`,
+      },
+    ],
+  };
+}
+
+export function generateCollectionPageSchema(category: string, categoryName: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${category} Wallpapers`,
-    description: `Download ${category} wallpapers. High-quality backgrounds for your device.`,
-    url: `https://kloop.vercel.app/${category.toLowerCase()}`,
-  };
-}
-
-export function generateFAQSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'How to download wallpapers?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Select a category, choose the wallpaper you like and click download.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Are all wallpapers free?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Yes, all our wallpapers are completely free to download.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the resolution of the wallpapers?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Our wallpapers are available in high resolution, optimized for any device.',
-        },
-      },
-    ],
+    '@id': `https://kloop.vercel.app/${category}#collecton`,
+    name: `${categoryName} Wallpapers - Download Premium ${categoryName} Backgrounds`,
+    description: `Discover and download premium ${categoryName} wallpapers. High-quality, carefully curated backgrounds optimized for all devices.`,
+    url: `https://kloop.vercel.app/${category}`,
+    image: 'https://kloop.vercel.app/apple-touch-icon.png',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Kloop Wallpapers',
+      url: 'https://kloop.vercel.app',
+    },
   };
 }
