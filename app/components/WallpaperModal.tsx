@@ -605,7 +605,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       )}
 
       {/* Filtros - Columna Izquierda */}
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-10">
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-10 hidden">
         {/* 4K Button with Premium Star */}
         <div className="relative">
           <button

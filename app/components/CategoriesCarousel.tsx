@@ -152,9 +152,11 @@ export default function CategoriesCarousel() {
                   
                   {/* Badge rojo con glow */}
                   {counts[category.name] > 0 && (
-                    <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold shadow-lg"
+                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold shadow-lg z-20"
                       style={{
-                        boxShadow: '0 0 8px rgba(239, 68, 68, 0.8), 0 0 12px rgba(239, 68, 68, 0.5), inset 0 0 3px rgba(255, 255, 255, 0.3)'
+                        boxShadow: '0 0 8px rgba(239, 68, 68, 0.8), 0 0 12px rgba(239, 68, 68, 0.5), inset 0 0 3px rgba(255, 255, 255, 0.3)',
+                        transform: 'translateX(-4px)',
+                        color: 'white'
                       }}
                     >
                       {counts[category.name] > 99 ? '99+' : counts[category.name]}
