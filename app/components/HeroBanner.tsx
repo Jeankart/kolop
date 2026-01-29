@@ -43,7 +43,10 @@ export default function HeroBanner() {
   }, []);
 
   return (
-    <section className="relative w-full h-[calc(var(--spacing)*35)] md:h-[calc(var(--spacing)*50)] px-4 md:px-6 heroBannerSection" style={{ paddingTop: 'clamp(5rem, max(env(safe-area-inset-top), 1.5rem) + 4.5rem, 2rem)' }}>
+    <section className="relative w-full h-[calc(var(--spacing)*35)] md:h-[calc(var(--spacing)*50)] px-4 md:px-6 heroBannerSection" style={{ 
+      paddingTop: 'clamp(2rem, calc(60px + env(safe-area-inset-top)), 6rem)',
+      marginTop: '-60px'
+    }}>
       <Link href={SLIDES[currentSlide].link}>
         <div className="heroBannerContainer relative w-full h-full rounded-[10px] overflow-hidden bg-gradient-to-br from-zinc-900 to-black block cursor-pointer hover:shadow-2xl transition-shadow duration-300">
           {/* Video Background - Carousel */}
