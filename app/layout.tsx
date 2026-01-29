@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   description: "Discover and download high-quality wallpapers: iOS, Live, AI, Aesthetic, Anime, Cars, Widgets, Charging and more. Beautiful backgrounds for your device.",
   keywords: "wallpaper, backgrounds, 4K, iOS, Android, download, free, premium wallpapers, live wallpapers",
   authors: [{ name: "Wallpaper App" }],
+  verification: {
+    google: "4bVMYUEIROIP-KEcleWJaXiIOhVMxKANa7cwyQsvRcw",
+  },
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
