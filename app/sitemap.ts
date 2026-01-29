@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://wallpaper.example.com'; // Cambiar por tu dominio real
+  const baseUrl = 'https://kloop.vercel.app'; // Tu dominio en Vercel
   
   const categories = [
     'ios',

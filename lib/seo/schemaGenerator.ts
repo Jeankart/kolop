@@ -3,14 +3,14 @@ export function generateWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Wallpaper',
+    name: 'Kloop Wallpapers',
     description: 'Discover and download the best wallpapers for your device',
-    url: 'https://kloop.wallpapers.app',
+    url: 'https://kloop.vercel.app',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://kloop.wallpapers.app/search?q={search_term_string}',
+        urlTemplate: 'https://kloop.vercel.app/search?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
