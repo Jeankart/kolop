@@ -79,9 +79,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
 
   // Log when wallpaper changes
   useEffect(() => {
-    console.log('[WallpaperModal] Opened with wallpaper:', wallpaper);
-    console.log('[WallpaperModal] Files:', wallpaper.files);
-    console.log('[WallpaperModal] Categories:', wallpaper.categories);
   }, [wallpaper.id]);
 
   const currentIndex = wallpapers.findIndex(w => w.id === wallpaper.id);
@@ -91,7 +88,6 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
     // Usar el archivo download para mostrar en alta resolución, con fallback a cover
     const downloadOrCover = wp.files.download || wp.files.cover;
     const url = `/wallUploads/${downloadOrCover}`;
-    console.log(`[WallpaperModal] Image URL for ${wp.id}: ${url}`, wp.files);
     return url;
   };
 
@@ -99,10 +95,8 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
   const getMovUrl = (wp: Wallpaper) => {
     if (wp.files.video) {
       const url = `/wallUploads/${wp.files.video}`;
-      console.log(`[WallpaperModal] Video URL for ${wp.id}: ${url}`);
       return url;
     }
-    console.log(`[WallpaperModal] No video for ${wp.id}`, wp.files);
     return null;
   };
 

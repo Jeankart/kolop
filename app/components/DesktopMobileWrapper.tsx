@@ -12,7 +12,6 @@ export default function DesktopMobileWrapper({ children }: DesktopMobileWrapperP
   useEffect(() => {
     const checkIfMobile = () => {
       const isMobileDevice = window.innerWidth < 768;
-      console.log('🔍 Checking device - innerWidth:', window.innerWidth, 'isMobile:', isMobileDevice);
       setIsMobile(isMobileDevice);
     };
 
@@ -31,11 +30,9 @@ export default function DesktopMobileWrapper({ children }: DesktopMobileWrapperP
   }
 
   if (isMobile) {
-    console.log('✅ Rendering mobile view');
     return <>{children}</>;
   }
 
-  console.log('✅ Rendering desktop frame view');
   // En desktop, envolver en contenedor que simula un móvil
   return (
     <div

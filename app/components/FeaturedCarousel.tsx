@@ -27,14 +27,9 @@ export default function FeaturedCarousel() {
 
   // Log when wallpapers load
   useEffect(() => {
-    if (!loading && wallpapers.length > 0) {
-      console.log('[FeaturedCarousel] Loaded wallpapers:', wallpapers.length);
-      console.log('[FeaturedCarousel] First wallpaper:', wallpapers[0]);
-    }
   }, [wallpapers, loading]);
 
   const handleWallpaperClick = (wallpaper: Wallpaper) => {
-    console.log('[FeaturedCarousel] Clicked wallpaper:', wallpaper);
     setSelectedWallpaper(wallpaper);
   };
 
