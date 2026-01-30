@@ -571,6 +571,18 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         <X className="w-6 h-6 text-white" />
       </button>
 
+      {/* Logo Kloop centrado en la parte superior */}
+      <div 
+        className="absolute top-safe left-1/2 transform -translate-x-1/2 z-10 opacity-40"
+        style={{ top: 'max(2rem, env(safe-area-inset-top) + 1.5rem)', mixBlendMode: 'screen' }}
+      >
+        <img 
+          src="/kloop-logo.png" 
+          alt="Kloop Logo" 
+          className="h-5 w-auto"
+        />
+      </div>
+
       {/* Botón Toggle Mov/Jpg - Solo si tiene categoría Live y existe el archivo */}
       {hasLiveCategory && (
         <button
