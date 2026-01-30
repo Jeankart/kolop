@@ -38,7 +38,7 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-10 bg-[#151515] dark:bg-[#151515]">
+    <div className="min-h-screen pt-28 pb-10 bg-[#151515] dark:bg-[#151515]">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header con botón de regreso */}
         <div className="flex items-center gap-4 mb-8">
