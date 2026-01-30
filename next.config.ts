@@ -7,6 +7,22 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   staticPageGenerationTimeout: 120,
+  redirects: async () => {
+    return [
+      {
+        source: '/:path*',
+        destination: 'https://kloop.vercel.app/:path*',
+        permanent: true,
+        has: [
+          {
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'http',
+          },
+        ],
+      },
+    ];
+  },
   headers: async () => {
     return [
       {

@@ -26,9 +26,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Premium Wallpapers - Download High-Quality Backgrounds | Kloop",
-  description: "Discover and download premium, high-quality wallpapers for all devices: iOS, Android, desktop. Curated collections of 4K, aesthetic, anime, AI-generated and more. Free premium wallpapers.",
-  keywords: "wallpaper, backgrounds, 4K wallpapers, iOS wallpapers, Android wallpapers, download free, premium wallpapers, high-quality backgrounds, live wallpapers",
+  title: "Kloop Wallpapers - Free 4K Wallpapers for iPhone 17, iOS 26 & Android | Download Now",
+  description: "Download free premium 4K wallpapers for iPhone 17, iPhone Pro, iOS, Android and desktop. Kloop offers anime wallpapers, aesthetic backgrounds, live wallpapers, cars, and more. High-quality phone wallpapers free download.",
+  keywords: "Kloop Wallpapers, wallpapers for iPhone, iPhone 17 wallpapers, iOS 26 wallpapers, free wallpapers, 4K wallpapers, anime wallpapers, aesthetic wallpapers, live wallpapers, free download wallpapers, iPhone wallpapers free, cars wallpapers, phone wallpapers, wallpapers free, wallpapers for your phone, premium wallpapers, backgrounds download, high quality wallpapers, iPhone Pro wallpapers, beautiful wallpapers, AI wallpapers, charging wallpapers",
   authors: [{ name: "Kloop - Premium Wallpapers" }],
   creator: "Kloop Team",
   publisher: "Kloop",
@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://kloop.vercel.app",
-    title: "Premium Wallpapers - Download High-Quality Backgrounds",
-    description: "Discover premium wallpapers: iOS, Android, AI-generated, anime, aesthetic, and more. Free 4K backgrounds.",
-    siteName: "Kloop Wallpapers",
+    title: "Kloop Wallpapers - Free 4K Wallpapers for iPhone 17 & iOS",
+    description: "Download free premium 4K wallpapers for iPhone, iPad, iOS, Android and desktop. Anime, aesthetic, live wallpapers, cars and more.",
+    siteName: "Kloop - Premium Free Wallpapers",
     images: [
       {
         url: "https://kloop.vercel.app/apple-touch-icon.png",
@@ -65,10 +65,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Premium Wallpapers - Download High-Quality Backgrounds",
-    description: "Discover and download premium, curated wallpapers for all devices",
+    title: "Kloop Wallpapers - Free 4K Wallpapers for iPhone 17",
+    description: "Download free premium 4K wallpapers for iPhone, iPad, iOS, Android. Anime, aesthetic, live wallpapers and more.",
     images: ["https://kloop.vercel.app/apple-touch-icon.png"],
-    creator: "@wallpaperapp",
+    creator: "@kloopcommunity",
   },
   robots: {
     index: true,
