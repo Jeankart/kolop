@@ -565,10 +565,10 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
         <X className="w-6 h-6 text-white" />
       </button>
 
-      {/* Logo Kloop centrado en la parte superior */}
+      {/* Logo Kloop centrado en la parte inferior */}
       <div 
-        className="absolute top-safe left-1/2 transform -translate-x-1/2 z-10 opacity-40"
-        style={{ top: 'max(2rem, env(safe-area-inset-top) + 1.5rem)', mixBlendMode: 'screen' }}
+        className="absolute left-1/2 transform -translate-x-1/2 z-10 opacity-90"
+        style={{ bottom: 'calc(7.5rem + 3rem)' }}
       >
         <img 
           src="/kloop-logo.png" 
@@ -814,7 +814,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       </div>
 
       {/* Botones de Descarga en la parte inferior */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex gap-3 px-4">
+      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 flex gap-3 px-4">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -890,7 +890,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
       )}
 
       {/* Indicador de página */}
-      <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-xs sm:text-sm font-medium">
+      <div className="absolute bottom-38 left-1/2 transform -translate-x-1/2 text-white/60 text-xs sm:text-sm font-medium">
         {currentIndex + 1} / {wallpapers.length}
       </div>
 
