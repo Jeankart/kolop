@@ -7,6 +7,7 @@ import SplashScreen from './components/SplashScreen';
 import InstallPWAModal from './components/InstallPWAModal';
 import InstallGuideModal from './components/InstallGuideModal';
 import { useInstallPWAModal } from '@/lib/hooks/useInstallPWAModal';
+import { usePushNotifications } from '@/lib/hooks/usePushNotifications';
 import { useState, useEffect } from 'react';
 
 export default function ClientLayout({
@@ -15,7 +16,23 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const { showModal, closeModal, isMounted } = useInstallPWAModal();
+  const { isSupported, isSubscribed, permission, requestPermission } = usePushNotifications();
   const [showInstallGuide, setShowInstallGuide] = useState(false);
+
+  useEffect(() => {
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch((error) => {
+        console.error('Service Worker registration failed:', error);
+      });
+    }
+
+    // Pedir permiso para notificaciones (opcional)
+    if (isSupported && permission === 'default') {
+      // Descomentar para pedir automáticamente
+      // requestPermission();
+    }
+  }, [isSupported, permission, requestPermission]);
 
   useEffect(() => {
     // Bloquear rotación solo en móvil
