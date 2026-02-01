@@ -587,7 +587,7 @@ export default function WallpaperModal({ isOpen, wallpaper, wallpapers, onClose,
           onTouchStart={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
           className="absolute right-4 w-12 h-12 rounded-full backdrop-blur-md bg-[#686868]/20 hover:bg-[#686868]/30 border border-[#686868]/30 flex items-center justify-center transition-colors duration-200 z-10"
-          style={{ top: 'max(5rem, env(safe-area-inset-top) + 3.5rem)' }}
+          style={{ top: 'max(6.5rem, env(safe-area-inset-top) + 5rem)' }}
           aria-label="Toggle view"
         >
           {showMov ? <Eye className="w-6 h-6 text-white" /> : <EyeOff className="w-6 h-6 text-white" />}
