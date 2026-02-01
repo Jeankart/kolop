@@ -211,3 +211,7 @@ button:hover, a:hover, [role="button"]:hover {
 button:active, a:active, [role="button"]:active {
   transform: translateY(0);
 }
+
+.gap-4 {
+    gap: calc(var(--spacing) * 1);
+}
