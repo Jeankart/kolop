@@ -45,13 +45,13 @@ export default function Home() {
         moreLink="/charging"
       />
 
-      {/* AI Carousel */}
+      {/* Anime Carousel */}
       <HomeCategoryCarousel
-        category="AI"
-        title="AI"
-        emoji="🤖"
-        folder="wallAI"
-        moreLink="/ai"
+        category="Anime"
+        title="Anime"
+        emoji="⛩️"
+        folder="wallAnime"
+        moreLink="/anime"
       />
 
       {/* Aesthetic Carousel */}
@@ -117,13 +117,13 @@ export default function Home() {
         moreLink="/cute"
       />
 
-      {/* Anime Carousel */}
+      {/* AI Carousel */}
       <HomeCategoryCarousel
-        category="Anime"
-        title="Anime"
-        emoji="⛩️"
-        folder="wallAnime"
-        moreLink="/anime"
+        category="AI"
+        title="AI"
+        emoji="🤖"
+        folder="wallAI"
+        moreLink="/ai"
       />
 
       {/* IOS Carousel */}
