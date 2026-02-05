@@ -65,7 +65,6 @@ export const useWallpapersByCategory = (category: string) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log(`📸 Loading wallpapers for category: ${category}`);
     setLoading(true);
     
     try {
@@ -76,7 +75,6 @@ export const useWallpapersByCategory = (category: string) => {
       
       // Usar onSnapshot para escuchar cambios en tiempo real
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        console.log(`✅ Got ${snapshot.size} wallpapers for ${category}`);
         const data: Wallpaper[] = [];
         snapshot.forEach((doc) => {
           data.push({
@@ -95,14 +93,12 @@ export const useWallpapersByCategory = (category: string) => {
         setLoading(false);
         setError(null);
       }, (error: any) => {
-        console.error(`❌ Error loading ${category}:`, error);
         setError(`Error cargando ${category}: ${error.message}`);
         setLoading(false);
       });
 
       return () => unsubscribe();
     } catch (err) {
-      console.error(`❌ Exception in useWallpapersByCategory(${category}):`, err);
       const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
       setError(errorMsg);
       setLoading(false);
