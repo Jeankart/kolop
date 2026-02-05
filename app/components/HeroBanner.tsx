@@ -33,14 +33,31 @@ const SLIDES: CarouselSlide[] = [
 
 export default function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isMounted]);
+
+  if (!isMounted) {
+    return (
+      <section className="relative w-full h-[calc(var(--spacing)*17)] md:h-[calc(var(--spacing)*25)] px-4 md:px-6 heroBannerSection" style={{ 
+        marginTop: 'calc(4rem + env(safe-area-inset-top))'
+      }}>
+        <div className="heroBannerContainer relative w-full h-full rounded-[10px] overflow-hidden bg-gradient-to-br from-zinc-900 to-black block cursor-pointer" />
+      </section>
+    );
+  }
 
   return (
     <section className="relative w-full h-[calc(var(--spacing)*17)] md:h-[calc(var(--spacing)*25)] px-4 md:px-6 heroBannerSection" style={{ 
