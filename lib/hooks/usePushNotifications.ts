@@ -6,15 +6,27 @@ export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
 
   useEffect(() => {
-    // Verificar soporte
-    const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
-    setIsSupported(supported);
-    setPermission(Notification.permission);
+    try {
+      // Verificar que estamos en el cliente
+      if (typeof window === 'undefined') {
+        return;
+      }
 
-    if (!supported) return;
+      // Verificar soporte
+      const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+      setIsSupported(supported);
+      
+      if (typeof Notification !== 'undefined') {
+        setPermission(Notification.permission);
+      }
 
-    // Verificar si ya está suscrito
-    checkSubscription();
+      if (!supported) return;
+
+      // Verificar si ya está suscrito
+      checkSubscription();
+    } catch (error) {
+      console.error('Error in usePushNotifications effect:', error);
+    }
   }, []);
 
   const checkSubscription = async () => {
@@ -29,7 +41,7 @@ export function usePushNotifications() {
 
   const requestPermission = async () => {
     try {
-      if (!isSupported) {
+      if (!isSupported || typeof Notification === 'undefined') {
         console.warn('Push notifications not supported');
         return false;
       }
@@ -50,6 +62,10 @@ export function usePushNotifications() {
 
   const subscribe = async () => {
     try {
+      if (typeof window === 'undefined') {
+        return;
+      }
+
       const registration = await navigator.serviceWorker.ready;
       
       // Obtener la clave pública de tu Firebase project

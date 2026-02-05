@@ -21,12 +21,12 @@ function ClientLayoutContent({
 
   useEffect(() => {
     try {
-      // Registrar Service Worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch((error) => {
-          console.error('Service Worker registration failed:', error);
-        });
-      }
+      // Registrar Service Worker - DESACTIVADO TEMPORALMENTE
+      // if ('serviceWorker' in navigator) {
+      //   navigator.serviceWorker.register('/sw.js').catch((error) => {
+      //     console.error('Service Worker registration failed:', error);
+      //   });
+      // }
     } catch (error) {
       console.error('Error registering service worker:', error);
     }

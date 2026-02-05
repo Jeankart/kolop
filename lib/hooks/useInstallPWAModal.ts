@@ -7,20 +7,32 @@ export function useInstallPWAModal() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    
-    // Verificar si ya se mostró el modal
-    const hasSeenModal = localStorage.getItem('pwaModalShown');
-    
-    if (!hasSeenModal) {
-      // Mostrar el modal después de 0.2 segundos (cuando termina el splash)
-      const timer = setTimeout(() => {
-        setShowModal(true);
-        // Marcar como mostrado
-        localStorage.setItem('pwaModalShown', 'true');
-      }, 200);
+    try {
+      setIsMounted(true);
+      
+      // Verificar si ya se mostró el modal
+      if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+        return;
+      }
 
-      return () => clearTimeout(timer);
+      const hasSeenModal = localStorage.getItem('pwaModalShown');
+      
+      if (!hasSeenModal) {
+        // Mostrar el modal después de 0.2 segundos (cuando termina el splash)
+        const timer = setTimeout(() => {
+          setShowModal(true);
+          // Marcar como mostrado
+          try {
+            localStorage.setItem('pwaModalShown', 'true');
+          } catch (e) {
+            console.warn('Could not set localStorage:', e);
+          }
+        }, 200);
+
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.error('Error in useInstallPWAModal:', error);
     }
   }, []);
 
