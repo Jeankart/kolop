@@ -6,17 +6,17 @@ import HomeCategoryCarousel from './components/HomeCategoryCarousel';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Wallpaper - Download Premium Wallpapers',
-  description: 'Discover and download high-quality wallpapers. Categories: iOS, Live, AI, Aesthetic, Anime, Cars, Widgets, Charging and more. Beautiful backgrounds for your device.',
-  keywords: 'wallpapers, backgrounds, download, free, iOS, Android, categories, premium',
+  title: 'Download Premium Wallpapers - Free 4K & 8K Backgrounds',
+  description: 'Discover the latest and most popular phone wallpapers, updated daily with new designs. Download free high-quality 4K & 8K wallpapers for iOS, Android, and desktop. Categories: Anime, Aesthetic, Cars, Gaming, Abstract, Widgets, Charging and more. All premium wallpapers without watermarks.',
+  keywords: 'wallpapers, backgrounds, 4K, 8K, free download, iOS, Android, premium, aesthetic, anime, cars, gaming, abstract, daily updates',
   openGraph: {
-    title: 'Wallpaper - Download Premium Wallpapers',
-    description: 'The best high-quality wallpapers for your device',
+    title: 'Download Premium Wallpapers - Free 4K & 8K Backgrounds',
+    description: 'The best high-quality wallpapers updated daily. Download stunning 4K & 8K backgrounds for your device.',
     type: 'website',
-    url: 'https://kloop.wallpapers.app',
+    url: 'https://kloop.vercel.app',
     images: [
       {
-        url: 'https://kloop.wallpapers.app/og-image.jpg',
+        url: 'https://kloop.vercel.app/og-image.jpg',
         width: 1200,
         height: 630,
       },
@@ -179,6 +179,46 @@ export default function Home() {
               <div className="homeios26CardBorder absolute inset-0 border-2 border-cyan-500/0 group-hover:border-cyan-500/50 rounded-xl transition-all duration-300" />
             </div>
           </Link>
+        </div>
+      </section>
+
+      {/* Updated Daily Section - SEO & Trust Building */}
+      <section className="px-4 md:px-6 py-12 max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 rounded-xl p-8 md:p-12 border border-zinc-700">
+          <div className="flex items-center gap-4 mb-6">
+            <span className="text-4xl">📅</span>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                Updated Daily with New Designs
+              </h2>
+              <p className="text-zinc-300 text-lg">
+                We add fresh, high-quality wallpapers every day to keep your device looking stunning. All 4K & 8K backgrounds available for free download.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚡</span>
+              <div>
+                <h3 className="font-bold text-white mb-1">Fast Downloads</h3>
+                <p className="text-sm text-zinc-400">High-speed downloads with no watermarks</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🎨</span>
+              <div>
+                <h3 className="font-bold text-white mb-1">Multiple Categories</h3>
+                <p className="text-sm text-zinc-400">Anime, Aesthetic, Gaming, Cars, and more</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">📱</span>
+              <div>
+                <h3 className="font-bold text-white mb-1">All Devices</h3>
+                <p className="text-sm text-zinc-400">Perfect for iOS, Android, and desktop</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>

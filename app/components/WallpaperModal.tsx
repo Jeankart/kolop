@@ -2,6 +2,7 @@
 
 import { X, Download, ChevronLeft, ChevronRight, Eye, EyeOff, Share2, Zap } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import ShareButtons from './ShareButtons';
 
 interface Wallpaper {
   id: string;

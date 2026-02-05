@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ChevronLeft, Image } from 'lucide-react';
 import Link from 'next/link';
 import WallpaperModal from './WallpaperModal';
+import PremiumBadge from './PremiumBadge';
 import { getCategoryIcons, shouldShowCategoryIcon } from '@/lib/utils/categoryIcons';
 import { getJpgPath } from '@/lib/utils/imageHelper';
 
@@ -65,12 +66,13 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
             <div
               key={wallpaper.id}
               onClick={() => handleWallpaperClick(wallpaper)}
-              className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative"
+              className="aspect-[9/19.5] rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-zinc-800 dark:bg-zinc-800 relative group"
             >
               <img
                 src={`/wallUploads/${wallpaper.files.cover}`}
                 alt={wallpaper.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover lazy-image"
+                loading="lazy"
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   if (!img.src.includes('placeholder') && !img.src.includes('data:')) {
@@ -90,6 +92,20 @@ export default function CategoryGallery({ title, folder, wallpapers }: CategoryG
                       style={{ imageRendering: 'crisp-edges', lineHeight: '1' }}
                     />
                   ))}
+                </div>
+              )}
+              
+              {/* Premium badge - Show on hover for every 5th wallpaper as demo */}
+              {parseInt(wallpaper.id) % 5 === 0 && (
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <PremiumBadge size="sm" />
+                </div>
+              )}
+
+              {/* Featured badge */}
+              {wallpaper.featured && (
+                <div className="absolute bottom-2 left-2 px-2 py-1 bg-yellow-500/80 rounded text-xs font-bold text-black">
+                  ⭐ Featured
                 </div>
               )}
             </div>
