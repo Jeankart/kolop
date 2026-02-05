@@ -10,7 +10,7 @@ import { useInstallPWAModal } from '@/lib/hooks/useInstallPWAModal';
 import { usePushNotifications } from '@/lib/hooks/usePushNotifications';
 import { useState, useEffect } from 'react';
 
-export default function ClientLayout({
+function ClientLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -20,39 +20,44 @@ export default function ClientLayout({
   const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   useEffect(() => {
-    // Registrar Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch((error) => {
-        console.error('Service Worker registration failed:', error);
-      });
-    }
-
-    // Pedir permiso para notificaciones (opcional)
-    if (isSupported && permission === 'default') {
-      // Descomentar para pedir automáticamente
-      // requestPermission();
-    }
-  }, [isSupported, permission, requestPermission]);
-
-  useEffect(() => {
-    // Bloquear rotación solo en móvil
-    const isMobile = window.innerWidth < 768;
-    
-    if (isMobile) {
-      const lockOrientation = () => {
-        // Bloquear en portrait
-        if ((screen.orientation as any)?.lock) {
-          (screen.orientation as any).lock('portrait-primary').catch(() => {
-            // Ignorar errores en navegadores que no lo soportan
-          });
-        }
-      };
-
-      lockOrientation();
+    try {
+      // Registrar Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
+      }
+    } catch (error) {
+      console.error('Error registering service worker:', error);
     }
   }, []);
 
-  if (!isMounted) return null;
+  useEffect(() => {
+    try {
+      // Bloquear rotación solo en móvil
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile && typeof screen !== 'undefined' && (screen.orientation as any)?.lock) {
+        (screen.orientation as any).lock('portrait-primary').catch(() => {
+          // Ignorar errores
+        });
+      }
+    } catch (error) {
+      console.error('Error locking orientation:', error);
+    }
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <ThemeProvider>
+        <Header />
+        <main className="pb-24 bg-[#151515] dark:bg-[#151515]">
+          {children}
+        </main>
+        <BottomNavigation />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>
@@ -70,4 +75,12 @@ export default function ClientLayout({
       <BottomNavigation />
     </ThemeProvider>
   );
+}
+
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ClientLayoutContent>{children}</ClientLayoutContent>;
 }
